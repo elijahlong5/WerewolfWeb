@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block styling %}
+    <link href="/static/home_lobby.css" rel="stylesheet">
+{% endblock styling %}
+{% block content %}
+    <div class="titles">
+        <h2>Welcome to</h2>
+        <h1 class="werewolf">Werewolf</h1>
+        <h3>Below please choose if you wish to host or join a game.</h3>
+    </div>
+    <div class="choices">
+        <form action="/create-lobby/" method="post">
+            <button class="button" type="submit">
+                Create Lobby
+            </button>
+        </form>
+        <form action="/join-lobby/" method="post">
+            <h4>
+                Name
+            </h4>
+            <input type="text" name="player_name_field">
+            <h4>
+                Access code
+            </h4>
+            <input type="text" name="access_token">
+            <button class="button" type="submit">
+                Join Lobby
+            </button>
+        </form>
+
+    </div>
+{% endblock content %}

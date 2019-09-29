@@ -1,0 +1,23 @@
+@import url(https://fonts.googleapis.com/css?family=Denk+One);
+
+body {
+    background-color: gray;
+}
+
+.container {
+    max-width: 800px;
+    background-color: white;
+    margin: auto;
+    padding: 15px;
+}
+
+.titles {
+
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.werewolf {
+    font-family: "Denk One", sans-serif;
+    color: darkred;
+}

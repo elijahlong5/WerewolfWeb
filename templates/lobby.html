@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block styling %}
+<link href="/static/home_lobby.css" rel="stylesheet">
+{% endblock styling %}
+{% block content %}
+<div>
+    <div class="titles">
+        {% if player_id|int %}
+        <h1 class="werewolf"> {{players[player_id|int].name}}, You are in a lobby</h1>
+        {% else %}
+        <h1 class="werewolf"> You are spectating in a lobby</h1>
+        {% endif %}
+
+        <h2>Access code: {{ access_token }}</h2>
+    </div>
+    <div class="choices">
+        <div>
+            <a class="link" href="">Edit Game Settings</a>
+            <a class="link" href="/home">Back</a>
+        </div>
+        <form action="/start_game/" method="post">
+            <button class="button" type="submit">
+                Start Game
+            </button>
+            <input type="hidden" value="{{access_token}}" name="access_token">
+            {% if player_id|int %}
+            <input type="hidden" value="{{player_id|int}}" name="player_id">
+            {% else %}
+            <input type="hidden" value="spectator" name="player_id">
+            {% endif %}
+        </form>
+    </div>
+    <div class="lists">
+        <div class="players">
+            <h4>Players</h4>
+            {% for key, player_dict_item in players.items() %}
+            <li id="{{key}}">
+                {{ player_dict_item.name }} (id: {{key}})
+            </li>
+            {% endfor %}
+        </div>
+        <div class="characters">
+            <h4>Characters</h4>
+            <li>Werewolf</li>
+            <li>Werewolf</li>
+            <li>Werewolf</li>
+            <li>Minion</li>
+            <li>Seer</li>
+            <li>Insomniac</li>
+            <li>Robber</li>
+            <li>Villager</li>
+            <li>Villager</li>
+            <li>Troublemaker</li>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
