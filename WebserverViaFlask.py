@@ -66,12 +66,17 @@ def join_lobby():
 
 # @app.route('/lobby/')
 @app.route('/lobby/<access_token>/')
-@app.route('/lobby/<access_token>/player_id/<player_id>')
+@app.route('/lobby/<access_token>/player_id/<player_id>/')
 def lobby(access_token, player_id=None):
-    return render_template('lobby.html',
-                           access_token=access_token,
-                           player_id=player_id,
-                           players=lobbies[access_token].get_game_state()['players'])
+    if lobbies[access_token].GAME_ON:
+        return redirect(url_for('game_on',
+                                access_token=access_token,
+                                player_id=player_id))
+    else:
+        return render_template('lobby.html',
+                               access_token=access_token,
+                               player_id=player_id,
+                               players=lobbies[access_token].jsonify_players())
 
 
 @app.route('/start_game/', methods=['post'])
@@ -79,8 +84,8 @@ def start_game():
     access_token = request.form['access_token']
     player_id = request.form['player_id']
     if not lobbies[access_token].GAME_ON:
-
         # TODO:lobbies[access_token].start_game()
+        lobbies[access_token].GAME_ON = True
         print(f"Game {access_token} is started.")
     return redirect(url_for('game_on',
                             access_token=access_token,
@@ -92,6 +97,17 @@ def game_on(access_token, player_id):
     return render_template('game_on.html',
                            access_token=access_token,
                            player_id=player_id)
+
+
+@app.route('/api/lobbies/<access_token>/players/')
+def get_lobby_players(access_token):
+    return lobbies[access_token].jsonify_players()
+
+
+@app.route('/api/lobbies/<access_token>/game_on/')
+def get_is_game_on(access_token):
+    print(lobbies[access_token].GAME_ON)
+    return {'game_on': lobbies[access_token].GAME_ON}
 
 
 def get_new_access_token():

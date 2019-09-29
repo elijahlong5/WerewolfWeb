@@ -47,11 +47,11 @@ class WerewolfGame:
                 'is_game_on': self.GAME_ON,
                 'stage': self.game_stage,
             },
-            'players': self.json_players_conversion(),
+            'players': self.jsonify_players(),
         }
         return game_state
 
-    def json_players_conversion(self):
+    def jsonify_players(self):
         p_conversion = {}
         for p_id, player in self.players.items():
             p_conversion[p_id] = {
