@@ -17,7 +17,6 @@ async function refresh_player_div(access_token) {
 async function redirect_if_game_on(access_token) {
     const response = await fetch('/api/lobbies/' + access_token + '/game_on/');
     const is_game_on = await response.json();
-    console.log('seeing if game is on')
     if (is_game_on['game_on']){
         console.log("game is on, redirecting to game on page.")
         const player_id_location_in_pathname = 4
@@ -37,7 +36,6 @@ function refresh() {
     setTimeout(refresh, time_between_refreshes);
     const access_token_location_in_pathname = 2
     const access_token = window.location.pathname.split('/')[access_token_location_in_pathname]
-    console.log('waiting')
     redirect_if_game_on(access_token)
     refresh_player_div(access_token)
 }

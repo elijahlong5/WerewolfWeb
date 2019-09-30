@@ -5,4 +5,10 @@
 <div>
     Game on!
 </div>
+<div>
+    original role is : {{original_role}}
+</div>
 {% endblock content %}
+{% block scripts %}
+    <script src="/static/scripts/{{original_role}}.js"></script>
+{% endblock scripts %}

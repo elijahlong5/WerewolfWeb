@@ -41,21 +41,17 @@
         </div>
         <div class="characters">
             <h4>Characters</h4>
-            <li>Werewolf</li>
-            <li>Werewolf</li>
-            <li>Werewolf</li>
-            <li>Minion</li>
-            <li>Seer</li>
-            <li>Insomniac</li>
-            <li>Robber</li>
-            <li>Villager</li>
-            <li>Villager</li>
-            <li>Troublemaker</li>
+            {% for character in werewolf_characters %}
+            <li id="{{character.value}}">
+                {{ character.value }}
+            </li>
+            {% endfor %}
         </div>
     </div>
-    <script src="/static/scripts/lobby.js"></script>
+
 </div>
 {% endblock content %}
 {% block scripts %}
-<link href="/static/home_lobby.css" rel="stylesheet">
+    <script src="/static/scripts/lobby.js"></script>
+    <link href="/static/home_lobby.css" rel="stylesheet">
 {% endblock scripts %}

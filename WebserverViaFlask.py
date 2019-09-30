@@ -2,7 +2,7 @@ import random
 import string
 
 from flask import Flask, render_template, redirect, url_for, request
-from Game import WerewolfGame
+from Game import WerewolfGame, Role
 
 ACCESS_TOKEN_LENGTH = 5
 
@@ -76,6 +76,7 @@ def lobby(access_token, player_id=None):
         return render_template('lobby.html',
                                access_token=access_token,
                                player_id=player_id,
+                               werewolf_characters=Role,
                                players=lobbies[access_token].jsonify_players())
 
 
@@ -84,8 +85,7 @@ def start_game():
     access_token = request.form['access_token']
     player_id = request.form['player_id']
     if not lobbies[access_token].GAME_ON:
-        # TODO:lobbies[access_token].start_game()
-        lobbies[access_token].GAME_ON = True
+        lobbies[access_token].start_game()
         print(f"Game {access_token} is started.")
     return redirect(url_for('game_on',
                             access_token=access_token,
@@ -94,9 +94,15 @@ def start_game():
 
 @app.route('/game_on/<access_token>/player_id/<player_id>/')
 def game_on(access_token, player_id):
+    try:
+        role = lobbies[access_token].get_game_state()['players'][int(player_id)]['original_role']
+    except:
+        role = "spectator"
+
     return render_template('game_on.html',
                            access_token=access_token,
-                           player_id=player_id)
+                           player_id=player_id,
+                           original_role=role)
 
 
 @app.route('/api/lobbies/<access_token>/players/')
