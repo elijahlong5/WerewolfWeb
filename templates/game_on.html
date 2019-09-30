@@ -5,10 +5,13 @@
 <div>
     Game on!
 </div>
-<div>
+<div id="role-div">
     original role is : {{original_role}}
 </div>
 {% endblock content %}
 {% block scripts %}
-    <script src="/static/scripts/{{original_role}}.js"></script>
+    <script src="/static/scripts/{{original_role}}.js">
+        var data = '{{ player_dict }}';
+    </script>
+
 {% endblock scripts %}

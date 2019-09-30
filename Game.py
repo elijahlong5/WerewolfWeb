@@ -31,7 +31,7 @@ class WerewolfGame:
         self.game_stage = 0
         self.characters = []
         self.players = {}
-        self.middle_cards = []
+        self.middle_cards = [0, 1, 2]
         self.game_tracker = []
         self.discussion_stage = 0
         # improve this ^ and bad stage tracker method
@@ -51,7 +51,7 @@ class WerewolfGame:
         self.characters.append(V.Villager())
         self.characters.append(V.Villager())
 
-    def get_game_state(self):
+    def jsonify_full_game_state(self):
         """
         :return: The game state in dictionary format for use within the json structure. Game state will be passed
         across the different players.
@@ -62,6 +62,7 @@ class WerewolfGame:
                 'stage': self.game_stage,
             },
             'players': self.jsonify_players(),
+            'middle_cards': self.jsonify_middle_cards(),
         }
         return game_state
 
@@ -74,6 +75,13 @@ class WerewolfGame:
                 'current_role': player.current_role,
             }
         return p_conversion
+
+    def jsonify_middle_cards(self):
+        return {
+            'left': self.middle_cards[0],
+            'middle': self.middle_cards[1],
+            'right': self.middle_cards[2],
+        }
 
     def add_player(self, name):
         MAX_ID = 100
@@ -89,35 +97,28 @@ class WerewolfGame:
         else:
             self.GAME_ON = True
             # TODO: assign spectators as that, and other roles as such.
-
-            print(f'Starting game')
-            print('here are the players_______')
-            for id, player in self.players.items():
-                print(f'name: {player.name}')
-                if player.name == 'Jah':
-                    self.players[id].assign_initial_role(self.characters[5])
-                    print(f'My role is {player.original_role}')
-
-            print('here are the characters in this game session:')
-            for c in self.characters:
-                print(f'{str(c)}')
+            self.assign_characters()
 
     def assign_characters(self):
         # TODO: randomize
-        cur_char = 0
-        # QUESTION: can I remove "id" here
-        for player in self.players.values():
-            player.assign_initial_role(self.characters[cur_char])
-            cur_char += 1
-            s = f'{player.name} is the {player.original_role}'
-            print(s)
+        # cur_char = 0
+        # for player in self.players.values():
+        #     player.assign_initial_role(self.characters[cur_char])
+        #     cur_char += 1
+        #     s = f'{player.name} is the {player.original_role}'
+        #     print(s)
 
-        self.middle_cards = self.characters[cur_char:]
-        print("[Middle Cards]")
-        # QUESTION: Why does this work?
-        print(self.middle_cards[0], self.middle_cards[1], self.middle_cards[2])
-        # QUESTION: But this doesnt
-        # print(self.middle_cards)
+        for id, player in self.players.items():
+            print(f'name: {player.name}')
+            if player.name == 'Jah':
+                self.players[id].assign_initial_role(self.characters[5])
+                print(f'My role is {player.original_role}')
+            elif player.name == 'Taek':
+                self.players[id].assign_initial_role(self.characters[6])
+
+        self.middle_cards[0] = self.characters[7]
+        self.middle_cards[1] = self.characters[8]
+        self.middle_cards[2] = self.characters[9]
 
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id
@@ -132,4 +133,7 @@ class WerewolfGame:
         # self.players.get(p1_id).current_role = self.players.get(p2_id).current_role
         # self.players.get(p2_id).current_role = temp_role
 
-
+    def player_specific_info(self, player_id):
+        return {
+            'role_summary': 'you are the werewolf'
+        }

@@ -22,12 +22,14 @@ def home():
 def create_lobby_request():
     access = get_new_access_token()  # Returns a NEW access token
     lobbies[access] = WerewolfGame()
-    lobbies[access].add_player("Jackie")
-    lobbies[access].add_player("Jilliam")
-    lobbies[access].add_player("Snoopy")
-    lobbies[access].add_player("Tonya")
-    lobbies[access].add_player("Taek")
-    lobbies[access].add_player("Sam")
+
+    game = lobbies[access]
+    game.add_player("Jackie")
+    game.add_player("Jilliam")
+    game.add_player("Snoopy")
+    game.add_player("Tonya")
+    game.add_player("Taek")
+    game.add_player("Sam")
     print(f'New lobby was added.  Access token: {access}')
     # TODO: Have player created here. Create player.
     # TODO: And redirect to the join lobby page.  Want the "Name" field to handle both
@@ -64,11 +66,11 @@ def join_lobby():
         return redirect(url_for('home'))
 
 
-# @app.route('/lobby/')
 @app.route('/lobby/<access_token>/')
 @app.route('/lobby/<access_token>/player_id/<player_id>/')
 def lobby(access_token, player_id=None):
-    if lobbies[access_token].GAME_ON:
+    game = lobbies[access_token]
+    if game.GAME_ON:
         return redirect(url_for('game_on',
                                 access_token=access_token,
                                 player_id=player_id))
@@ -84,8 +86,9 @@ def lobby(access_token, player_id=None):
 def start_game():
     access_token = request.form['access_token']
     player_id = request.form['player_id']
-    if not lobbies[access_token].GAME_ON:
-        lobbies[access_token].start_game()
+    game = lobbies[access_token]
+    if not game.GAME_ON:
+        game.start_game()
         print(f"Game {access_token} is started.")
     return redirect(url_for('game_on',
                             access_token=access_token,
@@ -94,15 +97,21 @@ def start_game():
 
 @app.route('/game_on/<access_token>/player_id/<player_id>/')
 def game_on(access_token, player_id):
+    game = lobbies[access_token]
+    game_state = game.jsonify_full_game_state()
+    # TODO: use player_dict here!
     try:
-        role = lobbies[access_token].get_game_state()['players'][int(player_id)]['original_role']
+        player_role = game_state['players'][int(player_id)]['original_role']
+        player_dict = game.player_specific_info(int(player_id))
     except:
         role = "spectator"
+
 
     return render_template('game_on.html',
                            access_token=access_token,
                            player_id=player_id,
-                           original_role=role)
+                           original_role=player_role,
+                           player_dict=player_dict)
 
 
 @app.route('/api/lobbies/<access_token>/players/')
@@ -114,6 +123,13 @@ def get_lobby_players(access_token):
 def get_is_game_on(access_token):
     print(lobbies[access_token].GAME_ON)
     return {'game_on': lobbies[access_token].GAME_ON}
+
+
+@app.route('/api/lobbies/<access_token>/players/<player_id>/player_specific_dict/')
+def request_player_info_dict(access_token, player_id):
+    game = lobbies[access_token]
+    return game.player_specific_info(int(player_id))
+
 
 
 def get_new_access_token():

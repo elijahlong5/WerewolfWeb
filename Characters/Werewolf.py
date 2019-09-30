@@ -12,6 +12,10 @@ class Werewolf(abc.ABC):
     def __str__(self):
         return "Werewolf"
 
+    def jsonify_request(self, game_state, player_id):
+        return game_state['middle_cards']
+
+
     def action_request(self, game_state, middle_cards, player_id):
         """Display who the other werewolf is. If the otherwerewolf is in the middle,
         then the werewolf can choose to see a card."""
