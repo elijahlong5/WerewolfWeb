@@ -1,5 +1,7 @@
 import abc
 
+# import Game.Role as Role
+
 
 class Werewolf(abc.ABC):
 
@@ -12,35 +14,25 @@ class Werewolf(abc.ABC):
     def __str__(self):
         return "Werewolf"
 
-    def jsonify_request(self, game_state, player_id):
-        return game_state['middle_cards']
+    def jsonify_request(self, game, player_id):
+        d = {'lone_wolf': True,
+             'fellow_wolves': {},
+             }
 
-
-    def action_request(self, game_state, middle_cards, player_id):
-        """Display who the other werewolf is. If the otherwerewolf is in the middle,
-        then the werewolf can choose to see a card."""
-
-        for id, p in game_state.items():
-            if id == player_id:
+        for p_id, p in game.players.items():
+            print(f'{p.name}, is a {p.original_role}')
+            if p_id == player_id:
                 continue
-            elif p.original_role.identity == 'You are a Werewolf.':
-                print(f'{p.name} is a WEREWOLF!')
-                return ['Werewolf identification']
-        print('Looks like youre the only Werewolf. Select 1 card from the middle you would like to see.')
+                # TODO: Handle dreamwolf, alpha wolf etc.
+            elif type(p.original_role) == type(self):
+                d['fellow_wolves'][p_id] = p.name
+                d['lone_wolf'] = False
+        return d
 
-        print(f'(A) Middle Card A, (B) Middle Card B, (C) Middle Card C. ')
-        choice = input()
-        viewed_card = ''
-        try:
-            if choice[0] == "A":
-                viewed_card = middle_cards[0]
-                print("Card A is", middle_cards[0])
-            elif choice[0] == "B":
-                viewed_card = middle_cards[1]
-                print("Card B is", middle_cards[1])
-            elif choice[0] == "C":
-                viewed_card = middle_cards[2]
-                print("Card C is", middle_cards[2])
-        except:
-            print('invalid input')
-        return [f'{game_state.get(player_id).name} saw the {viewed_card} in the middle.5555']
+    def process_player_response(self, game, player_id, response):
+        return {
+            'response': 'hello',
+            'id': player_id,
+            'clicked_was': response,
+        }
+

@@ -36,7 +36,6 @@ def create_lobby_request():
     # TODO: Leaving space for a spectator mode.
     return redirect(url_for('lobby', access_token=access))
 
-
 @app.route('/join-lobby/', methods=['post'])
 def join_lobby():
     """
@@ -102,10 +101,12 @@ def game_on(access_token, player_id):
     # TODO: use player_dict here!
     try:
         player_role = game_state['players'][int(player_id)]['original_role']
+        # TODO: This should be where the player dict is passed.
+        # TODO: unless the dict needs to be refreshed to ask for. ie with the insomniac.
         player_dict = game.player_specific_info(int(player_id))
     except:
-        role = "spectator"
-
+        player_role = 'spectator'
+        player_dict = {'spectating': 'yup'}
 
     return render_template('game_on.html',
                            access_token=access_token,
@@ -131,6 +132,12 @@ def request_player_info_dict(access_token, player_id):
     return game.player_specific_info(int(player_id))
 
 
+@app.route('/api/lobbies/<access_token>/players/<player_id>/<player_response>/')
+def request_game_response(access_token, player_id, player_response):
+    print(player_response)
+    game = lobbies[access_token]
+    return game.game_response_from_player_action(str(player_id), player_response)
+
 
 def get_new_access_token():
     if "RING1" not in lobbies.keys():
@@ -143,4 +150,13 @@ def get_new_access_token():
 
 
 if __name__ == "__main__":
+    # TODO: Remove, just here for testing
+    lobbies['RING1'] = WerewolfGame()
+    game = lobbies['RING1']
+    game.add_player("Jackie")
+    game.add_player("Jilliam")
+    game.add_player("Snoopy")
+    game.add_player("Tonya")
+    game.add_player("Taek")
+    game.add_player("Sam")
     app.run(debug=True, port=8080)

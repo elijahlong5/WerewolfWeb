@@ -9,3 +9,4 @@ class Spectator:
 
     def action_request(self, game_state, middle_cards, player_id):
         return
+

@@ -6,6 +6,7 @@
 
 time_between_refreshes = 2000
 let player_dict = {}
+let game_response = {}
 async function request_werewolf_info_dict() {
     const access_token_location_in_pathname = 2
     const player_id_location_in_pathname = 4
@@ -31,11 +32,85 @@ async function request_werewolf_info_dict() {
 
 request_werewolf_info_dict().then(r => {
     // once dict is returned...
-    console.log('dictionary returned')
-    console.log(player_dict)
+    if (player_dict['lone_wolf'] === false) {
+        add_simple_element('h2','role-div', "Here are the other werewolves.")
+        for (let key in player_dict['fellow_wolves']) {
+            let nr_text = player_dict['fellow_wolves'][key];
+            add_simple_element("li", 'role-div', nr_text);
+        }
+    } else {
+        add_simple_element('h2', 'role-div', "You're the lone wolf")
+        // const button_form = document.createElement('form');
+        // button_form.id = 'button-form';
+        // //button_form.addEventListener('onClick')
 
+        let button_div_name = 'role-div'
+
+        const left_card = document.createElement('button');
+        left_card.innerText = "Left";
+        left_card.classList.add("Button");
+        left_card.id = left_card.innerText;
+        document.getElementById(button_div_name).appendChild(left_card)
+
+        const middle_card = document.createElement('button');
+        middle_card.innerText = "Middle";
+        middle_card.classList.add("Button");
+        middle_card.id = middle_card.innerText;
+        document.getElementById(button_div_name).appendChild(middle_card)
+
+        const right_card = document.createElement('button');
+        right_card.innerText = "Right";
+        right_card.classList.add("Button");
+        right_card.id = right_card.innerText;
+        document.getElementById(button_div_name).appendChild(right_card)
+
+
+        document.getElementById("Left").addEventListener("click",
+            request_middle_card_identity('Left'));
+        // document.getElementById("Middle").addEventListener("click",
+        //     request_middle_card_identity('Middle'));
+        // document.getElementById("Right").addEventListener("click",
+        //     request_middle_card_identity('Right'));
+    }
 })
 
-document.addEventListener("DOMContentLoaded", function() {
-    refresh()
+function add_simple_element(el, parent_node, inner_text) {
+    const elem = document.createElement(el);
+    elem.innerText = inner_text;
+    document.getElementById(parent_node).appendChild(elem);
+}
+
+async function request_middle_card_identity(button_id) {
+    const access_token_location_in_pathname = 2
+    const player_id_location_in_pathname = 4
+
+    const access_token = window.location.pathname.split('/')[access_token_location_in_pathname]
+    let player_id = null
+    try {
+        player_id = window.location.pathname.split('/')[player_id_location_in_pathname]
+    }
+    catch(e) {
+        console.log('no player id');
+    }
+    // adds new player li elements if there are new players in the lobby
+    const response = await fetch('/api/lobbies/'
+        + access_token
+        + '/players/'
+        + player_id
+        + '/'
+        + button_id
+        +'/');
+
+    const card_identity = await response.json()
+    game_response = card_identity;
+}
+
+request_middle_card_identity().then(r => {
+    console.log('card identity response is');
+    console.log(game_response);
 })
+
+
+// document.addEventListener("DOMContentLoaded", function() {
+//     refresh()
+// })
