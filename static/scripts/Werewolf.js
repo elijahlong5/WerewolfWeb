@@ -23,21 +23,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const left_card = document.createElement('button');
         left_card.innerText = "Left";
-        left_card.classList.add("Button");
+        left_card.classList.add("button");
         left_card.id = left_card.innerText;
-        document.getElementById(button_div_name).appendChild(left_card)
+        document.getElementById(button_div_name).appendChild(left_card);
 
         const middle_card = document.createElement('button');
         middle_card.innerText = "Middle";
-        middle_card.classList.add("Button");
+        middle_card.classList.add("button");
         middle_card.id = middle_card.innerText;
-        document.getElementById(button_div_name).appendChild(middle_card)
+        document.getElementById(button_div_name).appendChild(middle_card);
 
         const right_card = document.createElement('button');
         right_card.innerText = "Right";
-        right_card.classList.add("Button");
+        right_card.classList.add("button");
         right_card.id = right_card.innerText;
-        document.getElementById(button_div_name).appendChild(right_card)
+        document.getElementById(button_div_name).appendChild(right_card);
 
 
         document.getElementById("Left").addEventListener("click", function(){
@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("Right").addEventListener("click",function(){
             make_request('right');
         });
-
 
     }
 });

@@ -68,7 +68,7 @@ def join_lobby():
 
 @app.route('/lobby/<access_token>/')
 @app.route('/lobby/<access_token>/player_id/<player_id>/')
-def lobby(access_token, player_id=None):
+def lobby(access_token, player_id=None): # TODO: Player_id cant be None (including spectators)
     game = lobbies[access_token]
     if game.GAME_ON:
         return redirect(url_for('game_on',
@@ -87,12 +87,21 @@ def start_game():
     access_token = request.form['access_token']
     player_id = request.form['player_id']
     game = lobbies[access_token]
-    if not game.GAME_ON:
-        game.start_game()
-        print(f"Game {access_token} is started.")
-    return redirect(url_for('game_on',
-                            access_token=access_token,
-                            player_id=player_id))
+
+    if game.acceptable_starting_point():
+        if not game.GAME_ON:
+            game.start_game()
+            print(f"Game {access_token} is started.")
+
+        return redirect(url_for('game_on',
+                                    access_token=access_token,
+                                    player_id=player_id))
+    else:
+        return redirect(url_for('lobby',
+                                access_token=access_token,
+                                player_id=player_id,
+                                werewolf_characters=Role,
+                                players=lobbies[access_token].jsonify_players()))
 
 
 @app.route('/game_on/<access_token>/player_id/<player_id>/')

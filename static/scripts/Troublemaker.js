@@ -116,7 +116,6 @@ document.addEventListener("DOMContentLoaded", function() {
             // }
 
             document.getElementById('form-submit-button').disabled = (selected_count !== 2)
-
         });
     }
 

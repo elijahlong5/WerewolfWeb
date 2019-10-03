@@ -35,6 +35,8 @@ class WerewolfGame:
         self.game_stage = 0
         self.characters = []
         self.players = {}
+
+
         self.middle_cards = [0, 1, 2]
         self.game_tracker = []
         self.discussion_stage = 0
@@ -47,7 +49,7 @@ class WerewolfGame:
         self.characters.append(M.Minion(self))
         self.characters.append(R.Robber(self))
 
-        self.characters.append(S.Seer())
+        self.characters.append(S.Seer(self))
         self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
         self.characters.append(W.Werewolf(self))
@@ -56,16 +58,14 @@ class WerewolfGame:
         self.characters.append(V.Villager(self))
         self.characters.append(V.Villager(self))
 
-        self.characters.append(W.Werewolf(self))
-
         shuffles = 100
-        for i in range(0, shuffles):
-            card1 = random.randint(0, len(self.characters)-1)
-            card2 = random.randint(0, len(self.characters)-1)
-
-            temp = self.characters[card1]
-            self.characters[card1] = self.characters[card2]
-            self.characters[card2] = temp
+        # for i in range(0, shuffles):
+        #     card1 = random.randint(0, len(self.characters)-1)
+        #     card2 = random.randint(0, len(self.characters)-1)
+        #
+        #     temp = self.characters[card1]
+        #     self.characters[card1] = self.characters[card2]
+        #     self.characters[card2] = temp
 
 
         #self.characters.append(Sp.Spectator(self))
@@ -138,7 +138,6 @@ class WerewolfGame:
             print('----Middle Cards:----')
             print(f'(Left){str(self.middle_cards[0])} (Middle){str(self.middle_cards[1])} (Right){str(self.middle_cards[0])}')
 
-
     def assign_characters(self):
         # TODO: randomize
         # cur_char = 0
@@ -150,9 +149,10 @@ class WerewolfGame:
 
         minion_no = 1
         rob_no = 2
+        seer_no =3
         werewolf_no = 5
         trouble_no = 4
-        my_identity = rob_no
+        my_identity = seer_no
         spect_no = 10
 
         current_character = 0
@@ -197,3 +197,17 @@ class WerewolfGame:
         response = player_original_role.process_player_response(self, player_id, player_response)
         return response
         #self.players[player_id].process_player_response()
+
+    def acceptable_starting_point(self):
+        startable = True
+
+        if len(self.characters) != len(self.players) + len(self.middle_cards):
+            print(
+                f'game not startable: player len {len(self.players)}'
+                f'middle len {len(self.middle_cards)}'
+                f'char len {len(self.characters)}'
+
+            )
+            startable = False
+        # TODO: Check there is at least 1 werewolf.
+        return startable
