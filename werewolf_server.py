@@ -36,6 +36,7 @@ def create_lobby_request():
     # TODO: Leaving space for a spectator mode.
     return redirect(url_for('lobby', access_token=access))
 
+
 @app.route('/join-lobby/', methods=['post'])
 def join_lobby():
     """
@@ -103,8 +104,9 @@ def game_on(access_token, player_id):
         player_role = game_state['players'][int(player_id)]['original_role']
         # TODO: This should be where the player dict is passed.
         # TODO: unless the dict needs to be refreshed to ask for. ie with the insomniac.
-        player_dict = game.player_specific_info(int(player_id))
-    except:
+        player_dict = game.players[int(player_id)].get_dict()
+    except Exception as e:
+        print(e)
         player_role = 'spectator'
         player_dict = {'spectating': 'yup'}
 
@@ -112,7 +114,7 @@ def game_on(access_token, player_id):
                            access_token=access_token,
                            player_id=player_id,
                            original_role=player_role,
-                           player_dict=player_dict)
+                           initial_player_dict=player_dict)
 
 
 @app.route('/api/lobbies/<access_token>/players/')
@@ -122,21 +124,20 @@ def get_lobby_players(access_token):
 
 @app.route('/api/lobbies/<access_token>/game_on/')
 def get_is_game_on(access_token):
-    print(lobbies[access_token].GAME_ON)
     return {'game_on': lobbies[access_token].GAME_ON}
 
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/player_specific_dict/')
 def request_player_info_dict(access_token, player_id):
     game = lobbies[access_token]
+    print('here')
     return game.player_specific_info(int(player_id))
 
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/<player_response>/')
 def request_game_response(access_token, player_id, player_response):
-    print(player_response)
     game = lobbies[access_token]
-    return game.game_response_from_player_action(str(player_id), player_response)
+    return game.game_response_from_player_action(int(player_id), player_response)
 
 
 def get_new_access_token():

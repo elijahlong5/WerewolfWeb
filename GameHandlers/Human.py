@@ -14,11 +14,6 @@ class Human:
         self.original_role = role
         self.current_role = self.original_role
 
-    def get_dict(self, game):
+    def get_dict(self):
         if self.original_role:
-            return self.original_role.jsonify_request(game, self.player_id)
-
-    def process_player_response(self):
-        print('getting response from human class')
-        return {'hey': 1}
-        # return self.original_role.process_player_response(game, self.player_id, response)
+            return self.original_role.jsonify_request(self.player_id)

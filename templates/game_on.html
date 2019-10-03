@@ -10,7 +10,6 @@
 </div>
 {% endblock content %}
 {% block scripts %}
-    <script src="/static/scripts/{{original_role}}.js">
-        //var data = '{{ player_dict }}';
-    </script>
+    <meta id="initial-player-dict" data-names="{{initial_player_dict}}">
+    <script src="/static/scripts/{{original_role}}.js"></script>
 {% endblock scripts %}

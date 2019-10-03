@@ -1,5 +1,6 @@
 class Troublemaker:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.identity = "You are the Troublemaker."
         self.definition = "You switch 2 players cards."
         self.stage = None
@@ -7,6 +8,21 @@ class Troublemaker:
 
     def __str__(self):
         return "Troublemaker"
+
+    def jsonify_request(self, player_id):
+        names_copy = self.game.jsonify_players_names().copy()
+        d = {'names': {}}
+        for key in names_copy.keys():
+            d['names'][str(key)] = names_copy[key]
+
+        d['names'].pop(str(player_id))
+        print(d)
+        # d = {
+        #     'names': self.game.jsonify_players_names().copy()
+        # }
+        # remove this players name from the dict.
+        # d['names'].pop(player_id)
+        return d
 
     def action_request(self, game_state, middle_cards, player_id):
         """Gives player a copy of whose cards are where, with which they can interact.

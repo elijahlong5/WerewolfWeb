@@ -17,12 +17,12 @@ import random
 
 
 class Role(Enum):
-    INSOMNIAC = str(I.Insomniac())
+    INSOMNIAC = 'Insomniac'
     MINION = str(M.Minion())
     ROBBER = str(R.Robber())
     SEER = str(S.Seer())
-    TROUBLEMAKER = str(T.Troublemaker())
-    WEREWOLF = str(W.Werewolf())
+    TROUBLEMAKER = 'Troublemaker'
+    WEREWOLF = "Werewolf"
     VILLAGER = str(V.Villager())
 
     SPECTATOR = str(Sp.Spectator())
@@ -48,11 +48,11 @@ class WerewolfGame:
         self.characters.append(R.Robber())
 
         self.characters.append(S.Seer())
-        self.characters.append(T.Troublemaker())
-        self.characters.append(W.Werewolf())
-        self.characters.append(W.Werewolf())
+        self.characters.append(T.Troublemaker(self))
+        self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
 
-        self.characters.append(W.Werewolf())
+        self.characters.append(W.Werewolf(self))
         self.characters.append(V.Villager())
         self.characters.append(V.Villager())
 
@@ -83,13 +83,23 @@ class WerewolfGame:
             }
         return p_conversion
 
+    def jsonify_players_names(self):
+        p_conversion = {}
+        for p_id, player in self.players.items():
+            p_conversion[p_id] = {
+                'name': player.name
+            }
+        return p_conversion
+
     def jsonify_middle_cards(self):
         middle_card_conversion = {
             'left': str(self.middle_cards[0]),
             'middle': str(self.middle_cards[1]),
             'right': str(self.middle_cards[2]),
+            'left_current': str(self.middle_cards[0]),
+            'middle_current': str(self.middle_cards[1]),
+            'right_current': str(self.middle_cards[2]),
         }
-        print(middle_card_conversion)
         return middle_card_conversion
 
     def add_player(self, name):
@@ -118,17 +128,20 @@ class WerewolfGame:
         #     print(s)
 
         werewolf_no = 5
+        trouble_no = 4
+        my_identity = trouble_no
         spect_no = 10
         for id, player in self.players.items():
             print(f'name: {player.name}')
             if player.name == 'Jah':
-                self.players[id].assign_initial_role(self.characters[werewolf_no])
+                self.players[id].assign_initial_role(self.characters[my_identity])
                 print(f'My role is {player.original_role}')
             elif player.name == 'Taek':
                 self.players[id].assign_initial_role(self.characters[spect_no])
             else:
                 self.players[id].assign_initial_role(self.characters[spect_no])
 
+        # TODO: assign middle card current values.
         self.middle_cards[0] = self.characters[7]
         self.middle_cards[1] = self.characters[8]
         self.middle_cards[2] = self.characters[9]
@@ -147,10 +160,11 @@ class WerewolfGame:
         # self.players.get(p2_id).current_role = temp_role
 
     def player_specific_info(self, player_id):
-        return self.players[player_id].get_dict(self)
+        print('here 2')
+        return self.players[player_id].get_dict()
 
     def game_response_from_player_action(self, player_id, player_response):
-        print('getting response from game class')
-        print(f'player id is {player_id}')
-        return {'left': 'left card needs to be found, but good job!'}
+        player_original_role = self.players[player_id].original_role
+        response = player_original_role.process_player_response(self, player_id, player_response)
+        return response
         #self.players[player_id].process_player_response()
