@@ -1,5 +1,6 @@
 class Spectator:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.identity = "You are the Spectating the game."
         self.description = "View the madness"
         self.stage = None

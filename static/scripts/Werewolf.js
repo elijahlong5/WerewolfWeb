@@ -18,9 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     } else {
         add_simple_element('h2', 'role-div', "You're the lone wolf")
-        // const button_form = document.createElement('form');
-        // button_form.id = 'button-form';
-        // //button_form.addEventListener('onClick')
 
         let button_div_name = 'role-div'
 

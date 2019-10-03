@@ -1,5 +1,6 @@
 class Insomniac:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.identity = "You are the Insomniac."
         self.description = "You learn the identity of your card before the discussion begins. Play this role."
         self.stage = None

@@ -1,6 +1,7 @@
 class Villager:
 
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.identity = "You are a villager."
         self.description = "lol"
         self.stage = None
