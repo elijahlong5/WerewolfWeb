@@ -1,5 +1,8 @@
+import Characters.Werewolf as W
+
 class Minion:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.identity = "You are the Minion."
         self.description = "Help the werewolves. If they die, you lose"
         self.stage = None
@@ -7,10 +10,15 @@ class Minion:
     def __str__(self):
         return "Minion"
 
-    def action_request(self, game_state, middle_cards, player_id):
-        """Display who the werewolves are."""
+    def jsonify_request(self, player_id):
+        # Provides dictionary of wolves, with string player IDs
+        d = {
+             'wolves': {},
+             }
+        temp_wolf = W.Werewolf(self.game)
+        for p_id, p in self.game.players.items():
+            print(f'p.role type is {type(p.original_role)}')
+            if type(p.original_role) == type(temp_wolf):
 
-        for id, p in game_state.items():
-            if p.original_role.identity == 'You are a Werewolf.':
-                print(f'{p.name} is a werewolf!')
-        return ['Minion identification']
+                d['wolves'][str(p_id)] = p.name
+        return d

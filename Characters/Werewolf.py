@@ -33,3 +33,4 @@ class Werewolf:
         }
         return card_dict
 
+

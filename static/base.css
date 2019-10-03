@@ -21,3 +21,24 @@ body {
     font-family: "Denk One", sans-serif;
     color: darkred;
 }
+
+.link, .button {
+    font-family: sans-serif;
+    display: inline-block;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    background-color: #008CBA;
+}
+
+.selected {
+    background-color: limegreen;
+}
+
+

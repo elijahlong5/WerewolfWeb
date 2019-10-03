@@ -52,6 +52,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("Right").addEventListener("click",function(){
             make_request('right');
         });
+
+
     }
 });
 

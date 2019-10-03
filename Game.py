@@ -18,7 +18,7 @@ import random
 
 class Role(Enum):
     INSOMNIAC = 'Insomniac'
-    MINION = str(M.Minion())
+    MINION = 'Minion'
     ROBBER = str(R.Robber())
     SEER = str(S.Seer())
     TROUBLEMAKER = 'Troublemaker'
@@ -44,7 +44,7 @@ class WerewolfGame:
         # TODO: make this doable by the game host
 
         self.characters.append(I.Insomniac())
-        self.characters.append(M.Minion())
+        self.characters.append(M.Minion(self))
         self.characters.append(R.Robber())
 
         self.characters.append(S.Seer())
@@ -127,9 +127,10 @@ class WerewolfGame:
         #     s = f'{player.name} is the {player.original_role}'
         #     print(s)
 
+        minion_no = 1
         werewolf_no = 5
         trouble_no = 4
-        my_identity = trouble_no
+        my_identity = minion_no
         spect_no = 10
         for id, player in self.players.items():
             print(f'name: {player.name}')
@@ -160,7 +161,6 @@ class WerewolfGame:
         # self.players.get(p2_id).current_role = temp_role
 
     def player_specific_info(self, player_id):
-        print('here 2')
         return self.players[player_id].get_dict()
 
     def game_response_from_player_action(self, player_id, player_response):
