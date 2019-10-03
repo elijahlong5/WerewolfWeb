@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let meta_elem = document.getElementById('initial-player-dict');
 
     let player_names_json = meta_elem.getAttribute('data-names');
+
+    // TODO: Here is where I can't access player_names_json['names']
     newstr = JSON.stringify(player_names_json)
     let x = 0;
     while (newstr.search("'") && x < 40) {

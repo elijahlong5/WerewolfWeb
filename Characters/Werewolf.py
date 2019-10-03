@@ -14,9 +14,7 @@ class Werewolf:
         d = {'lone_wolf': True,
              'fellow_wolves': {},
              }
-
         for p_id, p in self.game.players.items():
-            print(f'{p.name}, is a {p.original_role}')
             if p_id == player_id:
                 continue
                 # TODO: Handle dreamwolf, alpha wolf etc.

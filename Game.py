@@ -56,7 +56,19 @@ class WerewolfGame:
         self.characters.append(V.Villager(self))
         self.characters.append(V.Villager(self))
 
-        self.characters.append(Sp.Spectator(self))
+        self.characters.append(W.Werewolf(self))
+
+        shuffles = 100
+        for i in range(0, shuffles):
+            card1 = random.randint(0, len(self.characters)-1)
+            card2 = random.randint(0, len(self.characters)-1)
+
+            temp = self.characters[card1]
+            self.characters[card1] = self.characters[card2]
+            self.characters[card2] = temp
+
+
+        #self.characters.append(Sp.Spectator(self))
 
     def jsonify_full_game_state(self):
         """
@@ -118,6 +130,14 @@ class WerewolfGame:
             self.GAME_ON = True
             # TODO: assign spectators as that, and other roles as such.
             self.assign_characters()
+            # PRINT GAME STATE:
+            print('-----game state------')
+            for p_id, player in self.players.items():
+                print(f'id:{p_id}, name: {player.name}: Role   {player.original_role}')
+
+            print('----Middle Cards:----')
+            print(f'(Left){str(self.middle_cards[0])} (Middle){str(self.middle_cards[1])} (Right){str(self.middle_cards[0])}')
+
 
     def assign_characters(self):
         # TODO: randomize
@@ -134,20 +154,26 @@ class WerewolfGame:
         trouble_no = 4
         my_identity = rob_no
         spect_no = 10
+
+        current_character = 0
         for id, player in self.players.items():
-            print(f'name: {player.name}')
+            self.players[id].assign_initial_role(self.characters[current_character])
+            print(f'name: {player.name}  is { self.characters[current_character]}')
+            current_character += 1
             if player.name == 'Jah':
                 self.players[id].assign_initial_role(self.characters[my_identity])
                 print(f'My role is {player.original_role}')
-            elif player.name == 'Taek':
-                self.players[id].assign_initial_role(self.characters[minion_no])
-            else:
-                self.players[id].assign_initial_role(self.characters[spect_no])
+
+            # elif player.name == 'Taek':
+            #     self.players[id].assign_initial_role(self.characters[minion_no])
+            # else:
+            #     self.players[id].assign_initial_role(self.characters[spect_no])
 
         # TODO: assign middle card current values.
-        self.middle_cards[0] = self.characters[7]
-        self.middle_cards[1] = self.characters[8]
-        self.middle_cards[2] = self.characters[9]
+        self.middle_cards[0] = self.characters[current_character]
+        self.middle_cards[1] = self.characters[current_character + 1]
+        self.middle_cards[2] = self.characters[current_character + 2]
+        print(self.players)
 
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id

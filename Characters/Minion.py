@@ -17,8 +17,6 @@ class Minion:
              }
         temp_wolf = W.Werewolf(self.game)
         for p_id, p in self.game.players.items():
-            print(f'p.role type is {type(p.original_role)}')
             if type(p.original_role) == type(temp_wolf):
-
                 d['wolves'][str(p_id)] = p.name
         return d
