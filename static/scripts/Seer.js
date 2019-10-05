@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let meta_elem = document.getElementById('initial-player-dict');
 
     let player_names_json = meta_elem.getAttribute('data-names');
-    newstr = JSON.stringify(player_names_json)
+    newstr = JSON.stringify(player_names_json);
     let x = 0;
     while (newstr.search("'") && x < 40) {
         newstr = newstr.replace("'", '"');
@@ -67,27 +67,66 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     add_structure_div('role-div', 'submit-div');
-    add_form_button('submit-div','form-submit-button');
+    add_form_button('submit-div','form-submit-button','See Card(s)!');
     document.getElementById('form-submit-button').addEventListener("click", function () {
-        if (selected_count != 1) {
-            document.getElementById('form-submit-button').innerText = "Choose 1 players before clicking."
-        }
+        make_request(selected_keys);
     });
 
     // ADD PLAYER NAME BUTTONS
     for (let key in player_names['names']) {
-        let name = player_names['names'][key]['name'];
-        const name_element = document.createElement('button');
-        name_element.innerText = name;
-        name_element.id = key;
-        name_element.classList.add("button");
-        name_element.classList.add("not-selected");
-        document.getElementById(button_div_name).appendChild(name_element);
+        add_element(button_div_name, key,
+            'button',
+            player_names['names'][key]['name'],
+            ['button', 'not-selected']);
         document.getElementById(key).addEventListener("click", function () {
             handle_button_clicked(key);
         });
     }
 });
+
+function make_request(key_array) {
+    d = {'player_id': null,
+        'middle_card_1': null,
+        'middle_card_2': null,
+    };
+
+    if (key_array.length === 1) {
+        d = {'player_id': key_array[0].toString()}
+    } else if (key_array.length === 2) {
+        d = {'middle_card_1': key_array[0].toString(),
+                'middle_card_2': key_array[1].toString(),}
+    }
+    json_str_dict = JSON.stringify(d);
+    request_middle_card_identity(json_str_dict).then(r => {
+        console.log(game_response)
+    });
+}
+
+async function request_middle_card_identity(player_response) {
+    const access_token_location_in_pathname = 2;
+    const player_id_location_in_pathname = 4;
+
+    const access_token = window.location.pathname.split('/')[access_token_location_in_pathname]
+    let player_id = null
+    try {
+        player_id = window.location.pathname.split('/')[player_id_location_in_pathname]
+    }
+    catch(e) {
+        console.log('no player id');
+    }
+    // adds new player li elements if there are new players in the lobby
+    const response = await fetch('/api/lobbies/'
+        + access_token
+        + '/players/'
+        + player_id
+        + '/'
+        + player_response
+        +'/');
+
+    const card_identity = await response.json();
+    // TODO: why isn't this variable below referenced if i insert var?
+    game_response = card_identity;
+}
 
 function handle_button_clicked(key) {
     let seeable = false;
@@ -155,24 +194,34 @@ function handle_button_clicked(key) {
     document.getElementById('form-submit-button').disabled = !seeable
 }
 
-function add_form_button(div_name, button_id) {
-
-    let form =document.createElement('form');
-    form.setAttribute('method',"post");
-
-    let button = document.createElement('button');
-    button.setAttribute('Type', "submit");
-    button.classList.add('button');
-    button.id = button_id
-    button.innerText = "See card(s)";
-    button.disabled = true;
-
-    form.appendChild(button);
-
-    document.getElementById(div_name).appendChild(form)
+function add_element(parent_node, id, element_type, inner_text=null, classes=null) {
+    // used in robber, seer and troublemaker classes.
+    let element = document.createElement(element_type);
+    element.id = id;
+    if (inner_text) { element.innerText = inner_text;}
+    if (classes !== null) {
+        for (let i = 0; i < classes.length; i++){
+            element.classList.add(classes[i]);
+        }
+    }
+    document.getElementById(parent_node).appendChild(element);
 }
 
+function add_form_button(div_name, button_id, inner_text) {
+    // let form =document.createElement('form');
+    // form.setAttribute('method',"post");
 
+    let button = document.createElement('button');
+    // button.setAttribute('Type', "submit");
+    button.classList.add('button');
+    button.id = button_id
+    button.innerText = inner_text;
+    button.disabled = true;
+
+    //form.appendChild(button);
+
+    document.getElementById(div_name).appendChild(button)
+}
 
 function add_structure_div(parent_node, id) {
     const elem = document.createElement('div');

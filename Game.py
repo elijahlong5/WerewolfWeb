@@ -194,7 +194,7 @@ class WerewolfGame:
 
     def game_response_from_player_action(self, player_id, player_response):
         player_original_role = self.players[player_id].original_role
-        response = player_original_role.process_player_response(self, player_id, player_response)
+        response = player_original_role.process_player_response(player_id, player_response)
         return response
         #self.players[player_id].process_player_response()
 

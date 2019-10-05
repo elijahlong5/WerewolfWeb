@@ -1,6 +1,6 @@
 import random
 import string
-
+import json
 from flask import Flask, render_template, redirect, url_for, request
 from Game import WerewolfGame, Role
 
@@ -145,6 +145,11 @@ def request_player_info_dict(access_token, player_id):
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/<player_response>/')
 def request_game_response(access_token, player_id, player_response):
+    player_response = json.loads(player_response)
+
+    print('player response is:')
+    print(player_response)
+    print(type(player_response))
     game = lobbies[access_token]
     return game.game_response_from_player_action(int(player_id), player_response)
 

@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let selected_count = 0;
 
     add_structure_div('role-div', 'submit-div');
-    add_form_button('submit-div','form-submit-button');
+    add_form_button('submit-div','form-submit-button',"Troublemake!");
     document.getElementById('form-submit-button').addEventListener("click", function () {
         if (selected_count != 2) {
             document.getElementById('form-submit-button').innerText = "Choose 2 players before clicking."
@@ -49,28 +49,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
     for (let key in player_names['names']) {
         // name elements are toggleable between selected and not.
-        let name = player_names['names'][key]['name'];
-        const name_element = document.createElement('button');
-        name_element.innerText = name;
-        name_element.id = key;
-        name_element.classList.add("button");
-        name_element.classList.add("not-selected");
-        document.getElementById(button_div_name).appendChild(name_element);
+        add_element(button_div_name, key,
+            'button',
+            player_names['names'][key]['name'],
+            ['button', 'not-selected']);
         document.getElementById(key).addEventListener("click", function () {
             // toggles selected class
             let element = document.getElementById(key);
-            // TODO: when someone clicks a non selected button, it selects it, and
-            //  deselects the on that has been selected the longest
-
-
-
             // Deselect if already selected
             if (element.classList.contains('selected')) {
                 // Deselect
                 element.classList.remove('selected');
                 element.classList.add('not-selected');
                 selected_count --;
-
                 if (first_selected === key && selected_count === 0) {
                     first_selected = null;
                 } else if (first_selected === key && selected_count === 1) {
@@ -100,28 +91,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 first_selected = second_selected;
                 second_selected = key;
             }
-
-            // if (element.classList.contains('selected')) {
-            //     // Deselect
-            //     element.classList.remove('selected');
-            //     element.classList.add('not-selected');
-            //     selected_count --;
-            // } else if (selected_count < 2 && element.classList.contains('not-selected')){
-            //     // Select
-            //
-            //
-            //     element.classList.remove('not-selected');
-            //     element.classList.add('selected');
-            //     selected_count ++;
-            // }
-
             document.getElementById('form-submit-button').disabled = (selected_count !== 2)
         });
     }
 
 });
 
-function add_form_button(div_name, button_id) {
+function add_element(parent_node, id, element_type, inner_text=null, classes=null) {
+    // used in robber, seer and troublemaker classes.
+    let element = document.createElement(element_type);
+    element.id = id;
+    if (inner_text) { element.innerText = inner_text;}
+    if (classes !== null) {
+        for (let i = 0; i < classes.length; i++){
+            element.classList.add(classes[i]);
+        }
+    }
+    document.getElementById(parent_node).appendChild(element);
+}
+
+function add_form_button(div_name, button_id, inner_text) {
 
     let form =document.createElement('form');
     form.setAttribute('method',"post");
@@ -130,7 +119,7 @@ function add_form_button(div_name, button_id) {
     button.setAttribute('Type', "submit");
     button.classList.add('button');
     button.id = button_id
-    button.innerText = "Troublemake!";
+    button.innerText = inner_text;
 
     button.disabled = true;
 

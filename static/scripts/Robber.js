@@ -29,26 +29,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     add_structure_div('role-div', 'submit-div');
-    add_form_button('submit-div','form-submit-button');
+    add_form_button('submit-div','form-submit-button', 'Rob!');
     document.getElementById('form-submit-button').addEventListener("click", function () {
         if (selected_count != 1) {
             document.getElementById('form-submit-button').innerText = "Choose 1 players before clicking."
         }
     });
 
-
-
     let selected_count = 0;
     let first_selected = null;
 
     for (let key in player_names['names']) {
-        let name = player_names['names'][key]['name'];
-        const name_element = document.createElement('button');
-        name_element.innerText = name;
-        name_element.id = key;
-        name_element.classList.add("button");
-        name_element.classList.add("not-selected");
-        document.getElementById(button_div_name).appendChild(name_element);
+        add_structure_div(button_div_name, key);
+        add_element(button_div_name, key,
+            'button',
+            player_names['names'][key]['name'],
+            ['button', 'not-selected']);
+
         document.getElementById(key).addEventListener("click", function () {
             // toggles selected class
             let element = document.getElementById(key);
@@ -76,7 +73,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-function add_form_button(div_name, button_id) {
+function add_form_button(div_name, button_id, inner_text) {
+    // To be used when creating the forms for clicking submit
+    // This is applied to the Seer, Robber, Troublemaker
+    // later for the doppleganger, apprentice seer, mystic wolf etc.
 
     let form =document.createElement('form');
     form.setAttribute('method',"post");
@@ -85,15 +85,25 @@ function add_form_button(div_name, button_id) {
     button.setAttribute('Type', "submit");
     button.classList.add('button');
     button.id = button_id
-    button.innerText = "Rob!";
+    button.innerText = inner_text;
     button.disabled = true;
 
     form.appendChild(button);
-
     document.getElementById(div_name).appendChild(form)
 }
 
-
+function add_element(parent_node, id, element_type, inner_text=null, classes=null) {
+    // used in robber, seer and troublemaker classes.
+    let element = document.createElement(element_type);
+    element.id = id;
+    if (inner_text) { element.innerText = inner_text;}
+    if (classes !== null) {
+        for (let i = 0; i < classes.length; i++){
+            element.classList.add(classes[i]);
+        }
+    }
+    document.getElementById(parent_node).appendChild(element);
+}
 
 function add_structure_div(parent_node, id) {
     const elem = document.createElement('div');

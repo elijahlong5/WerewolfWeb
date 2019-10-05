@@ -23,9 +23,9 @@ class Werewolf:
                 d['lone_wolf'] = False
         return d
 
-    def process_player_response(self, game, player_id, response):
+    def process_player_response(self, player_id, response):
         # TODO: Append to game log who saw the card,
-        middle_cards = game.jsonify_middle_cards()
+        middle_cards = self.game.jsonify_middle_cards()
         card_dict = {
             'card': middle_cards[response]
         }
