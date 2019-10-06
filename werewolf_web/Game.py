@@ -10,9 +10,6 @@ import Characters.Troublemaker as T
 import Characters.Werewolf as W
 import Characters.Villager as V
 
-import Characters.Spectator as Sp
-
-
 import random
 
 
@@ -152,7 +149,7 @@ class WerewolfGame:
         seer_no =3
         werewolf_no = 5
         trouble_no = 4
-        my_identity = seer_no
+        my_identity = minion_no
         spect_no = 10
 
         current_character = 0
