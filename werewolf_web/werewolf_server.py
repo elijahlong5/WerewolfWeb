@@ -1,7 +1,7 @@
 import random
 import string
 import json
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 from Game import WerewolfGame, Role
 
 ACCESS_TOKEN_LENGTH = 5
@@ -139,17 +139,12 @@ def get_is_game_on(access_token):
 @app.route('/api/lobbies/<access_token>/players/<player_id>/player_specific_dict/')
 def request_player_info_dict(access_token, player_id):
     game = lobbies[access_token]
-    print('here')
-    return game.player_specific_info(int(player_id))
+    return jsonify(game.player_specific_info(int(player_id)))
 
 
-@app.route('/api/lobbies/<access_token>/players/<player_id>/<player_response>/')
-def request_game_response(access_token, player_id, player_response):
-    player_response = json.loads(player_response)
-
-    print('player response is:')
-    print(player_response)
-    print(type(player_response))
+@app.route('/api/lobbies/<access_token>/players/<player_id>/', methods=['post'])
+def request_game_response(access_token, player_id):
+    player_response = request.form["data"]
     game = lobbies[access_token]
     return game.game_response_from_player_action(int(player_id), player_response)
 

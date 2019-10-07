@@ -1,58 +1,26 @@
 /*
     Displays the players in the lobby excluding themselves.
  */
+let GameService = new GameServices();
 
 document.addEventListener("DOMContentLoaded", function() {
-    // set variables
-    const access_token_location_in_pathname = 2;
-    const player_id_location_in_pathname = 4;
+    let playerDict = window.initial_player_dict;
 
-    const access_token = window.location.pathname.split('/')[access_token_location_in_pathname];
-    let player_id = null;
-    try {
-        player_id = window.location.pathname.split('/')[player_id_location_in_pathname];
-    }
-    catch(e) {
-        console.log('no player id');
-    }
+    let buttonDivName = 'name-buttons';
+    GameService.addSimpleElement("div",'role-div', "", buttonDivName);
 
+    let selectedCount = 0;
 
-    let meta_elem = document.getElementById('initial-player-dict');
+    let firstSelected = null;
+    let secondSelected  = null;
 
-    let player_names_json = meta_elem.getAttribute('data-names');
-
-    // TODO: Here is where I can't access player_names_json['names']
-    newstr = JSON.stringify(player_names_json)
-    let x = 0;
-    while (newstr.search("'") && x < 40) {
-        newstr = newstr.replace("'",'"');
-        x ++;
-    }
-    newstr= newstr.substr(1, newstr.length - 2)
-    let player_names = JSON.parse(newstr);
-
-
-    let button_div_name = 'name-buttons';
-    add_structure_div('role-div', button_div_name);
-
-    let selected_count = 0;
-
-    add_structure_div('role-div', 'submit-div');
-    add_form_button('submit-div','form-submit-button',"Troublemake!");
-    document.getElementById('form-submit-button').addEventListener("click", function () {
-        if (selected_count != 2) {
-            document.getElementById('form-submit-button').innerText = "Choose 2 players before clicking."
-        }
-    });
-    let first_selected = null;
-    let second_selected  = null;
-
-    for (let key in player_names['names']) {
+    for (let key in playerDict['names']) {
         // name elements are toggleable between selected and not.
-        add_element(button_div_name, key,
-            'button',
-            player_names['names'][key]['name'],
-            ['button', 'not-selected']);
+        GameService.addElement(key, buttonDivName, "button",
+            ['button', 'not-selected'],
+            playerDict['names'][key]['name']
+            );
+
         document.getElementById(key).addEventListener("click", function () {
             // toggles selected class
             let element = document.getElementById(key);
@@ -61,81 +29,42 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Deselect
                 element.classList.remove('selected');
                 element.classList.add('not-selected');
-                selected_count --;
-                if (first_selected === key && selected_count === 0) {
-                    first_selected = null;
-                } else if (first_selected === key && selected_count === 1) {
-                    first_selected = second_selected;
-                    second_selected = null;
+                selectedCount --;
+                if (firstSelected === key && selectedCount === 0) {
+                    firstSelected = null;
+                } else if (firstSelected === key && selectedCount === 1) {
+                    firstSelected = secondSelected;
+                    secondSelected = null;
                 }
-            } else if (selected_count === 0) {
+            } else if (selectedCount === 0) {
                 // select: case: none are selected
                 element.classList.remove('not-selected');
                 element.classList.add('selected');
-                selected_count ++;
-                first_selected = key;
-            } else if (selected_count === 1) {
+                selectedCount ++;
+                firstSelected = key;
+            } else if (selectedCount === 1) {
                 // select: case: 1 is selected
                 element.classList.remove('not-selected');
                 element.classList.add('selected');
-                selected_count ++;
-                second_selected = key;
-            } else if (selected_count === 2) {
+                selectedCount ++;
+                secondSelected = key;
+            } else if (selectedCount === 2) {
                 // select: case: 2 are already selected
                 element.classList.remove('not-selected');
                 element.classList.add('selected');
 
-                document.getElementById(first_selected).classList.remove('selected');
-                document.getElementById(first_selected).classList.add('not-selected');
+                document.getElementById(firstSelected).classList.remove('selected');
+                document.getElementById(firstSelected).classList.add('not-selected');
 
-                first_selected = second_selected;
-                second_selected = key;
+                firstSelected = secondSelected;
+                secondSelected = key;
             }
-            document.getElementById('form-submit-button').disabled = (selected_count !== 2)
+            document.getElementById(submitFormButtonId).disabled = (selectedCount !== 2)
         });
     }
 
+    let formDivName = "submit-div";
+    let submitFormButtonId = "form-submit-button";
+    GameService.addFormButton(submitFormButtonId, buttonDivName, formDivName,["button"],"Troublemake!");
+
 });
-
-function add_element(parent_node, id, element_type, inner_text=null, classes=null) {
-    // used in robber, seer and troublemaker classes.
-    let element = document.createElement(element_type);
-    element.id = id;
-    if (inner_text) { element.innerText = inner_text;}
-    if (classes !== null) {
-        for (let i = 0; i < classes.length; i++){
-            element.classList.add(classes[i]);
-        }
-    }
-    document.getElementById(parent_node).appendChild(element);
-}
-
-function add_form_button(div_name, button_id, inner_text) {
-
-    let form =document.createElement('form');
-    form.setAttribute('method',"post");
-
-    let button = document.createElement('button');
-    button.setAttribute('Type', "submit");
-    button.classList.add('button');
-    button.id = button_id
-    button.innerText = inner_text;
-
-    button.disabled = true;
-
-    form.appendChild(button);
-
-    document.getElementById(div_name).appendChild(form)
-    //form.setAttribute('action',
-    // "/api/lobbies/ACCESS_TOKEN/players/PLAYER_ID/PLAYER_RESPONSE");
-}
-
-
-
-function add_structure_div(parent_node, id) {
-    const elem = document.createElement('div');
-    elem.id = id;
-    document.getElementById(parent_node).appendChild(elem);
-}
-
-

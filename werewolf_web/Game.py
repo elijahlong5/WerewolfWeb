@@ -149,13 +149,13 @@ class WerewolfGame:
         seer_no =3
         werewolf_no = 5
         trouble_no = 4
-        my_identity = minion_no
+        my_identity = werewolf_no
         spect_no = 10
 
         current_character = 0
         for id, player in self.players.items():
-            self.players[id].assign_initial_role(self.characters[current_character])
-            print(f'name: {player.name}  is { self.characters[current_character]}')
+            self.players[id].assign_initial_role(self.characters[trouble_no])
+            # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
             if player.name == 'Jah':
                 self.players[id].assign_initial_role(self.characters[my_identity])
@@ -193,7 +193,6 @@ class WerewolfGame:
         player_original_role = self.players[player_id].original_role
         response = player_original_role.process_player_response(player_id, player_response)
         return response
-        #self.players[player_id].process_player_response()
 
     def acceptable_starting_point(self):
         startable = True

@@ -11,23 +11,29 @@ class Werewolf:
         return "Werewolf"
 
     def jsonify_request(self, player_id):
-        d = {'lone_wolf': True,
-             'fellow_wolves': {},
+        """
+        This is sent to the player at the start of the game, if they are a werewolf.
+        :param player_id: an int
+        :return: python dict, the id is cast as a string.
+        """
+        d = {"lone_wolf": True,
+             "fellow_wolves": {},
              }
         for p_id, p in self.game.players.items():
             if p_id == player_id:
                 continue
                 # TODO: Handle dreamwolf, alpha wolf etc.
             elif type(p.original_role) == type(self):
-                d['fellow_wolves'][p_id] = p.name
-                d['lone_wolf'] = False
+                d["fellow_wolves"][p_id] = p.name
+                d["lone_wolf"] = False
         return d
 
     def process_player_response(self, player_id, response):
         # TODO: Append to game log who saw the card,
         middle_cards = self.game.jsonify_middle_cards()
         card_dict = {
-            'card': middle_cards[response]
+            'requested_card': response['card'],
+            'card_identity': middle_cards[response['card'].lower()]
         }
         return card_dict
 

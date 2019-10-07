@@ -10,6 +10,9 @@
 </div>
 {% endblock content %}
 {% block scripts %}
-    <meta id="initial-player-dict" data-names="{{initial_player_dict}}">
+    <script src="/static/scripts/GameServices.js"></script>
+    <script>
+        window.initial_player_dict = {{ initial_player_dict | tojson }};
+    </script>
     <script src="/static/scripts/{{original_role}}.js"></script>
 {% endblock scripts %}
