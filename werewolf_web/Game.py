@@ -146,7 +146,7 @@ class WerewolfGame:
 
         minion_no = 1
         rob_no = 2
-        seer_no =3
+        seer_no = 3
         werewolf_no = 5
         trouble_no = 4
         my_identity = werewolf_no
@@ -161,8 +161,8 @@ class WerewolfGame:
                 self.players[id].assign_initial_role(self.characters[my_identity])
                 print(f'My role is {player.original_role}')
 
-            # elif player.name == 'Taek':
-            #     self.players[id].assign_initial_role(self.characters[minion_no])
+            elif player.name == 'Taek':
+                self.players[id].assign_initial_role(self.characters[werewolf_no])
             # else:
             #     self.players[id].assign_initial_role(self.characters[spect_no])
 

@@ -14,12 +14,15 @@ class GameServices{
         document.getElementById(parentNode).appendChild(elem);
     }
 
-    addElement(elementId, parentNode, elementType, classes=[], text=elementId) {
+    addElement(elementId, parentNode, elementType, classes=[], text=elementId, attributes=[]) {
         const element = document.createElement(elementType);
         element.id = elementId;
         element.innerText = text;
         for (let i = 0; i < classes.length; i++) {
             element.classList.add(classes[i]);
+        }
+        for (let i = 0; i < attributes.length; i += 2){
+            element.setAttribute(attributes[i], attributes[i+1]);
         }
 
         document.getElementById(parentNode).appendChild(element);
@@ -47,8 +50,7 @@ class GameServices{
 
     }
 
-    async fetchResponseFromServer(playerResponse) {
-
+    generatePostUrl(){
         const access_token = window.location.pathname.split('/')[this.access_token_location_in_pathname]
         let player_id = null;
         try {
@@ -57,45 +59,33 @@ class GameServices{
         catch(e) {
             console.log('no player id');
         }
-
-        const response = await fetch('/api/lobbies/'
-            + access_token
-            + '/players/'
-            + player_id
-            + '/'
-            + playerResponse
-            +'/');
-
-        const responseDict = await response.json();
-        let gameResponse = responseDict;
-        return gameResponse;
-    }
-
-    async fetchPostResponseFromServer(playerResponse) {
-
-        const access_token = window.location.pathname.split('/')[this.access_token_location_in_pathname]
-        let player_id = null;
-        try {
-            player_id = window.location.pathname.split('/')[this.player_id_location_in_pathname]
-        }
-        catch(e) {
-            console.log('no player id');
-        }
-
         let url = '/api/lobbies/'
             + access_token
             + '/players/'
             + player_id
             + '/';
+        return url
+    }
+    
+    async fetchPostResponseFromServer(playerResponseDict) {
+        event.preventDefault();
 
-        let data = playerResponse;
+        let url = this.generatePostUrl();
+
+        let data = playerResponseDict;
 
         const response = await fetch(url,{
-            method: 'post',
-            body: JSON.stringify(data), // data can be `string` or {object}!
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
             headers: {
                 'Content-Type': 'application/json'
-            }
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // no-referrer, *client
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
         });
 
         const responseDict = await response.json();

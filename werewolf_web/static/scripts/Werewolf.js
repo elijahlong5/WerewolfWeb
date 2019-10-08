@@ -19,10 +19,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     } else {
         GameService.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
-
-        GameService.addElement("Left", buttonDivName,"button",["button"]);
-        GameService.addElement("Middle", buttonDivName,"button",["button"]);
-        GameService.addElement("Right", buttonDivName,"button",["button"]);
+        let buttonForm = "button-form";
+        GameService.addElement(buttonForm, buttonDivName, "form",[],"",
+            ["method", "post"])
+        GameService.addElement("Left", buttonForm,"button", ["button"],
+            "Left", ["type", "submit"]);
+        GameService.addElement("Middle", buttonForm,"button",["button"],
+            "Middle", ["type", "submit"]);
+        GameService.addElement("Right", buttonForm,"button",["button"],
+            "Right", ["type", "submit"]);
 
         document.getElementById("Left").addEventListener("click", function(){
             makeRequest("Left");
@@ -37,8 +42,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function makeRequest(cardRequested) {
-    let cardRequestedDict = JSON.stringify({"card": cardRequested});
-    GameService.fetchResponseFromServer(cardRequestedDict).then(r => {
+    let cardRequestedDict = {"card": cardRequested};
+    GameService.fetchPostResponseFromServer(cardRequestedDict).then(r => {
         let display = document.getElementById('role-div');
         display.innerHTML = "The " + r['requested_card'] + " card is: " + r['card_identity'];
     });
