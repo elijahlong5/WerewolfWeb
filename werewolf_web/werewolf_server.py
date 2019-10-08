@@ -143,8 +143,6 @@ def request_player_info_dict(access_token, player_id):
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/', methods=['post'])
 def request_game_response(access_token, player_id):
-    print(f'{request.json["card"]} button clicked')
-    print(f'Json from webpage: {request.json}')
     player_response = request.json
     game = lobbies[access_token]
     return game.game_response_from_player_action(int(player_id), player_response)

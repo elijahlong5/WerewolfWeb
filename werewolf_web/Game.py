@@ -158,11 +158,11 @@ class WerewolfGame:
             # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
             if player.name == 'Jah':
-                self.players[id].assign_initial_role(self.characters[my_identity])
+                self.players[id].assign_initial_role(self.characters[minion_no])
                 print(f'My role is {player.original_role}')
 
             elif player.name == 'Taek':
-                self.players[id].assign_initial_role(self.characters[werewolf_no])
+                self.players[id].assign_initial_role(self.characters[trouble_no])
             # else:
             #     self.players[id].assign_initial_role(self.characters[spect_no])
 
@@ -170,7 +170,6 @@ class WerewolfGame:
         self.middle_cards[0] = self.characters[current_character]
         self.middle_cards[1] = self.characters[current_character + 1]
         self.middle_cards[2] = self.characters[current_character + 2]
-        print(self.players)
 
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id
