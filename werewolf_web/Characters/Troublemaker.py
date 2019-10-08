@@ -10,17 +10,20 @@ class Troublemaker:
         return "Troublemaker"
 
     def jsonify_request(self, player_id):
-        # TODO: is this helpful.  can i have integers as keys?
         names_copy = self.game.jsonify_players_names().copy()
         d = {'names': {}}
         for key in names_copy.keys():
             d['names'][str(key)] = names_copy[key]
-
         d['names'].pop(str(player_id))
-        # TODO: delete or reformat:
-        # d = {
-        #     'names': self.game.jsonify_players_names().copy()
-        # }
-        # remove this players name from the dict.
-        # d['names'].pop(player_id)
         return d
+
+    def process_player_response(self, player_id, player_response):
+        p1_id = int(player_response['playerId_1'])
+        p2_id = int(player_response['playerId_2'])
+        p1_name = self.game.players[p1_id].name
+        p2_name = self.game.players[p2_id].name
+        response_text = f"The troublemaker is switching {p1_name} and {p2_name}'s cards."
+        # TODO: troublemaker swap must happen after Robber.
+        self.game.swap_roles(p1_id, p2_id)
+
+        return {'response': response_text}

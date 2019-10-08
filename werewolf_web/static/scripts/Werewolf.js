@@ -19,14 +19,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     } else {
         GameService.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
-        let buttonForm = "button-form";
-        GameService.addElement(buttonForm, buttonDivName, "form",[],"",
+        let buttonFormId = "button-form";
+        GameService.addElement(buttonFormId, buttonDivName, "form",[],"",
             ["method", "post"])
-        GameService.addElement("Left", buttonForm,"button", ["button"],
+        GameService.addElement("Left", buttonFormId,"button", ["button"],
             "Left", ["type", "submit"]);
-        GameService.addElement("Middle", buttonForm,"button",["button"],
+        GameService.addElement("Middle", buttonFormId,"button",["button"],
             "Middle", ["type", "submit"]);
-        GameService.addElement("Right", buttonForm,"button",["button"],
+        GameService.addElement("Right", buttonFormId,"button",["button"],
             "Right", ["type", "submit"]);
 
         document.getElementById("Left").addEventListener("click", function(){

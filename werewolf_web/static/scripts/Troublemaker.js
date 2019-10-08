@@ -62,9 +62,21 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById(submitFormButtonId).disabled = (selectedCount !== 2)
         });
     }
-
-    let formDivName = "submit-div";
+    let formId = "submit-form";
     let submitFormButtonId = "form-submit-button";
-    GameService.addFormButton(submitFormButtonId, buttonDivName, formDivName,["button"],"Troublemake!");
-
+    GameService.addElement(formId, buttonDivName, "form",[],"",
+        ["method", "post"]);
+    GameService.addElement(submitFormButtonId, formId, "button",["button"],
+        "Troublemake!",["type","submit"])
+    document.getElementById(submitFormButtonId).addEventListener("click", function(){
+        event.preventDefault();
+        troublemake({"playerId_1": firstSelected, "playerId_2": secondSelected});
+    });
 });
+
+function troublemake(swapCardsDict) {
+    GameService.fetchPostResponseFromServer(swapCardsDict).then(r => {
+        let display = document.getElementById('role-div');
+        display.innerHTML = r['response'];
+    });
+}

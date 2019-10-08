@@ -158,13 +158,11 @@ class WerewolfGame:
             # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
             if player.name == 'Jah':
-                self.players[id].assign_initial_role(self.characters[minion_no])
+                self.players[id].assign_initial_role(self.characters[trouble_no])
                 print(f'My role is {player.original_role}')
 
             elif player.name == 'Taek':
                 self.players[id].assign_initial_role(self.characters[trouble_no])
-            # else:
-            #     self.players[id].assign_initial_role(self.characters[spect_no])
 
         # TODO: assign middle card current values.
         self.middle_cards[0] = self.characters[current_character]
