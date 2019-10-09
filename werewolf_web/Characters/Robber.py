@@ -11,10 +11,17 @@ class Robber:
         return "Robber"
 
     def jsonify_request(self, player_id):
-        names_copy = self.game.jsonify_players_names().copy()
-        d = {'names': {}}
-        for key in names_copy.keys():
-            d['names'][str(key)] = names_copy[key]
-
+        d = self.game.jsonify_players_names().copy()
         d['names'].pop(str(player_id))
         return d
+
+    def process_player_response(self, player_id, player_response):
+        p1_id = player_id
+        p2_id = int(player_response['robThisId'])
+        p2_role = self.game.players[p2_id].original_role
+        p1_name = self.game.players[p1_id].name
+        p2_name = self.game.players[p2_id].name
+        response_text = f"You are now the {p2_role}"
+        self.game.swap_roles(p1_id, p2_id)
+
+        return {'response': response_text}

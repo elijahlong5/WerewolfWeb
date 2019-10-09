@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     GameService.addElement(formId, buttonDivName, "form",[],"",
         ["method", "post"]);
     GameService.addElement(submitFormButtonId, formId, "button",["button"],
-        "Troublemake!",["type","submit"])
+        "Troublemake!",["type","submit"]);
     document.getElementById(submitFormButtonId).addEventListener("click", function(){
         event.preventDefault();
         troublemake({"playerId_1": firstSelected, "playerId_2": secondSelected});

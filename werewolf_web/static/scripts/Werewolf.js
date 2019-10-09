@@ -18,10 +18,11 @@ document.addEventListener("DOMContentLoaded", function() {
             GameService.addSimpleElement("li", buttonDivName, nrText);
         }
     } else {
-        GameService.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
+
         let buttonFormId = "button-form";
+        GameService.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
         GameService.addElement(buttonFormId, buttonDivName, "form",[],"",
-            ["method", "post"])
+            ["method", "post"]);
         GameService.addElement("Left", buttonFormId,"button", ["button"],
             "Left", ["type", "submit"]);
         GameService.addElement("Middle", buttonFormId,"button",["button"],

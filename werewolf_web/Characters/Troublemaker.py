@@ -10,10 +10,7 @@ class Troublemaker:
         return "Troublemaker"
 
     def jsonify_request(self, player_id):
-        names_copy = self.game.jsonify_players_names().copy()
-        d = {'names': {}}
-        for key in names_copy.keys():
-            d['names'][str(key)] = names_copy[key]
+        d = self.game.jsonify_players_names().copy()
         d['names'].pop(str(player_id))
         return d
 

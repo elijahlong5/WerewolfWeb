@@ -93,13 +93,18 @@ class WerewolfGame:
         return p_conversion
 
     def jsonify_players_names(self):
+        """
+        Returns dictionary of playing players.
+        key is str id
+        value is name
+        """
         # TODO: Skip players that are spectators
-        p_conversion = {}
+        name_dict = {'names': {}}
         for p_id, player in self.players.items():
-            p_conversion[p_id] = {
+            name_dict['names'][str(p_id)] = {
                 'name': player.name
             }
-        return p_conversion
+        return name_dict
 
     def jsonify_middle_cards(self):
         middle_card_conversion = {
@@ -149,7 +154,7 @@ class WerewolfGame:
         seer_no = 3
         werewolf_no = 5
         trouble_no = 4
-        my_identity = werewolf_no
+        my_identity = rob_no
         spect_no = 10
 
         current_character = 0
@@ -158,9 +163,8 @@ class WerewolfGame:
             # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
             if player.name == 'Jah':
-                self.players[id].assign_initial_role(self.characters[trouble_no])
+                self.players[id].assign_initial_role(self.characters[my_identity])
                 print(f'My role is {player.original_role}')
-
             elif player.name == 'Taek':
                 self.players[id].assign_initial_role(self.characters[trouble_no])
 
