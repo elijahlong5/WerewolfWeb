@@ -28,28 +28,6 @@ class GameServices{
         document.getElementById(parentNode).appendChild(element);
     }
 
-    addFormButton(buttonId, parentNode, formNodeId, classes, text) {
-        // function creates post button that is initially disabled.
-        // the classes are assigned to the button.
-        this.addSimpleElement("div", parentNode,"", formNodeId);
-        let form = document.createElement("form");
-        form.setAttribute("method", "post");
-
-
-        let button = document.createElement("button");
-        button.setAttribute("type", "submit");
-        button.id = buttonId;
-        button.innerText = text;
-        button.disabled = true;
-        for (let i = 0; i < classes.length; i++) {
-            button.classList.add(classes[i]);
-        }
-
-        form.appendChild(button);
-        document.getElementById(parentNode).appendChild(form);
-
-    }
-
     generatePostUrl(){
         const access_token = window.location.pathname.split('/')[this.access_token_location_in_pathname]
         let player_id = null;

@@ -56,13 +56,13 @@ class WerewolfGame:
         self.characters.append(V.Villager(self))
 
         shuffles = 100
-        # for i in range(0, shuffles):
-        #     card1 = random.randint(0, len(self.characters)-1)
-        #     card2 = random.randint(0, len(self.characters)-1)
-        #
-        #     temp = self.characters[card1]
-        #     self.characters[card1] = self.characters[card2]
-        #     self.characters[card2] = temp
+        for i in range(0, shuffles):
+            card1 = random.randint(0, len(self.characters)-1)
+            card2 = random.randint(0, len(self.characters)-1)
+
+            temp = self.characters[card1]
+            self.characters[card1] = self.characters[card2]
+            self.characters[card2] = temp
 
 
         #self.characters.append(Sp.Spectator(self))
@@ -141,34 +141,32 @@ class WerewolfGame:
             print(f'(Left){str(self.middle_cards[0])} (Middle){str(self.middle_cards[1])} (Right){str(self.middle_cards[0])}')
 
     def assign_characters(self):
-        # TODO: randomize
-        # cur_char = 0
-        # for player in self.players.values():
-        #     player.assign_initial_role(self.characters[cur_char])
-        #     cur_char += 1
-        #     s = f'{player.name} is the {player.original_role}'
-        #     print(s)
 
         minion_no = 1
-        rob_no = 2
+        robber = "Robber"
         seer_no = 3
         werewolf_no = 5
         trouble_no = 4
-        my_identity = rob_no
+        my_identity = robber
         spect_no = 10
 
         current_character = 0
+        my_p_id = ''
         for id, player in self.players.items():
-            self.players[id].assign_initial_role(self.characters[trouble_no])
+            if player.name == "Jah":
+                print(f'player id is {id}')
+                my_p_id = id
+            if str(self.characters[current_character]) == my_identity:
+                my_char = current_character
+                current_character += 1
+            else:
+                self.players[id].assign_initial_role(self.characters[current_character])
             # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
-            if player.name == 'Jah':
-                self.players[id].assign_initial_role(self.characters[my_identity])
-                print(f'My role is {player.original_role}')
-            elif player.name == 'Taek':
-                self.players[id].assign_initial_role(self.characters[trouble_no])
 
-        # TODO: assign middle card current values.
+        self.players[my_p_id].assign_initial_role(self.characters[my_char])
+        current_character -= 1 # to reset
+
         self.middle_cards[0] = self.characters[current_character]
         self.middle_cards[1] = self.characters[current_character + 1]
         self.middle_cards[2] = self.characters[current_character + 2]
