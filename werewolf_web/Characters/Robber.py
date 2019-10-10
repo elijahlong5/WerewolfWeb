@@ -19,9 +19,7 @@ class Robber:
         p1_id = player_id
         p2_id = int(player_response['robThisId'])
         p2_role = self.game.players[p2_id].original_role
-        p1_name = self.game.players[p1_id].name
-        p2_name = self.game.players[p2_id].name
         response_text = f"You are now the {p2_role}"
-        self.game.swap_roles(p1_id, p2_id)
+        self.game.update_move("Robber", self.game.swap_roles, p1_id, p2_id)
 
         return {'response': response_text}

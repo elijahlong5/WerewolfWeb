@@ -8,3 +8,6 @@ class Villager:
 
     def __str__(self):
         return "Villager"
+
+    def jsonify_request(self, player_id):
+        return {"villager": "no info to show"}

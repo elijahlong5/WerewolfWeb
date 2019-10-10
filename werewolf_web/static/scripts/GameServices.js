@@ -1,12 +1,12 @@
 class GameServices{
     constructor(){
-        this.access_token_location_in_pathname = 2
+        this.access_token_location_in_pathname = 2;
         this.player_id_location_in_pathname = 4;
 
     }
 
-    addSimpleElement(elementName, parentNode, innerText, elementId=null) {
-        const elem = document.createElement(elementName);
+    addSimpleElement(nodeType, parentNode, innerText, elementId=null) {
+        const elem = document.createElement(nodeType);
         elem.innerText = innerText;
         if (elementId) {
             elem.id = elementId;
@@ -14,8 +14,9 @@ class GameServices{
         document.getElementById(parentNode).appendChild(elem);
     }
 
-    addElement(elementId, parentNode, elementType, classes=[], text=elementId, attributes=[]) {
-        const element = document.createElement(elementType);
+    addElement(elementId, parentNode, nodeType, classes=[], text=elementId, attributes=[]) {
+        const element = document.createElement(nodeType);
+
         element.id = elementId;
         element.innerText = text;
         for (let i = 0; i < classes.length; i++) {

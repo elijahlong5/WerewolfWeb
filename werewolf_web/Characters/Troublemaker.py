@@ -20,7 +20,7 @@ class Troublemaker:
         p1_name = self.game.players[p1_id].name
         p2_name = self.game.players[p2_id].name
         response_text = f"The troublemaker is switching {p1_name} and {p2_name}'s cards."
-        # TODO: troublemaker swap must happen after Robber.
-        self.game.swap_roles(p1_id, p2_id)
+
+        self.game.update_move("Troublemaker", self.game.swap_roles, p1_id, p2_id)
 
         return {'response': response_text}

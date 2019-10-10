@@ -166,6 +166,6 @@ if __name__ == "__main__":
     game.add_player("Jilliam")
     game.add_player("Snoopy")
     game.add_player("Tonya")
-    game.add_player("Taek")
+    # game.add_player("Taek")
     game.add_player("Sam")
     app.run(debug=True, port=8080)

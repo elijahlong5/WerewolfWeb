@@ -18,13 +18,18 @@ class Seer:
         # TODO: Append to game log who saw the card,
         card_identities = {}
         try:
-            print(f'player id is {response["player_id"]}')
             p = self.game.players[int(response["player_id"])]
             card_identities["player_id"] = str(p.original_role)
+            card_str = f"{p.name}'s card is the {p.original_role}"
         except KeyError:
             middle_cards = self.game.jsonify_middle_cards()
+            c1 = response['middle_card_1']
+            c2 = response['middle_card_2']
+            c1_value = middle_cards[c1.lower()]
+            c2_value = middle_cards[c2.lower()]
+            card_str = f"The {c1} card is {c1_value}, and the {c2} card is the {c2_value}"
 
-            card_identities["middle_card_1"] = middle_cards[response["middle_card_1"].lower()]
+            card_identities["middle_card_1"] = middle_cards[response['middle_card_2'].lower()]
             card_identities["middle_card_2"] = middle_cards[response["middle_card_2"].lower()]
 
-        return card_identities
+        return {"response": card_str}

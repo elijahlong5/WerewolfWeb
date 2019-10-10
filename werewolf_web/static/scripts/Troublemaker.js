@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ['button', 'not-selected'],
             playerDict['names'][key]['name']
             );
+        GameService.add
 
         document.getElementById(key).addEventListener("click", function () {
             // toggles selected class
