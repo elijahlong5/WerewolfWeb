@@ -8,6 +8,14 @@ class Insomniac:
     def __str__(self):
         return "Insomniac"
 
-    def action_request(self, game_state, middle_cards, player_id):
-        print(f'You are the {game_state.get(player_id).current_role}')
-        return['Insomniac notified']
+    def jsonify_request(self, player_id):
+        if self.game.turn_handler.whose_turn() == "Insomniac":
+            return {'current_role': str(self.game.players[player_id].current_role),
+                    'ready': True}
+        else:
+            return {"ready": False}
+
+    def process_player_response(self, player_id, player_response):
+        """When the insomniac acknowledges that they have seen their card."""
+        self.game.update_game("Insomniac", "The insomniac viewed their card")
+        return {"Ay": "Ok"}

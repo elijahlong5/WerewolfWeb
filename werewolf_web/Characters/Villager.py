@@ -10,4 +10,5 @@ class Villager:
         return "Villager"
 
     def jsonify_request(self, player_id):
+        # TODO: The villager acknowledged their villagerness
         return {"villager": "no info to show"}

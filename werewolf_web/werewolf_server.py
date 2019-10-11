@@ -103,20 +103,21 @@ def start_game():
                                 players=lobbies[access_token].jsonify_players()))
 
 
+@app.route('/game_on/<access_token>/')
 @app.route('/game_on/<access_token>/player_id/<player_id>/')
 def game_on(access_token, player_id):
     game = lobbies[access_token]
-    game_state = game.jsonify_full_game_state()
     # TODO: use player_dict here!
     try:
-        player_role = game_state['players'][int(player_id)]['original_role']
+        print(game.players)
+        player_role = str(game.players[int(player_id)].original_role)
         # TODO: This should be where the player dict is passed.
         # TODO: unless the dict needs to be refreshed to ask for. ie with the insomniac.
         player_dict = game.players[int(player_id)].get_dict()
     except Exception as e:
         print(e)
-        player_role = 'spectator'
-        player_dict = {'spectating': 'yup'}
+        player_role = 'Spectator'
+        player_dict = game.jsonify_full_game_state()
 
     return render_template('game_on.html',
                            access_token=access_token,
@@ -148,6 +149,22 @@ def request_game_response(access_token, player_id):
     return game.game_response_from_player_action(int(player_id), player_response)
 
 
+@app.route('/api/lobbies/<access_token>/players/<player_id>/get_dict/')
+def get_player_initial_dict(access_token, player_id):
+    """ This is used for characters that don't go in the first round, and 
+    must wait for other players to go before they can go.
+    :returns the player dict, which should be incomplete if it isn't their turn yet.
+    """
+    game = lobbies[access_token]
+    initial_player_dict = game.players[int(player_id)].get_dict()
+    return jsonify(initial_player_dict)
+
+
+@app.route('/api/lobbies/<access_token>/get_game_state/')
+def get_game_state(access_token):
+    game = lobbies[access_token]
+    return jsonify(game.jsonify_full_game_state())
+
 def get_new_access_token():
     if "RING1" not in lobbies.keys():
         return "RING1"
@@ -166,6 +183,6 @@ if __name__ == "__main__":
     game.add_player("Jilliam")
     game.add_player("Snoopy")
     game.add_player("Tonya")
-    # game.add_player("Taek")
+    game.add_player("Taek")
     game.add_player("Sam")
     app.run(debug=True, port=8080)

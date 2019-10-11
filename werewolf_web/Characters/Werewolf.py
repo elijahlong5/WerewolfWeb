@@ -24,6 +24,7 @@ class Werewolf:
                 continue
                 # TODO: Handle dreamwolf, alpha wolf etc.
             elif type(p.original_role) == type(self):
+                self.game.update_game("Werewolf", f"Werewolves saw the other werewolves.")
                 d["fellow_wolves"][p_id] = p.name
                 d["lone_wolf"] = False
         return d
@@ -35,6 +36,8 @@ class Werewolf:
             'requested_card': response['card'],
             'card_identity': middle_cards[response['card'].lower()]
         }
+        self.game.update_game("Werewolf", f"The werewolf viewed the {response['card']} card which"
+                                          f"was the {card_dict['card_identity']}")
         return card_dict
 
 

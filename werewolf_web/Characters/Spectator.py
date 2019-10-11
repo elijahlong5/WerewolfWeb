@@ -8,6 +8,6 @@ class Spectator:
     def __str__(self):
         return "Spectator"
 
-    def action_request(self, game_state, middle_cards, player_id):
+    def jsonify_request(self, player_id=None):
         return
 

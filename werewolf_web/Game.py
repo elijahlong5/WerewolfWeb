@@ -38,11 +38,14 @@ class TurnList:
         self.head = Node()
         self.turn_pointer = self.head
 
+        self.needs_to_go = []
+
     def next_turn(self):
         if self.turn_pointer.next is None:
-            print("Game Over")
+            return "Everyone has gone"
         else:
             self.turn_pointer = self.turn_pointer.next
+            self.needs_to_go.append(self.turn_pointer)
 
     def whose_turn(self):
         return self.turn_pointer.role
@@ -73,17 +76,11 @@ class WerewolfGame:
         self.turn_handler = None
 
         self.GAME_ON = False
-        self.game_stage = 0
         self.characters = []
         self.players = {}
 
         self.middle_cards = [0, 1, 2]
         self.game_log = []
-        self.discussion_stage = 0
-        # improve this ^ and bad stage tracker method
-
-        # Add the characters to the game
-        # TODO: make this doable by the game host
 
         self.characters.append(I.Insomniac(self))
         self.characters.append(M.Minion(self))
@@ -105,14 +102,27 @@ class WerewolfGame:
         :return: The game state in dictionary format for use within the json structure. Game state will be passed
         across the different players.
         """
+        # game_state = {
+        #     'game_info': {
+        #         'is_game_on': self.GAME_ON,
+        #         'game_log': self.game_log,
+        #     },
+        #     'players': self.jsonify_players(),
+        #     'middle_cards': self.jsonify_middle_cards(),
+        # }
+
         game_state = {
-            'game_info': {
-                'is_game_on': self.GAME_ON,
-                'stage': self.game_stage,
-            },
-            'players': self.jsonify_players(),
-            'middle_cards': self.jsonify_middle_cards(),
+            'players': {},
+            'middle_cards': {},
+            'game_log': {}
         }
+        for p_id, player in self.players.items():
+            game_state['players'][p_id] = {
+                "name": player.name,
+                "original_role": str(player.original_role),
+                "current_role": str(player.current_role)
+            }
+
         return game_state
 
     def jsonify_players(self):
@@ -177,7 +187,6 @@ class WerewolfGame:
                   f' (Right): {str(self.middle_cards[2])}')
 
     def assign_characters(self):
-
         shuffles = 0
         for i in range(0, shuffles):
             card1 = random.randint(0, len(self.characters)-1)
@@ -192,7 +201,7 @@ class WerewolfGame:
         seer_no = 3
         werewolf_no = 5
         trouble_no = 4
-        my_identity = robber
+        my_identity = seer_no
         taek_identity = trouble_no
         spect_no = 10
 
@@ -201,8 +210,8 @@ class WerewolfGame:
         for id, player in self.players.items():
             if player.name == "Jah":
                 self.players[id].assign_initial_role(self.characters[my_identity])
-            elif player.name == "Taek":
-                self.players[id].assign_initial_role(self.characters[taek_identity])
+            # elif player.name == "Taek":
+            #     self.players[id].assign_initial_role(self.characters[taek_identity])
             else:
                 self.players[id].assign_initial_role(self.characters[current_character])
             # print(f'name: {player.name}  is { self.characters[current_character]}')
@@ -229,6 +238,13 @@ class WerewolfGame:
             self.turn_handler.append("Insomniac")
 
         self.turn_handler.next_turn()
+
+        if "Seer" in roles_in_play:
+            self.turn_handler.needs_to_go.append("Seer")
+        if "Minion" in roles_in_play:
+            self.turn_handler.needs_to_go.append("Minion")
+        if "Werewolf" in roles_in_play:
+            self.turn_handler.needs_to_go.append("Werewolf")
 
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id
@@ -275,7 +291,13 @@ class WerewolfGame:
             }
             self.turn_handler.store_a_move(role, move)
 
-
+    def update_game(self, role, move_summary):
+        if role in self.turn_handler.needs_to_go:
+            self.turn_handler.needs_to_go.pop(self.turn_handler.needs_to_go.index(role))
+            self.game_log.append(move_summary)
+            print(self.game_log)
+        else:
+            print("Cannot update game.")
 
     def acceptable_starting_point(self):
         startable = True
