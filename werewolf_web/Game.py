@@ -34,6 +34,7 @@ class Node:
 
 class TurnList:
     """ a Linked list of what roles can go when."""
+
     def __init__(self):
         self.head = Node()
         self.turn_pointer = self.head
@@ -78,6 +79,7 @@ class WerewolfGame:
         self.GAME_ON = False
         self.characters = []
         self.players = {}
+        self.spectators = {}
 
         self.middle_cards = [0, 1, 2]
         self.game_log = []
@@ -102,19 +104,10 @@ class WerewolfGame:
         :return: The game state in dictionary format for use within the json structure. Game state will be passed
         across the different players.
         """
-        # game_state = {
-        #     'game_info': {
-        #         'is_game_on': self.GAME_ON,
-        #         'game_log': self.game_log,
-        #     },
-        #     'players': self.jsonify_players(),
-        #     'middle_cards': self.jsonify_middle_cards(),
-        # }
-
         game_state = {
             'players': {},
             'middle_cards': {},
-            'game_log': {}
+            'game_log': self.game_log,
         }
         for p_id, player in self.players.items():
             game_state['players'][p_id] = {
@@ -140,8 +133,9 @@ class WerewolfGame:
         Returns dictionary of playing players.
         key is str id
         value is name
+        every player in self.players is playing
         """
-        # TODO: Skip players that are spectators
+
         name_dict = {'names': {}}
         for p_id, player in self.players.items():
             name_dict['names'][str(p_id)] = {
@@ -161,19 +155,32 @@ class WerewolfGame:
         return middle_card_conversion
 
     def add_player(self, name):
-        MAX_ID = 100
-        new_player_id = random.randint(0, MAX_ID)
-        if new_player_id not in self.players.keys():
-            self.players[new_player_id] = Human.Human(name, new_player_id)
+        if (
+                name in list(map(lambda p: p.name, self.players.values()))
+                or name in list(map(lambda p: p.name, self.spectators.values()))
+        ):
+            print("Name found already in use.")
+            return -1
         else:
-            self.add_player(name)
+            MAX_ID = 100
+            new_player_id = random.randint(0, MAX_ID)
+            if (
+                    new_player_id not in self.players.keys()
+                    and new_player_id not in self.spectators.keys()
+            ):
+                if self.GAME_ON:
+                    self.spectators[new_player_id] = Human.Human(name, new_player_id)
+                else:
+                    self.players[new_player_id] = Human.Human(name, new_player_id)
+                return new_player_id
+            else:
+                return self.add_player(name)
 
     def start_game(self):
         if self.GAME_ON:
             return "Game is already in session."
         else:
             self.GAME_ON = True
-            # TODO: assign spectators as that, and other roles as such.
             self.assign_characters()
             self.initialize_linked_list()
 
@@ -189,8 +196,8 @@ class WerewolfGame:
     def assign_characters(self):
         shuffles = 0
         for i in range(0, shuffles):
-            card1 = random.randint(0, len(self.characters)-1)
-            card2 = random.randint(0, len(self.characters)-1)
+            card1 = random.randint(0, len(self.characters) - 1)
+            card2 = random.randint(0, len(self.characters) - 1)
 
             temp = self.characters[card1]
             self.characters[card1] = self.characters[card2]
@@ -261,7 +268,7 @@ class WerewolfGame:
 
         print('swap happened')
         for id, player in self.players.items():
-            print(f'name: {player.name} is the { player.current_role}')
+            print(f'name: {player.name} is the {player.current_role}')
 
     def player_specific_info(self, player_id):
         # This info the player uses to start their turn.
@@ -308,5 +315,7 @@ class WerewolfGame:
                 f'char len {len(self.characters)}'
             )
             startable = False
-        # TODO: Check there is at least 1 werewolf.
+        # Checking to see that there is at least 1 werewolf in play.
+        if "Werewolf" not in list(map(lambda c: str(c), self.characters)):
+            startable = False
         return startable

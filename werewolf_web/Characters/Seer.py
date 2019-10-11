@@ -15,7 +15,6 @@ class Seer:
         return d
 
     def process_player_response(self, player_id, response):
-        # TODO: Append to game log who saw the card,
         card_identities = {}
         try:
             p = self.game.players[int(response["player_id"])]

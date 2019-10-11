@@ -12,11 +12,10 @@ document.addEventListener("DOMContentLoaded", function() {
 timeBetweenRefreshes = 4000;
 let GameService = new GameServices();
 async function refreshGameState(access_token) {
-
     // adds new player li elements if there are new players in the lobby
     const response = await fetch('/api/lobbies/' + access_token + '/get_game_state/')
     const gameState = await response.json();
-
+    console.log(gameState)
     document.getElementById('role-div').innerHTML = "";
     let playerDivId = "player-div";
     GameService.addElement(playerDivId, 'role-div','div',

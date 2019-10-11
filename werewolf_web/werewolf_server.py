@@ -7,7 +7,6 @@ from Game import WerewolfGame, Role
 ACCESS_TOKEN_LENGTH = 5
 
 lobbies = {}
-# TODO: Need to close out lobbies when there is no one left using them.
 
 app = Flask(__name__)
 
@@ -31,9 +30,6 @@ def create_lobby_request():
     game.add_player("Taek")
     game.add_player("Sam")
     print(f'New lobby was added.  Access token: {access}')
-    # TODO: Have player created here. Create player.
-    # TODO: And redirect to the join lobby page.  Want the "Name" field to handle both
-    # TODO: Leaving space for a spectator mode.
     return redirect(url_for('lobby', access_token=access))
 
 
@@ -47,20 +43,21 @@ def join_lobby():
     access = request.form['access_token']
     print(f'Requested access code is {access}')
     if access in lobbies.keys():
-        # TODO: If the game has already started then it should direct them to the spectator lobby
+        game = lobbies[access]
         print('Requested Access Token is valid.  Redirecting to lobby.')
-        if request.form['player_name_field']:
-            lobbies[access].add_player(request.form['player_name_field'])
-            # TODO: Error if there are more players with the same name.  May return wrong ID.
-            # TODO: Probably make it so people must enter unique names.
-            for k, v in lobbies[access].players.items():
-                if request.form['player_name_field'] == v.name:
-                    # TODO: assign initial role to spectator
-                    return redirect(url_for('lobby',
-                                            access_token=access,
-                                            player_id=k))
-        return redirect(url_for('lobby',
-                                access_token=access))
+        requested_name = request.form['player_name_field']
+        if requested_name:
+            p_id = game.add_player(requested_name)
+            if p_id == -1:
+                print("Name already used in lobby")
+                print("Redirecting to lobby")
+                return redirect(url_for('lobby',
+                                        access_token=access))
+            else:
+                return redirect(url_for('lobby',
+                                        access_token=access,
+                                        player_id=p_id))
+
     else:
         print('Requested Access Token or Name not found.')
         return redirect(url_for('home'))
@@ -68,9 +65,11 @@ def join_lobby():
 
 @app.route('/lobby/<access_token>/')
 @app.route('/lobby/<access_token>/player_id/<player_id>/')
-def lobby(access_token, player_id=None): # TODO: Player_id cant be None (including spectators)
+def lobby(access_token, player_id=None):
     game = lobbies[access_token]
     if game.GAME_ON:
+        if player_id is None:
+            player_id = 'spectating'
         return redirect(url_for('game_on',
                                 access_token=access_token,
                                 player_id=player_id))
@@ -93,8 +92,8 @@ def start_game():
             print(f"Game {access_token} is started.")
 
         return redirect(url_for('game_on',
-                                    access_token=access_token,
-                                    player_id=player_id))
+                                access_token=access_token,
+                                player_id=player_id))
     else:
         return redirect(url_for('lobby',
                                 access_token=access_token,
@@ -107,12 +106,8 @@ def start_game():
 @app.route('/game_on/<access_token>/player_id/<player_id>/')
 def game_on(access_token, player_id):
     game = lobbies[access_token]
-    # TODO: use player_dict here!
     try:
-        print(game.players)
         player_role = str(game.players[int(player_id)].original_role)
-        # TODO: This should be where the player dict is passed.
-        # TODO: unless the dict needs to be refreshed to ask for. ie with the insomniac.
         player_dict = game.players[int(player_id)].get_dict()
     except Exception as e:
         print(e)
