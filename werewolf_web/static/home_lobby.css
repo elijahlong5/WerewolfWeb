@@ -7,16 +7,6 @@
     padding: 15px 32px;
 }
 
-.characters {
-    border-bottom: coral;
-    padding: 15px 32px;
-}
-
-.characters li {
-    background-color: aqua;
-    margin-top: 5px;
-}
-
 .lists {
     justify-content: center;
     display: flex;

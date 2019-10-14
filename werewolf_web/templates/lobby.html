@@ -1,12 +1,19 @@
 {% extends "base.html" %}
 {% block styling %}
 <link href="/static/home_lobby.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 {% endblock styling %}
 {% block content %}
 <div>
     <div class="titles">
         {% if player_id|int %}
-        <h1 class="werewolf"> {{players[player_id|int].name}}, You are in a lobby</h1>
+            {% if player_id|int in players %}
+                <h1 class="werewolf"> {{players[player_id|int].name}}, You are in a lobby</h1>
+            {% else %}
+            <h1 class="werewolf"> {{spectators[player_id|int].name}}, You are spectating in a lobby</h1>
+            {% endif %}
         {% else %}
         <h1 class="werewolf"> You are spectating in a lobby</h1>
         {% endif %}
@@ -33,10 +40,20 @@
         </div>
         <div class="characters">
             <h4>Characters</h4>
-            {% for character in werewolf_characters %}
-            <li id="{{character.value}}">
-                {{ character.value }}
-            </li>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Add Character
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                    {% for character in werewolf_characters %}
+                        <li role="presentation"><a role="menuitem" tabindex="-1" id="{{character.value}}">{{character.value}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+
+            {% for character in active_characters %}
+                <div>{{character}}</div>
             {% endfor %}
         </div>
     </div>

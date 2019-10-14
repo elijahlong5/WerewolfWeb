@@ -78,7 +78,9 @@ def lobby(access_token, player_id=None):
                                access_token=access_token,
                                player_id=player_id,
                                werewolf_characters=Role,
-                               players=lobbies[access_token].jsonify_players())
+                               active_characters=game.characters,
+                               players=lobbies[access_token].jsonify_players(),
+                               spectators=lobbies[access_token].jsonify_spectators())
 
 
 @app.route('/start_game/', methods=['post'])
@@ -90,7 +92,6 @@ def start_game():
         if not game.GAME_ON:
             game.start_game()
             print(f"Game {access_token} is started.")
-
         return redirect(url_for('game_on',
                                 access_token=access_token,
                                 player_id=player_id))

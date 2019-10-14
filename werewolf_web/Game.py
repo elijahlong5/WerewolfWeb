@@ -22,8 +22,6 @@ class Role(Enum):
     WEREWOLF = "Werewolf"
     VILLAGER = 'Villager'
 
-    SPECTATOR = 'Spectator'
-
 
 class Node:
     def __init__(self, role=None):
@@ -126,6 +124,8 @@ class WerewolfGame:
                 'original_role': player.original_role,
                 'current_role': player.current_role,
             }
+
+
         return p_conversion
 
     def jsonify_spectators(self):
@@ -164,6 +164,7 @@ class WerewolfGame:
 
     def add_player(self, name):
         if (
+            # Name is original
                 name in list(map(lambda p: p.name, self.players.values()))
                 or name in list(map(lambda p: p.name, self.spectators.values()))
         ):
@@ -173,6 +174,7 @@ class WerewolfGame:
             MAX_ID = 100
             new_player_id = random.randint(0, MAX_ID)
             if (
+                # ID is original
                     new_player_id not in self.players.keys()
                     and new_player_id not in self.spectators.keys()
             ):
