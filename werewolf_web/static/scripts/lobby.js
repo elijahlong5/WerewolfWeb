@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // If this is a player, add the 'become a spectator' option
 
     let initialPlayers = window.initialPlayers;
+    let initialSpectators = window.initialSpectators;
     let playerId = null;
     try{
         playerId = GameService.getPlayerIdFromUrl();
@@ -21,14 +22,18 @@ document.addEventListener("DOMContentLoaded", function() {
             changeToSpectator(playerId);
         });
     } else {
-        GameService.addElement("become-player", "toggle-spectator", "form",[],"",
-            ["method", "post", "action", "/join-lobby/"]);
-        GameService.addElement("requested-name","become-player", "input", [],
-            "",["type", "text", "name", "player_name_field"]);
-        GameService.addElement("lobby-id","become-player", "input", [],
-            "",["type", "hidden", "name", "access_token", "value", GameService.getAccessTokenFromUrl()]);
-        GameService.addElement("play", "become-player","button", ["button"],
-            "Join lobby as a player", ["type", "submit"]);
+        if (playerId !== null && initialSpectators[playerId]) {
+            createChangeToPlayerDisplay(playerId)
+        } else {
+            GameService.addElement("become-player", "toggle-spectator", "form",[],"",
+                ["method", "post", "action", "/join-lobby/"]);
+            GameService.addElement("requested-name","become-player", "input", [],
+                "",["type", "text", "name", "player_name_field"]);
+            GameService.addElement("lobby-id","become-player", "input", [],
+                "",["type", "hidden", "name", "access_token", "value", GameService.getAccessTokenFromUrl()]);
+            GameService.addElement("play", "become-player","button", ["button"],
+                "Join lobby as a player", ["type", "submit"]);
+        }
     }
 
 
@@ -38,25 +43,28 @@ document.addEventListener("DOMContentLoaded", function() {
     refresh();
 });
 
+function createChangeToPlayerDisplay(user_id) {
+    document.getElementById("toggle-spectator").innerHTML = "";
+    GameService.addElement("become-player", "toggle-spectator", "form",[],"",
+        ["method", "post"]);
+    GameService.addElement("play", "become-player","button", ["button"],
+        "Change to player", ["type", "submit"]);
+    document.getElementById("play").addEventListener("click", function () {
+        let playerId = null;
+        try{
+            playerId = GameService.getPlayerIdFromUrl();
+        } catch (e){
+            console.log('Player id not found.');
+        }
+        changeBackToPlayer(playerId);
+    });
+}
 
 function changeToSpectator (user_id) {
     let req = {"user_id": user_id};
     let url = GameService.generateLobbyPostUrl() + "post_become_spectator/";
     GameService.fetchPostResponseFromServer(req, url).then(r => {
-        document.getElementById("toggle-spectator").innerHTML = "";
-        GameService.addElement("become-player", "toggle-spectator", "form",[],"",
-            ["method", "post"]);
-        GameService.addElement("play", "become-player","button", ["button"],
-            "Change to player", ["type", "submit"]);
-        document.getElementById("play").addEventListener("click", function () {
-            let playerId = null;
-            try{
-                playerId = GameService.getPlayerIdFromUrl();
-            } catch (e){
-                console.log('Player id not found.');
-            }
-            changeBackToPlayer(playerId);
-        });
+        createChangeToPlayerDisplay(user_id)
     });
 }
 

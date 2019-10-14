@@ -61,7 +61,10 @@
 </div>
 {% endblock content %}
 {% block scripts %}
-    <script> window.initialPlayers = {{ players | tojson }};</script>
+    <script>
+        window.initialPlayers = {{ players | tojson }};
+        window.initialSpectators = {{ spectators | tojson }};
+    </script>
     <script src="/static/scripts/GameServices.js"></script>
     <script src="/static/scripts/lobby.js"></script>
     <link href="/static/home_lobby.css" rel="stylesheet">
