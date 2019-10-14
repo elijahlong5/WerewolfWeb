@@ -84,17 +84,18 @@ function handleButtonClicked(key) {
     let element = document.getElementById(key);
 
     if (selectedKeys.indexOf(key) >= 0) {
+        // Deselecting: The button is already selected
         element.classList.remove('selected');
         element.classList.add('not-selected');
 
-        remove = selectedKeys.indexOf(key)
+        let remove = selectedKeys.indexOf(key);
         if (remove === 1) {
-            selectedKeys.pop()
+            selectedKeys.pop();
         } else if (selectedKeys.length === 2){
-            selectedKeys[0] = selectedKeys[1]
-            selectedKeys.pop()
+            selectedKeys[0] = selectedKeys[1];
+            selectedKeys.pop();
         } else {
-            selectedKeys.pop()
+            selectedKeys.pop();
         }
     } else if (selectedKeys.length === 0) {
         element.classList.remove('not-selected');
@@ -105,7 +106,7 @@ function handleButtonClicked(key) {
         element.classList.remove('not-selected');
         element.classList.add('selected');
 
-        for (var i = 0; i < selectedKeys.length; i++) {
+        for (let i = 0; i < selectedKeys.length; i++) {
             let k = selectedKeys[i]
             document.getElementById(k).classList.remove('selected');
             document.getElementById(k).classList.add('not-selected');

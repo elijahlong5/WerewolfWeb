@@ -22,5 +22,5 @@ class Troublemaker:
         response_text = f"The troublemaker is switching {p1_name} and {p2_name}'s cards."
 
         self.game.update_move("Troublemaker", self.game.swap_roles, p1_id, p2_id)
-        self.game.update_game("Troublemaker", response_text)
+        self.game.update_game_log("Troublemaker", response_text)
         return {'response': response_text}

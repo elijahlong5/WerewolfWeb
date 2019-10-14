@@ -86,7 +86,7 @@ def start_game():
     access_token = request.form['access_token']
     player_id = request.form['player_id']
     game = lobbies[access_token]
-    if game.acceptable_starting_point():
+    if game.verify_startable_lobby():
         if not game.GAME_ON:
             game.start_game()
             print(f"Game {access_token} is started.")
@@ -123,7 +123,30 @@ def game_on(access_token, player_id):
 
 @app.route('/api/lobbies/<access_token>/players/')
 def get_lobby_players(access_token):
+    """
+    :param access_token: lobby id
+    :return: dictionary of active (non-spectating) players
+    """
     return lobbies[access_token].jsonify_players()
+
+
+@app.route('/api/lobbies/<access_token>/post_become_spectator/', methods=['post'])
+def post_change_to_spectator(access_token):
+    """Toggles the posted id between spectating and playing dictionaries in the game object."""
+    user_id = request.json['user_id']
+    game = lobbies[access_token]
+    game.spectators[int(user_id)] = game.players[int(user_id)]
+    game.players.pop(int(user_id))
+    return jsonify({"status": "success"})
+
+
+@app.route('/api/lobbies/<access_token>/post_change_back_to_player/', methods=['post'])
+def post_change_back_to_player(access_token):
+    user_id = request.json['user_id']
+    game = lobbies[access_token]
+    game.players[int(user_id)] = game.spectators[int(user_id)]
+    game.spectators.pop(int(user_id))
+    return jsonify({"status": "success"})
 
 
 @app.route('/api/lobbies/<access_token>/game_on/')
@@ -134,14 +157,14 @@ def get_is_game_on(access_token):
 @app.route('/api/lobbies/<access_token>/players/<player_id>/player_specific_dict/')
 def request_player_info_dict(access_token, player_id):
     game = lobbies[access_token]
-    return jsonify(game.player_specific_info(int(player_id)))
+    return jsonify(game.get_player_specific_info(int(player_id)))
 
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/', methods=['post'])
 def request_game_response(access_token, player_id):
     player_response = request.json
     game = lobbies[access_token]
-    return game.game_response_from_player_action(int(player_id), player_response)
+    return game.get_game_response(int(player_id), player_response)
 
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/get_dict/')
@@ -159,6 +182,7 @@ def get_player_initial_dict(access_token, player_id):
 def get_game_state(access_token):
     game = lobbies[access_token]
     return jsonify(game.jsonify_full_game_state())
+
 
 def get_new_access_token():
     if "RING1" not in lobbies.keys():

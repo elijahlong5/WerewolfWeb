@@ -19,5 +19,5 @@ class Minion:
         for p_id, p in self.game.players.items():
             if type(p.original_role) == type(temp_wolf):
                 d['wolves'][str(p_id)] = p.name
-        self.game.update_game("Minion", f"The minion viewed the werewolves.")
+        self.game.update_game_log("Minion", f"The minion viewed the werewolves.")
         return d

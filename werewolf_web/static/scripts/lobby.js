@@ -1,20 +1,74 @@
-timeBetweenRefreshes = 2000;
+let timeBetweenRefreshes = 2000;
 
-async function refresh_player_div(access_token) {
-    // adds new player li elements if there are new players in the lobby
-    const response = await fetch('/api/lobbies/' + access_token + '/players/')
-    const responsePlayersDict = await response.json();
-    for (const key in responsePlayersDict) {
-        if (! document.getElementById(key)) {
-            const element = document.createElement("li");
-            element.innerText = responsePlayersDict[key]['name'] + " (id: " + key + ")";
-            element.id = key;
-            document.getElementById("players").appendChild(element);
-        }
+let GameService = new GameServices();
+const access_token = GameService.getAccessTokenFromUrl();
+document.addEventListener("DOMContentLoaded", function() {
+    // If this is a player, add the 'become a spectator' option
+
+    let initialPlayers = window.initialPlayers;
+    let playerId = null;
+    try{
+        playerId = GameService.getPlayerIdFromUrl();
+    } catch (e){
+        console.log('Player id not found.');
     }
+    if (playerId !== null && initialPlayers[playerId]){
+        let player = initialPlayers[playerId];
+    }
+
+    GameService.addElement("become-spectator", "toggle-spectator", "form",[],"",
+        ["method", "post"]);
+    GameService.addElement("spectate", "become-spectator","button", ["button"],
+        "Change to spectator", ["type", "submit"]);
+    document.getElementById("spectate").addEventListener("click", function () {
+        changeToSpectator(playerId);
+    });
+
+
+    // Otherwise add become player button.
+    refresh();
+});
+
+
+function changeToSpectator (user_id) {
+    let req = {"user_id": user_id};
+    let url = GameService.generateLobbyPostUrl() + "post_become_spectator/";
+    GameService.fetchPostResponseFromServer(req, url).then(r => {
+        document.getElementById("toggle-spectator").innerHTML = "";
+        GameService.addElement("become-player", "toggle-spectator", "form",[],"",
+            ["method", "post"]);
+        GameService.addElement("play", "become-player","button", ["button"],
+            "Change to player", ["type", "submit"]);
+        document.getElementById("play").addEventListener("click", function () {
+            let playerId = null;
+            try{
+                playerId = GameService.getPlayerIdFromUrl();
+            } catch (e){
+                console.log('Player id not found.');
+            }
+            changeBackToPlayer(playerId);
+        });
+    });
 }
 
-async function redirect_if_game_on(access_token) {
+function changeBackToPlayer (userId) {
+    let req = {
+        "user_id": userId,
+    };
+    let url = GameService.generateLobbyPostUrl() + "post_change_back_to_player/";
+    GameService.fetchPostResponseFromServer(req, url).then(r => {
+        document.getElementById("toggle-spectator").innerHTML = "";
+        GameService.addElement("become-spectator", "toggle-spectator", "form",[],"",
+            ["method", "post"]);
+        GameService.addElement("spectate", "become-spectator","button", ["button"],
+            "Change to spectator", ["type", "submit"]);
+        document.getElementById("spectate").addEventListener("click", function () {
+            changeToSpectator(userId);
+        });
+    });
+}
+
+async function redirectIfGameOn(access_token) {
     const response = await fetch('/api/lobbies/' + access_token + '/game_on/');
     const is_game_on = await response.json();
     if (is_game_on['game_on']){
@@ -33,12 +87,34 @@ async function redirect_if_game_on(access_token) {
 
 function refresh() {
     setTimeout(refresh, timeBetweenRefreshes);
-    const access_token_location_in_pathname = 2;
-    const access_token = window.location.pathname.split('/')[access_token_location_in_pathname];
-    redirect_if_game_on(access_token);
-    refresh_player_div(access_token);
+    redirectIfGameOn(access_token);
+    refreshPlayersDiv(access_token);
+
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    refresh();
-});
+async function refreshPlayersDiv(access_token) {
+    // Get dictionary of active players
+    const response = await fetch('/api/lobbies/' + access_token + '/players/')
+    const responsePlayersDict = await response.json();
+
+    let playersDiv = document.getElementById("players");
+    // Removes 'spectators' from the div
+    let playerChildren = playersDiv.children;
+    for (let i = 0; i < playerChildren.length; i++ ) {
+        if (playerChildren[i].tagName === "LI") {
+            if (!(playerChildren[i].id in responsePlayersDict)) {
+                let elem = document.getElementById(playerChildren[i].id);
+                elem.parentNode.removeChild(elem);
+            }
+        }
+    }
+    // adds new player li elements if there are new players in the lobby
+    for (const key in responsePlayersDict) {
+        if (! document.getElementById(key)) {
+            let text = responsePlayersDict[key]['name'] + " (id: " + key + ")";
+            GameService.addElement(key, "players", "li", [],
+                text, []);
+        }
+    }
+
+}

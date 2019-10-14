@@ -25,33 +25,45 @@ class GameServices{
         for (let i = 0; i < attributes.length; i += 2){
             element.setAttribute(attributes[i], attributes[i+1]);
         }
-
         document.getElementById(parentNode).appendChild(element);
     }
 
-    generatePostUrl(){
-        const access_token = window.location.pathname.split('/')[this.access_token_location_in_pathname]
+    generatePostUrlForInitialDict(){
         let player_id = null;
         try {
-            player_id = window.location.pathname.split('/')[this.player_id_location_in_pathname]
+            player_id = window.location.pathname.split('/')[this.player_id_location_in_pathname];
         }
         catch(e) {
             console.log('no player id');
         }
-        let url = '/api/lobbies/'
-            + access_token
-            + '/players/'
+        let url = this.generateLobbyPostUrl()
+            +'players/'
             + player_id
             + '/';
         return url
     }
 
-    async fetchPostResponseFromServer(playerResponseDict) {
+    generateLobbyPostUrl () {
+        const access_token = window.location.pathname.split('/')[this.access_token_location_in_pathname];
+        let url = '/api/lobbies/'
+            + access_token
+            + "/";
+        return url
+    }
+
+    getAccessTokenFromUrl() {
+        return window.location.pathname.split('/')[this.access_token_location_in_pathname];
+    }
+
+    getPlayerIdFromUrl() {
+        return window.location.pathname.split('/')[this.player_id_location_in_pathname];
+
+    }
+
+    async fetchPostResponseFromServer(serverRequestDict, url=this.generatePostUrlForInitialDict()) {
         event.preventDefault();
 
-        let url = this.generatePostUrl();
-
-        let data = playerResponseDict;
+        let data = serverRequestDict;
 
         const response = await fetch(url,{
             method: 'POST',
@@ -70,6 +82,4 @@ class GameServices{
         let gameResponse = responseDict;
         return gameResponse;
     }
-
-
 }

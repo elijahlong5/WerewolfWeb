@@ -31,5 +31,5 @@ class Seer:
             card_identities["middle_card_1"] = middle_cards[response['middle_card_2'].lower()]
             card_identities["middle_card_2"] = middle_cards[response["middle_card_2"].lower()]
 
-        self.game.update_game("Seer", card_str)
+        self.game.update_game_log("Seer", card_str)
         return {"response": card_str}

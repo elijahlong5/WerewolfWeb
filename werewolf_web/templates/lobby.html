@@ -13,11 +13,7 @@
 
         <h2>Access code: {{ access_token }}</h2>
     </div>
-    <div class="choices">
-        <div>
-            <a class="link" href="">Edit Game Settings</a>
-            <a class="link" href="/home">Back</a>
-        </div>
+    <div class="choices" id="choices">
         <form action="/start_game/" method="post">
             <button class="button" type="submit">
                 Start Game
@@ -29,15 +25,11 @@
             <input type="hidden" value="spectator" name="player_id">
             {% endif %}
         </form>
+        <div id="toggle-spectator"></div>
     </div>
     <div class="lists">
         <div class="players" id="players">
             <h4>Players</h4>
-            {% for key, player_dict_item in players.items() %}
-            <li id="{{key}}">
-                {{ player_dict_item.name }} (id: {{key}})
-            </li>
-            {% endfor %}
         </div>
         <div class="characters">
             <h4>Characters</h4>
@@ -52,6 +44,8 @@
 </div>
 {% endblock content %}
 {% block scripts %}
+    <script> window.initialPlayers = {{ players | tojson }};</script>
+    <script src="/static/scripts/GameServices.js"></script>
     <script src="/static/scripts/lobby.js"></script>
     <link href="/static/home_lobby.css" rel="stylesheet">
 {% endblock scripts %}

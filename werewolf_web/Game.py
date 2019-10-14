@@ -128,6 +128,14 @@ class WerewolfGame:
             }
         return p_conversion
 
+    def jsonify_spectators(self):
+        spectators_dict = {}
+        for p_id, player in self.spectators.items():
+            spectators_dict[p_id] = {
+                'name': player.name,
+            }
+        return spectators_dict
+
     def jsonify_players_names(self):
         """
         Returns dictionary of playing players.
@@ -270,17 +278,16 @@ class WerewolfGame:
         for id, player in self.players.items():
             print(f'name: {player.name} is the {player.current_role}')
 
-    def player_specific_info(self, player_id):
+    def get_player_specific_info(self, player_id):
         # This info the player uses to start their turn.
         return self.players[player_id].get_dict()
 
-    def game_response_from_player_action(self, player_id, player_response):
+    def get_game_response(self, player_id, player_response):
         player_original_role = self.players[player_id].original_role
         response = player_original_role.process_player_response(player_id, player_response)
         return response
 
     def update_move(self, role, move_method, arg1, arg2):
-
         if self.turn_handler.whose_turn() == role:
             move_method(arg1, arg2)
 
@@ -298,7 +305,7 @@ class WerewolfGame:
             }
             self.turn_handler.store_a_move(role, move)
 
-    def update_game(self, role, move_summary):
+    def update_game_log(self, role, move_summary):
         if role in self.turn_handler.needs_to_go:
             self.turn_handler.needs_to_go.pop(self.turn_handler.needs_to_go.index(role))
             self.game_log.append(move_summary)
@@ -306,7 +313,7 @@ class WerewolfGame:
         else:
             print("Cannot update game.")
 
-    def acceptable_starting_point(self):
+    def verify_startable_lobby(self):
         startable = True
         if len(self.characters) != len(self.players) + len(self.middle_cards):
             print(
