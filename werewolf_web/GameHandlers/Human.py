@@ -8,11 +8,18 @@ class Human:
         self.name = name
         self.player_id = player_id
 
+        self.votes_against = 0
+        self.voted_for = None
+
         self.active_player = True
 
     def assign_initial_role(self, role):
         self.original_role = role
         self.current_role = self.original_role
+
+        # Reset end of game stats.
+        self.votes_against = 0
+        self.voted_for = None
 
     def get_dict(self):
         if self.original_role:

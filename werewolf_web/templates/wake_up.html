@@ -3,8 +3,9 @@
 {% endblock styling %}
 {% block content %}
 <div>
-Discussion phase.
+    Discussion phase.
     <div id="countdown"></div>
+    <div id="vote-ballet"></div>
 </div>
 {% endblock content %}
 {% block scripts %}
@@ -12,5 +13,5 @@ Discussion phase.
     <script>
         window.votingDict = {{ discussion_dict | tojson }};
     </script>
-    <script src="/static/scripts/voting.js"></script>
+    <script src="/static/scripts/Voting.js"></script>
 {% endblock scripts %}

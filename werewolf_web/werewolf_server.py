@@ -130,6 +130,36 @@ def wake_up(access_token, player_id=None):
                                player_id=player_id,
                                discussion_dict=lobbies[access_token].discussion_dict())
 
+
+@app.route('/game-complete/<access_token>/')
+@app.route('/game-complete/<access_token>/player_id/<player_id>/')
+def game_complete(access_token, player_id=None):
+    game = lobbies[access_token]
+    players_imprint = game.players
+    game.GAME_ON = False
+    print('-----game log-------')
+    for l in game.game_log:
+        print(l)
+        print()
+    print('----- game status at upon completion ------')
+    for p in game.players.values():
+        print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for {p.voted_for.name}')
+
+    # ATTEMPT TO RESET GAME FUNCITONS
+    lobbies[access_token] = WerewolfGame()
+    lobbies[access_token].GAME_ON = False
+    lobbies[access_token].players = players_imprint
+
+    print(lobbies)
+    print(lobbies[access_token].players.values())
+    for p in lobbies[access_token].players.values():
+        p.original_role = None
+        p.current_role = None
+
+    return render_template('game_complete.html',
+                           access_token=access_token,
+                           player_id=player_id,)
+
 # GAME API REQUESTS
 @app.route('/api/lobbies/<access_token>/players/')
 def get_lobby_players(access_token):
@@ -199,6 +229,34 @@ def get_game_state(access_token):
     return jsonify(game.jsonify_full_game_state())
 
 
+@app.route('/api/lobbies/<access_token>/players/<player_id>/cast-vote/', methods=['post'])
+def cast_vote(access_token, player_id):
+    game = lobbies[access_token]
+    if int(player_id) in game.players.keys():
+        vote_post = request.json
+        cast_vote_dict = {
+            'player_id': player_id,
+            'vote_for_id': vote_post['vote_for_id'],
+        }
+        game.handle_vote_cast(cast_vote_dict)
+        return jsonify({"status": "success"})
+    else:
+        print('Player id not found in active players.  Cheating...')
+        return jsonify({"status": "vote not submitted"})
+
+
+@app.route('/api/lobbies/<access_token>/check-voting-status/')
+def check_voting_status(access_token):
+    # Returns false if everyone has voted
+    game = lobbies[access_token]
+    status = False
+    for p in game.players.values():
+        if p.voted_for is None:
+            status = True
+            print(f'{p.name} has not voted')
+    return jsonify({'still-voting': status})
+
+
 def get_new_access_token():
     if "RING1" not in lobbies.keys():
         return "RING1"
@@ -217,6 +275,6 @@ if __name__ == "__main__":
     # game.add_player("Jilliam")
     # game.add_player("Snoopy")
     # game.add_player("Tonya")
-    game.add_player("Taek")
+    # game.add_player("Taek")
     # game.add_player("Sam")
     app.run(debug=True, port=8080)

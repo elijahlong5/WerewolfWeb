@@ -105,9 +105,9 @@ class WerewolfGame:
         self.characters.append(W.Werewolf(self))
         self.characters.append(W.Werewolf(self))
 
-        self.characters.append(M.Minion(self))
-        # self.characters.append(R.Robber(self))
-        # self.characters.append(S.Seer(self))
+        # self.characters.append(M.Minion(self))
+        self.characters.append(R.Robber(self))
+        self.characters.append(S.Seer(self))
 
 
         # self.characters.append(W.Werewolf(self))
@@ -133,7 +133,7 @@ class WerewolfGame:
                   f' (Right): {str(self.middle_cards[2])}')
 
     def assign_characters(self):
-        shuffles = 0
+        shuffles = 50
         for i in range(0, shuffles):
             card1 = random.randint(0, len(self.characters) - 1)
             card2 = random.randint(0, len(self.characters) - 1)
@@ -142,24 +142,10 @@ class WerewolfGame:
             self.characters[card1] = self.characters[card2]
             self.characters[card2] = temp
 
-        minion_no = 1
-        robber = 2
-        seer_no = 3
-        werewolf_no = 5
-        trouble_no = 4
-        my_identity = seer_no
-        taek_identity = trouble_no
-        spect_no = 10
-
         current_character = 0
 
-        for id, player in self.players.items():
-            if player.name == "Jah":
-                self.players[id].assign_initial_role(self.characters[my_identity])
-            # elif player.name == "Taek":
-            #     self.players[id].assign_initial_role(self.characters[taek_identity])
-            else:
-                self.players[id].assign_initial_role(self.characters[current_character])
+        for player in self.players.values():
+            player.assign_initial_role(self.characters[current_character])
             # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
 
@@ -375,3 +361,15 @@ class WerewolfGame:
             'players': self.jsonify_players_names()  # Getting voting names.
         }
         return vote_dict
+
+    def handle_vote_cast(self, cast_vote_dict):
+        if cast_vote_dict['vote_for_id']:
+            if self.players[int(cast_vote_dict["player_id"])].voted_for is None:
+                self.players[int(cast_vote_dict["vote_for_id"])].votes_against += 1
+                self.players[int(cast_vote_dict["player_id"])].voted_for = self.players[int(cast_vote_dict["vote_for_id"])]
+            else:
+                print("you've already voted!")
+        else:
+            # This should only happen if they haven't selected anyone at the end of the discussion time.
+            print('Cant vote for no one.')
+
