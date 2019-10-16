@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block styling %}
+{% endblock styling %}
+{% block content %}
+<div>
+Discussion phase.
+    <div id="countdown"></div>
+</div>
+{% endblock content %}
+{% block scripts %}
+    <script src="/static/scripts/GameServices.js"></script>
+    <script>
+        window.votingDict = {{ discussion_dict | tojson }};
+    </script>
+    <script src="/static/scripts/voting.js"></script>
+{% endblock scripts %}

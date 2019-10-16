@@ -16,7 +16,7 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-
+# GAME ACTIONS
 @app.route('/create-lobby/', methods=['post'])
 def create_lobby_request():
     access = get_new_access_token()  # Returns a NEW access token
@@ -62,7 +62,7 @@ def join_lobby():
         print('Requested Access Token or Name not found.')
         return redirect(url_for('home'))
 
-
+# GAME PHASES
 @app.route('/lobby/<access_token>/')
 @app.route('/lobby/<access_token>/player_id/<player_id>/')
 def lobby(access_token, player_id=None):
@@ -105,7 +105,7 @@ def start_game():
 
 @app.route('/game_on/<access_token>/')
 @app.route('/game_on/<access_token>/player_id/<player_id>/')
-def game_on(access_token, player_id):
+def game_on(access_token, player_id=None):
     game = lobbies[access_token]
     try:
         player_role = str(game.players[int(player_id)].original_role)
@@ -114,7 +114,6 @@ def game_on(access_token, player_id):
         print(e)
         player_role = 'Spectator'
         player_dict = game.jsonify_full_game_state()
-
     return render_template('game_on.html',
                            access_token=access_token,
                            player_id=player_id,
@@ -122,6 +121,16 @@ def game_on(access_token, player_id):
                            initial_player_dict=player_dict)
 
 
+@app.route('/discussion/<access_token>/')
+@app.route('/discussion/<access_token>/player_id/<player_id>/')
+def wake_up(access_token, player_id=None):
+    if player_id:
+        return render_template('wake_up.html',
+                               access_token=access_token,
+                               player_id=player_id,
+                               discussion_dict=lobbies[access_token].discussion_dict())
+
+# GAME API REQUESTS
 @app.route('/api/lobbies/<access_token>/players/')
 def get_lobby_players(access_token):
     """
@@ -153,6 +162,11 @@ def post_change_back_to_player(access_token):
 @app.route('/api/lobbies/<access_token>/game_on/')
 def get_is_game_on(access_token):
     return {'game_on': lobbies[access_token].GAME_ON}
+
+
+@app.route('/api/lobbies/<access_token>/discussion/')
+def get_is_discussion(access_token):
+    return {'discussion': lobbies[access_token].DISCUSSION_PHASE}
 
 
 @app.route('/api/lobbies/<access_token>/players/<player_id>/player_specific_dict/')
@@ -199,10 +213,10 @@ if __name__ == "__main__":
     # TODO: Remove, just here for testing
     lobbies['RING1'] = WerewolfGame()
     game = lobbies['RING1']
-    game.add_player("Jackie")
-    game.add_player("Jilliam")
-    game.add_player("Snoopy")
-    game.add_player("Tonya")
+    # game.add_player("Jackie")
+    # game.add_player("Jilliam")
+    # game.add_player("Snoopy")
+    # game.add_player("Tonya")
     game.add_player("Taek")
-    game.add_player("Sam")
+    # game.add_player("Sam")
     app.run(debug=True, port=8080)

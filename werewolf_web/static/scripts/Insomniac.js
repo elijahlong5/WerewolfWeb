@@ -4,11 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     GameService.addSimpleElement("div", 'role-div',
         "You are notified of your identity right before the discussion," +
-        "<br/>Please wait until your card is shown.");
+        "Please wait until your card is shown.");
     refresh();
 });
 
-let timeBetweenRefreshes = 2000
+let timeBetweenRefreshes = 2000;
+let insomniacsCardDisplayed = false;
 
 async function refreshPlayerDict() {
     // adds new player li elements if there are new players in the lobby
@@ -24,17 +25,21 @@ async function refreshPlayerDict() {
     const response = await fetch(url);
     const dict = await response.json();
     console.log(dict)
-    if (dict['ready'] == true) {
+    if (dict['ready'] === true && !insomniacsCardDisplayed) {
         return showCard(dict);
     }
 }
 
 function refresh() {
     setTimeout(refresh, timeBetweenRefreshes);
-    refreshPlayerDict();
+    console.log('insomniacs card displayed:',insomniacsCardDisplayed);
+    if (!insomniacsCardDisplayed){
+        refreshPlayerDict();
+    }
 }
 
 function showCard(dict) {
+    document.getElementById('role-div').innerHTML = "";
     GameService.addElement("info",'role-div','div',[],
         'your card is ' + dict['current_role']);
     let formId = "submit-form";
@@ -47,6 +52,7 @@ function showCard(dict) {
         event.preventDefault();
         notify({"status": "acknowledged"});
     });
+    insomniacsCardDisplayed = true;
 }
 
 function notify(dict) {

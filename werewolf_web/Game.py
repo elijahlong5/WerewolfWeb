@@ -1,3 +1,6 @@
+from datetime import datetime
+from datetime import timedelta
+
 from enum import Enum
 
 import GameHandlers.Human as Human
@@ -11,6 +14,9 @@ import Characters.Werewolf as W
 import Characters.Villager as V
 
 import random
+
+from datetime import datetime
+from datetime import timedelta
 
 
 class Role(Enum):
@@ -41,10 +47,12 @@ class TurnList:
 
     def next_turn(self):
         if self.turn_pointer.next is None:
-            return "Everyone has gone"
+            """Game should be over NOW"""
+            return False
         else:
             self.turn_pointer = self.turn_pointer.next
-            self.needs_to_go.append(self.turn_pointer)
+            self.needs_to_go.append(self.turn_pointer.role)
+            return True
 
     def whose_turn(self):
         return self.turn_pointer.role
@@ -68,6 +76,12 @@ class TurnList:
         node = self.get_node_at_role(role)
         node.stored_move = move
 
+    def has_next(self):
+        if self.turn_pointer.next is None:
+            return False
+        else:
+            return True
+
 
 class WerewolfGame:
 
@@ -75,6 +89,7 @@ class WerewolfGame:
         self.turn_handler = None
 
         self.GAME_ON = False
+        self.DISCUSSION_PHASE = False
         self.characters = []
         self.players = {}
         self.spectators = {}
@@ -82,20 +97,102 @@ class WerewolfGame:
         self.middle_cards = [0, 1, 2]
         self.game_log = []
 
-        self.characters.append(I.Insomniac(self))
-        self.characters.append(M.Minion(self))
-        self.characters.append(R.Robber(self))
+        self.disc_length = 5.0  # in minutes
+        self.discussion_over_at = None
 
-        self.characters.append(S.Seer(self))
+        self.characters.append(I.Insomniac(self))
         self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
         self.characters.append(W.Werewolf(self))
 
-        self.characters.append(W.Werewolf(self))
-        self.characters.append(V.Villager(self))
-        self.characters.append(V.Villager(self))
+        self.characters.append(M.Minion(self))
+        # self.characters.append(R.Robber(self))
+        # self.characters.append(S.Seer(self))
 
-        # self.characters.append(Sp.Spectator(self))
+
+        # self.characters.append(W.Werewolf(self))
+        # self.characters.append(V.Villager(self))
+        # self.characters.append(V.Villager(self))
+
+    def start_game(self):
+        if self.GAME_ON:
+            return "Game is already in session."
+        else:
+            self.GAME_ON = True
+            self.DISCUSSION_PHASE = False
+            self.assign_characters()
+            self.initialize_linked_list()
+
+            # PRINT GAME STATE:
+            print('-----game state------')
+            for p_id, player in self.players.items():
+                print(f'id:{p_id}, name: {player.name}: Role   {player.original_role}')
+
+            print('----Middle Cards:----')
+            print(f'(Left): {str(self.middle_cards[0])} (Middle): {str(self.middle_cards[1])}'
+                  f' (Right): {str(self.middle_cards[2])}')
+
+    def assign_characters(self):
+        shuffles = 0
+        for i in range(0, shuffles):
+            card1 = random.randint(0, len(self.characters) - 1)
+            card2 = random.randint(0, len(self.characters) - 1)
+
+            temp = self.characters[card1]
+            self.characters[card1] = self.characters[card2]
+            self.characters[card2] = temp
+
+        minion_no = 1
+        robber = 2
+        seer_no = 3
+        werewolf_no = 5
+        trouble_no = 4
+        my_identity = seer_no
+        taek_identity = trouble_no
+        spect_no = 10
+
+        current_character = 0
+
+        for id, player in self.players.items():
+            if player.name == "Jah":
+                self.players[id].assign_initial_role(self.characters[my_identity])
+            # elif player.name == "Taek":
+            #     self.players[id].assign_initial_role(self.characters[taek_identity])
+            else:
+                self.players[id].assign_initial_role(self.characters[current_character])
+            # print(f'name: {player.name}  is { self.characters[current_character]}')
+            current_character += 1
+
+        self.middle_cards[0] = self.characters[current_character]
+        self.middle_cards[1] = self.characters[current_character + 1]
+        self.middle_cards[2] = self.characters[current_character + 2]
+
+    def initialize_linked_list(self):
+        # clear it just in case:
+        self.turn_handler = TurnList()
+        # Find out what roles are accounted for (avoiding roles in the middle, or not used in the game)
+        roles_in_play = []
+        for player in self.players.values():
+            roles_in_play.append(str(player.original_role))
+
+        # Just ordering them
+        if "Robber" in roles_in_play:
+            self.turn_handler.append("Robber")
+        if "Troublemaker" in roles_in_play:
+            self.turn_handler.append("Troublemaker")
+        if "Insomniac" in roles_in_play:
+            self.turn_handler.append("Insomniac")
+
+        self.turn_handler.next_turn()
+
+        if "Seer" in roles_in_play:
+            self.turn_handler.needs_to_go.append("Seer")
+        if "Minion" in roles_in_play:
+            self.turn_handler.needs_to_go.append("Minion")
+        for i in range(0, roles_in_play.count("Werewolf")):
+            self.turn_handler.needs_to_go.append("Werewolf")
+
+        print(f'just made needs to go list: {self.turn_handler.needs_to_go}')
 
     def jsonify_full_game_state(self):
         """
@@ -186,83 +283,6 @@ class WerewolfGame:
             else:
                 return self.add_player(name)
 
-    def start_game(self):
-        if self.GAME_ON:
-            return "Game is already in session."
-        else:
-            self.GAME_ON = True
-            self.assign_characters()
-            self.initialize_linked_list()
-
-            # PRINT GAME STATE:
-            print('-----game state------')
-            for p_id, player in self.players.items():
-                print(f'id:{p_id}, name: {player.name}: Role   {player.original_role}')
-
-            print('----Middle Cards:----')
-            print(f'(Left): {str(self.middle_cards[0])} (Middle): {str(self.middle_cards[1])}'
-                  f' (Right): {str(self.middle_cards[2])}')
-
-    def assign_characters(self):
-        shuffles = 0
-        for i in range(0, shuffles):
-            card1 = random.randint(0, len(self.characters) - 1)
-            card2 = random.randint(0, len(self.characters) - 1)
-
-            temp = self.characters[card1]
-            self.characters[card1] = self.characters[card2]
-            self.characters[card2] = temp
-
-        minion_no = 1
-        robber = 2
-        seer_no = 3
-        werewolf_no = 5
-        trouble_no = 4
-        my_identity = seer_no
-        taek_identity = trouble_no
-        spect_no = 10
-
-        current_character = 0
-
-        for id, player in self.players.items():
-            if player.name == "Jah":
-                self.players[id].assign_initial_role(self.characters[my_identity])
-            # elif player.name == "Taek":
-            #     self.players[id].assign_initial_role(self.characters[taek_identity])
-            else:
-                self.players[id].assign_initial_role(self.characters[current_character])
-            # print(f'name: {player.name}  is { self.characters[current_character]}')
-            current_character += 1
-
-        self.middle_cards[0] = self.characters[current_character]
-        self.middle_cards[1] = self.characters[current_character + 1]
-        self.middle_cards[2] = self.characters[current_character + 2]
-
-    def initialize_linked_list(self):
-        # clear it just in case:
-        self.turn_handler = TurnList()
-        # Find out what roles are accounted for (avoiding roles in the middle, or not used in the game)
-        roles_in_play = []
-        for player in self.players.values():
-            roles_in_play.append(str(player.original_role))
-
-        # Just ordering them
-        if "Robber" in roles_in_play:
-            self.turn_handler.append("Robber")
-        if "Troublemaker" in roles_in_play:
-            self.turn_handler.append("Troublemaker")
-        if "Insomniac" in roles_in_play:
-            self.turn_handler.append("Insomniac")
-
-        self.turn_handler.next_turn()
-
-        if "Seer" in roles_in_play:
-            self.turn_handler.needs_to_go.append("Seer")
-        if "Minion" in roles_in_play:
-            self.turn_handler.needs_to_go.append("Minion")
-        if "Werewolf" in roles_in_play:
-            self.turn_handler.needs_to_go.append("Werewolf")
-
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id
         roleA = self.players.get(p1_id).current_role
@@ -292,14 +312,16 @@ class WerewolfGame:
     def update_move(self, role, move_method, arg1, arg2):
         if self.turn_handler.whose_turn() == role:
             move_method(arg1, arg2)
-
-            self.turn_handler.next_turn()
-
+            if not self.turn_handler.next_turn():
+                self.DISCUSSION_PHASE = True
+                return
             while self.turn_handler.turn_pointer.stored_move is not None:
                 print(f'The {self.turn_handler.whose_turn()} has a stored move, so that action is being taken.')
                 stored_move = self.turn_handler.turn_pointer.stored_move
                 stored_move['function'](stored_move['args'][0], stored_move['args'][1])
-                self.turn_handler.next_turn()
+                if not self.turn_handler.next_turn():
+                    self.DISCUSSION_PHASE = True
+                return
         else:
             move = {
                 "function": move_method,
@@ -308,12 +330,23 @@ class WerewolfGame:
             self.turn_handler.store_a_move(role, move)
 
     def update_game_log(self, role, move_summary):
+        print(role)
+        print(move_summary)
+        print(self.turn_handler.needs_to_go)
+
         if role in self.turn_handler.needs_to_go:
+            print('game log appended')
             self.turn_handler.needs_to_go.pop(self.turn_handler.needs_to_go.index(role))
             self.game_log.append(move_summary)
             print(self.game_log)
         else:
             print("Cannot update game.")
+
+        if not len(self.turn_handler.needs_to_go):
+            print("no one else needs to go")
+            self.DISCUSSION_PHASE = True
+            now = datetime.now()
+            self.discussion_over_at = now + timedelta(seconds=5*60)
 
     def verify_startable_lobby(self):
         startable = True
@@ -328,3 +361,17 @@ class WerewolfGame:
         if "Werewolf" not in list(map(lambda c: str(c), self.characters)):
             startable = False
         return startable
+
+    def discussion_dict(self):
+        print(f'Discussion will be over at {self.discussion_over_at}')
+        d = self.discussion_over_at
+        exp_time = (
+            f'{d.strftime("%b")} {d.strftime("%d")}, {d.strftime("%Y")}'
+            f' {d.strftime("%H")}:{d.strftime("%M")}:{d.strftime("%S")}'
+        )
+        print(exp_time)
+        vote_dict = {
+            'exp_time': exp_time,
+            'players': self.jsonify_players_names()  # Getting voting names.
+        }
+        return vote_dict

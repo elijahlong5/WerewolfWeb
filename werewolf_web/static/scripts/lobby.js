@@ -3,8 +3,6 @@ let timeBetweenRefreshes = 2000;
 let GameService = new GameServices();
 const access_token = GameService.getAccessTokenFromUrl();
 document.addEventListener("DOMContentLoaded", function() {
-    // If this is a player, add the 'become a spectator' option
-
     let initialPlayers = window.initialPlayers;
     let initialSpectators = window.initialSpectators;
     let playerId = null;
@@ -35,13 +33,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Join lobby as a player", ["type", "submit"]);
         }
     }
-
-
-
-
-    // Otherwise add become player button.
     refresh();
 });
+
+function refresh() {
+    setTimeout(refresh, timeBetweenRefreshes);
+    redirectIfGameOn(access_token);
+    refreshPlayersDiv(access_token);
+}
 
 function createChangeToPlayerDisplay(user_id) {
     document.getElementById("toggle-spectator").innerHTML = "";
@@ -100,13 +99,6 @@ async function redirectIfGameOn(access_token) {
         }
         window.location.href = '/game_on/' + access_token + '/player_id/' + player_id + '/';
     }
-}
-
-function refresh() {
-    setTimeout(refresh, timeBetweenRefreshes);
-    redirectIfGameOn(access_token);
-    refreshPlayersDiv(access_token);
-
 }
 
 async function refreshPlayersDiv(access_token) {
