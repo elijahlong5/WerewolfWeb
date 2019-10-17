@@ -147,7 +147,10 @@ def game_complete(access_token, player_id=None):
         print()
     print('----- game status at upon completion ------')
     for p in game.players.values():
-        print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for {p.voted_for.name}')
+        try:
+            print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for {p.voted_for.name}')
+        except Exception as e:
+            print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for NO ONE')
 
     # RESET GAME FUNCTIONS BEFORE REDIRECTING TO LOBBY.
     lobbies[access_token] = WerewolfGame()
@@ -257,7 +260,6 @@ def check_voting_status(access_token):
     for p in game.players.values():
         if p.voted_for is None:
             status = True
-            print(f'{p.name} has not voted')
     return jsonify({'still-voting': status})
 
 

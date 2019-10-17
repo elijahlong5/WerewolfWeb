@@ -46,10 +46,11 @@ function makeRequest(cardRequested) {
     GameService.fetchPostResponseFromServer(cardRequestedDict).then(r => {
         let display = document.getElementById('role-div');
         display.innerHTML = "The " + r['requested_card'] + " card is: " + r['card_identity'];
-
         let start = new Date().getTime();
         for (let i = 0; i  < 1e7; i++) {
-            if ((new Date().getTime() - start) > 5000){
+            console.log('waiting', (new Date().getTime() - start))
+            if ((new Date().getTime() - start) > 1000){
+                console.log('done waiting')
                 break;
             }
         }

@@ -8,8 +8,10 @@ function redirectRefresh() {
 }
 
 async function redirectIfDiscussionPhase() {
+
     const response = await fetch('/api/lobbies/' + access_token + '/discussion/');
     const is_discussion = await response.json();
+    console.log('checking discussion phase:', is_discussion['discussion']);
     if (is_discussion['discussion']){
         let player_id = null;
         try {

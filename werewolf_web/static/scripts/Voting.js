@@ -84,7 +84,7 @@ function castVote(voteId, playerId) {
     let voteDict = {
         'vote_for_id': voteId,
     };
-
+    console.log('casting vote', voteDict)
     let castVoteUrl = GameService.generateLobbyPostUrl() + 'players/' + playerId + "/cast-vote/";
     GameService.fetchPostResponseFromServer(voteDict, castVoteUrl).then(r => {
         document.getElementById("vote-ballet").innerHTML = "You've voted!" +

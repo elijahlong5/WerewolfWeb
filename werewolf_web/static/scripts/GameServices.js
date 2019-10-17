@@ -88,7 +88,12 @@ class GameServices{
     }
 
     async fetchPostResponseFromServer(serverRequestDict, url=this.generatePostUrlForInitialDict()) {
-        event.preventDefault();
+        try{
+            event.preventDefault();
+        }
+        catch {
+
+        }
         let data = serverRequestDict;
         const response = await fetch(url,{
             method: 'POST',

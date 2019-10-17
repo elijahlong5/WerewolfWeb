@@ -307,6 +307,11 @@ class WerewolfGame:
                 print(f'The {self.turn_handler.whose_turn()} has a stored move, so that action is being taken.')
                 stored_move = self.turn_handler.turn_pointer.stored_move
                 stored_move['function'](stored_move['args'][0], stored_move['args'][1])
+                # Remove them from needing to go.
+                self.turn_handler.needs_to_go.pop(
+                    self.turn_handler.needs_to_go.index(self.turn_handler.turn_pointer.role)
+                )
+
                 if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):
                     print(f'Here is everyone that still needs to go {self.turn_handler.needs_to_go}')
                     self.DISCUSSION_PHASE = True
@@ -321,7 +326,6 @@ class WerewolfGame:
             self.turn_handler.store_a_move(role, move)
 
     def update_game_log(self, role, move_summary):
-        print(self.turn_handler.needs_to_go)
 
         if role in self.turn_handler.needs_to_go:
             print('game log appended')
@@ -329,7 +333,10 @@ class WerewolfGame:
             self.game_log.append(move_summary)
             print(self.game_log)
         else:
-            print("Cannot update game log.")
+            print("Updating game log, but not making the move happen.")
+            self.game_log.append(move_summary)
+
+        print(f'Here are the people who need to go {self.turn_handler.needs_to_go}')
 
         if not len(self.turn_handler.needs_to_go):
             print("no one else needs to go")
@@ -378,5 +385,6 @@ class WerewolfGame:
                 print("you've already voted!")
         else:
             # This should only happen if they haven't selected anyone at the end of the discussion time.
-            print('Cant vote for no one.')
+            self.players[int(cast_vote_dict["player_id"])].voted_for = "No one"
+
 
