@@ -21,4 +21,7 @@ class Robber:
         p2_role = self.game.players[p2_id].original_role
         response_text = f"You are now the {p2_role}"
         self.game.update_move("Robber", self.game.swap_roles, p1_id, p2_id)
+        rob_victim = self.game.players[p2_id].name
+        self.game.update_game_log("Robber", f"The robber robbed {rob_victim} ({p2_role})")
+
         return {'response': response_text}

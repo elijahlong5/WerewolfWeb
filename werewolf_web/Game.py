@@ -97,21 +97,21 @@ class WerewolfGame:
         self.middle_cards = [0, 1, 2]
         self.game_log = []
 
-        self.disc_length = 5.0  # in minutes
+        self.disc_length = 0.5  # in minutes
         self.discussion_over_at = None
 
-        self.characters.append(I.Insomniac(self))
-        # self.characters.append(T.Troublemaker(self))
+        # self.characters.append(I.Insomniac(self))
+        self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
-        self.characters.append(W.Werewolf(self))
+        # self.characters.append(W.Werewolf(self))
 
         # self.characters.append(M.Minion(self))
-        # self.characters.append(R.Robber(self))
+        self.characters.append(R.Robber(self))
         self.characters.append(S.Seer(self))
 
+        # self.characters.append(W.Werewolf(self))
         self.characters.append(W.Werewolf(self))
-        self.characters.append(W.Werewolf(self))
-        # self.characters.append(V.Villager(self))
+        self.characters.append(V.Villager(self))
         # self.characters.append(V.Villager(self))
 
     def start_game(self):
@@ -296,17 +296,22 @@ class WerewolfGame:
         return response
 
     def update_move(self, role, move_method, arg1, arg2):
-        if self.turn_handler.whose_turn() == role:
+        if role in self.turn_handler.needs_to_go:
             move_method(arg1, arg2)
-            if not self.turn_handler.next_turn():
+            if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):
                 self.DISCUSSION_PHASE = True
+                now = datetime.now()
+                self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
                 return
             while self.turn_handler.turn_pointer.stored_move is not None:
                 print(f'The {self.turn_handler.whose_turn()} has a stored move, so that action is being taken.')
                 stored_move = self.turn_handler.turn_pointer.stored_move
                 stored_move['function'](stored_move['args'][0], stored_move['args'][1])
-                if not self.turn_handler.next_turn():
+                if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):
+                    print(f'Here is everyone that still needs to go {self.turn_handler.needs_to_go}')
                     self.DISCUSSION_PHASE = True
+                    now = datetime.now()
+                    self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
                 return
         else:
             move = {
@@ -316,8 +321,6 @@ class WerewolfGame:
             self.turn_handler.store_a_move(role, move)
 
     def update_game_log(self, role, move_summary):
-        print(role)
-        print(move_summary)
         print(self.turn_handler.needs_to_go)
 
         if role in self.turn_handler.needs_to_go:
@@ -326,7 +329,7 @@ class WerewolfGame:
             self.game_log.append(move_summary)
             print(self.game_log)
         else:
-            print("Cannot update game.")
+            print("Cannot update game log.")
 
         if not len(self.turn_handler.needs_to_go):
             print("no one else needs to go")

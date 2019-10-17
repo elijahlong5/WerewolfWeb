@@ -3,7 +3,6 @@ class Werewolf:
     def __init__(self, game):
         self.game = game
         self.identity = 'You are a Werewolf.'
-        self.other_werewolves = []
         self.description = 'Dont let others find out your identity. Dont be killed at the end of the game.'
         self.stage = None
 
@@ -23,8 +22,6 @@ class Werewolf:
             if p_id == player_id:
                 continue
             elif type(p.original_role) == type(self):
-                # TODO: move this to process player response.
-                # Append to game log that they saw the other werewolves.
                 d["fellow_wolves"][p_id] = p.name
                 d["lone_wolf"] = False
         return d
@@ -33,9 +30,10 @@ class Werewolf:
 
         # Case 1: werewolf acknowledges they are a werewolf.
         print(response)
-        if response['status'] == 'acknowledged':
+        if 'status' in response.keys() and response['status'] == 'acknowledged':
             self.game.update_game_log("Werewolf", f"Werewolves saw the other werewolves.")
             return {'Ay': "response received"}
+        # Case 2: werewolf is choosing a card
         else:
             middle_cards = self.game.jsonify_middle_cards()
             card_dict = {
@@ -43,6 +41,7 @@ class Werewolf:
                 'card_identity': middle_cards[response['card'].lower()]
             }
             # Append to game log what card they viewed
+            # TODO: Werewolf may not see this if their page redirects too fast.
             self.game.update_game_log("Werewolf", f"The werewolf viewed the {response['card']} card which"
                                               f"was the {card_dict['card_identity']}")
             return card_dict
