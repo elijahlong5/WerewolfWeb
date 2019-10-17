@@ -1,13 +1,11 @@
 /*
     Displays the players in the lobby excluding themselves.
  */
-let GameService = new GameServices();
-
 document.addEventListener("DOMContentLoaded", function() {
     let playerDict = window.initial_player_dict;
 
     let buttonDivName = 'name-buttons';
-    GameService.addSimpleElement("div",'role-div', "", buttonDivName);
+    GameServices.addSimpleElement("div",'role-div', "", buttonDivName);
 
     let selectedCount = 0;
 
@@ -16,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     for (let key in playerDict['names']) {
         // name elements are toggleable between selected and not.
-        GameService.addElement(key, buttonDivName, "button",
+        GameServices.addElement(key, buttonDivName, "button",
             ['button', 'not-selected'],
             playerDict['names'][key]['name']
             );
@@ -65,9 +63,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     let formId = "submit-form";
     let submitFormButtonId = "form-submit-button";
-    GameService.addElement(formId, buttonDivName, "form",[],"",
+    GameServices.addElement(formId, buttonDivName, "form",[],"",
         ["method", "post"]);
-    GameService.addElement(submitFormButtonId, formId, "button",["button"],
+    GameServices.addElement(submitFormButtonId, formId, "button",["button"],
         "Troublemake!",["type","submit"]);
     document.getElementById(submitFormButtonId).addEventListener("click", function(){
         event.preventDefault();

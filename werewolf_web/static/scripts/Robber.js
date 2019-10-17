@@ -1,5 +1,3 @@
-let GameService = new GameServices();
-
 document.addEventListener("DOMContentLoaded", function() {
 
     let player_names = window.initial_player_dict;
@@ -7,14 +5,14 @@ document.addEventListener("DOMContentLoaded", function() {
     let roleDivId = "role-div";
     let buttonDivId = 'name-buttons';
 
-    GameService.addSimpleElement("div", roleDivId, "", buttonDivId);
+    GameServices.addSimpleElement("div", roleDivId, "", buttonDivId);
 
     let formId = 'submit-form';
-    GameService.addElement(formId, buttonDivId, "form",[],"",
+    GameServices.addElement(formId, buttonDivId, "form",[],"",
         ["method", "post"]);
 
     for (let key in player_names['names']) {
-        GameService.addElement(key, formId,"button", ["button"],
+        GameServices.addElement(key, formId,"button", ["button"],
             player_names['names'][key]['name'],
             ["type", "submit"]);
 

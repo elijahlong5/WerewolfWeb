@@ -2,8 +2,6 @@
     This displays the identities of the other werewolves (retrieved from the game logic)
     If there are no other werewolves, the player must choose one card from the middle.
  */
-
-let GameService = new GameServices();
 document.addEventListener("DOMContentLoaded", function() {
 
     // Display who the other werewolves are, or the 3 middle cards.
@@ -12,22 +10,23 @@ document.addEventListener("DOMContentLoaded", function() {
     let buttonDivName = 'role-div';
 
     if (playerDict['lone_wolf'] === false) {
-        GameService.addSimpleElement("h2", buttonDivName, "Here are the other werewolves.")
+        GameServices.addSimpleElement("h2", buttonDivName, "Here are the other werewolves.")
         for (let key in playerDict['fellow_wolves']) {
             let nrText = playerDict['fellow_wolves'][key];
-            GameService.addSimpleElement("li", buttonDivName, nrText);
+            GameServices.addSimpleElement("li", buttonDivName, nrText);
         }
+        GameService.addOkButton(buttonDivName);
     } else {
 
         let buttonFormId = "button-form";
-        GameService.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
-        GameService.addElement(buttonFormId, buttonDivName, "form",[],"",
+        GameServices.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
+        GameServices.addElement(buttonFormId, buttonDivName, "form",[],"",
             ["method", "post"]);
-        GameService.addElement("Left", buttonFormId,"button", ["button"],
+        GameServices.addElement("Left", buttonFormId,"button", ["button"],
             "Left", ["type", "submit"]);
-        GameService.addElement("Middle", buttonFormId,"button",["button"],
+        GameServices.addElement("Middle", buttonFormId,"button",["button"],
             "Middle", ["type", "submit"]);
-        GameService.addElement("Right", buttonFormId,"button",["button"],
+        GameServices.addElement("Right", buttonFormId,"button",["button"],
             "Right", ["type", "submit"]);
 
         document.getElementById("Left").addEventListener("click", function(){

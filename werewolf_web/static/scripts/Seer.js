@@ -1,23 +1,22 @@
 let selectedKeys = [];
-let GameService = new GameServices();
 document.addEventListener("DOMContentLoaded", function() {
 
     let playerNames = window.initial_player_dict;
 
     let roleDivId = "role-div";
     let buttonDivId = 'name-buttons';
-    GameService.addSimpleElement("div", roleDivId, "", buttonDivId);
+    GameServices.addSimpleElement("div", roleDivId, "", buttonDivId);
 
     let middleCardDivId = 'middle-card-buttons';
-    GameService.addSimpleElement("div", roleDivId, "", middleCardDivId);
+    GameServices.addSimpleElement("div", roleDivId, "", middleCardDivId);
 
     // Add Middle Cards
     let middleCardButtonClasses = ["button", "middle-card"];
-    GameService.addElement("Left", middleCardDivId,"button", middleCardButtonClasses,
+    GameServices.addElement("Left", middleCardDivId,"button", middleCardButtonClasses,
         "Left");
-    GameService.addElement("Middle", middleCardDivId,"button", middleCardButtonClasses,
+    GameServices.addElement("Middle", middleCardDivId,"button", middleCardButtonClasses,
         "Middle");
-    GameService.addElement("Right", middleCardDivId,"button", middleCardButtonClasses,
+    GameServices.addElement("Right", middleCardDivId,"button", middleCardButtonClasses,
         "Right");
 
     document.getElementById("Left").addEventListener("click", function(){
@@ -33,9 +32,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add submit button
     let formId = "submit-form";
     let submitFormButtonId = "form-submit-button";
-    GameService.addElement(formId, buttonDivId, "form",[],"",
+    GameServices.addElement(formId, buttonDivId, "form",[],"",
         ["method", "post"]);
-    GameService.addElement(submitFormButtonId, formId, "button",["button"],
+    GameServices.addElement(submitFormButtonId, formId, "button",["button"],
         "See Card(s)",["type","submit"]);
     document.getElementById(submitFormButtonId).addEventListener("click", function(){
         event.preventDefault();
@@ -45,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add Player Name Buttons
     let buttonClasses = ['button', 'not-selected'];
     for (let key in playerNames['names']) {
-        GameService.addElement(key, buttonDivId, "button"
+        GameServices.addElement(key, buttonDivId, "button"
             , buttonClasses,playerNames['names'][key]['name']);
         document.getElementById(key).addEventListener("click", function () {
             handleButtonClicked(key);

@@ -25,20 +25,26 @@ class Werewolf:
             elif type(p.original_role) == type(self):
                 # TODO: move this to process player response.
                 # Append to game log that they saw the other werewolves.
-                self.game.update_game_log("Werewolf", f"Werewolves saw the other werewolves.")
                 d["fellow_wolves"][p_id] = p.name
                 d["lone_wolf"] = False
         return d
 
     def process_player_response(self, player_id, response):
-        middle_cards = self.game.jsonify_middle_cards()
-        card_dict = {
-            'requested_card': response['card'],
-            'card_identity': middle_cards[response['card'].lower()]
-        }
-        # Append to game log what card they viewed
-        self.game.update_game_log("Werewolf", f"The werewolf viewed the {response['card']} card which"
-                                          f"was the {card_dict['card_identity']}")
-        return card_dict
+
+        # Case 1: werewolf acknowledges they are a werewolf.
+        print(response)
+        if response['status'] == 'acknowledged':
+            self.game.update_game_log("Werewolf", f"Werewolves saw the other werewolves.")
+            return {'Ay': "response received"}
+        else:
+            middle_cards = self.game.jsonify_middle_cards()
+            card_dict = {
+                'requested_card': response['card'],
+                'card_identity': middle_cards[response['card'].lower()]
+            }
+            # Append to game log what card they viewed
+            self.game.update_game_log("Werewolf", f"The werewolf viewed the {response['card']} card which"
+                                              f"was the {card_dict['card_identity']}")
+            return card_dict
 
 

@@ -18,11 +18,11 @@ async function refreshGameState(access_token) {
     console.log(gameState)
     document.getElementById('role-div').innerHTML = "";
     let playerDivId = "player-div";
-    GameService.addElement(playerDivId, 'role-div','div',
+    GameServices.addElement(playerDivId, 'role-div','div',
         [],"Players:");
     for (let item in gameState['players']) {
         let cur_player = "Player name: " + gameState['players'][item]["name"] + " is the " + gameState['players'][item]["original_role"];
-        GameService.addElement(item, playerDivId, 'div',[], cur_player);
+        GameServices.addElement(item, playerDivId, 'div',[], cur_player);
     }
 
 }

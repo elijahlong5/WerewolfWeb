@@ -67,7 +67,7 @@ def join_lobby():
 @app.route('/lobby/<access_token>/player_id/<player_id>/')
 def lobby(access_token, player_id=None):
     game = lobbies[access_token]
-    if game.GAME_ON:
+    if game.is_game_on:
         if player_id is None:
             player_id = 'spectating'
         return redirect(url_for('game_on',
@@ -89,7 +89,7 @@ def start_game():
     player_id = request.form['player_id']
     game = lobbies[access_token]
     if game.verify_startable_lobby():
-        if not game.GAME_ON:
+        if not game.is_game_on:
             game.start_game()
             print(f"Game {access_token} is started.")
         return redirect(url_for('game_on',
@@ -136,7 +136,11 @@ def wake_up(access_token, player_id=None):
 def game_complete(access_token, player_id=None):
     game = lobbies[access_token]
     players_imprint = game.players
-    game.GAME_ON = False
+    spectators_imprint = game.spectators
+    game.is_game_on = False
+
+    # TODO: Display end of game stuff after game is complete
+    #   Who won, who voted for whom, etc
     print('-----game log-------')
     for l in game.game_log:
         print(l)
@@ -145,13 +149,13 @@ def game_complete(access_token, player_id=None):
     for p in game.players.values():
         print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for {p.voted_for.name}')
 
-    # ATTEMPT TO RESET GAME FUNCITONS
+    # RESET GAME FUNCTIONS BEFORE REDIRECTING TO LOBBY.
     lobbies[access_token] = WerewolfGame()
-    lobbies[access_token].GAME_ON = False
+    lobbies[access_token].is_game_on = False
     lobbies[access_token].players = players_imprint
 
-    print(lobbies)
-    print(lobbies[access_token].players.values())
+    lobbies[access_token].spectators = spectators_imprint
+
     for p in lobbies[access_token].players.values():
         p.original_role = None
         p.current_role = None
@@ -191,7 +195,7 @@ def post_change_back_to_player(access_token):
 
 @app.route('/api/lobbies/<access_token>/game_on/')
 def get_is_game_on(access_token):
-    return {'game_on': lobbies[access_token].GAME_ON}
+    return {'game_on': lobbies[access_token].is_game_on}
 
 
 @app.route('/api/lobbies/<access_token>/discussion/')

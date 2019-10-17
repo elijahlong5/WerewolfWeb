@@ -1,7 +1,3 @@
-let timeBetweenRefreshesVOTING = 2000;
-
-let GameService = new GameServices();
-const access_token = GameService.getAccessTokenFromUrl();
 document.addEventListener("DOMContentLoaded", function() {
     let votingDict = window.votingDict;
 
@@ -28,18 +24,18 @@ document.addEventListener("DOMContentLoaded", function() {
             castVote(selectedId, playerId);
             document.getElementById("countdown").innerHTML = "TIME EXPIRED";
         }
-    }, 1000);
+    }, 100);
 
 
     let buttonDivName = 'name-buttons';
-    GameService.addSimpleElement("div",'vote-ballet', "", buttonDivName);
+    GameServices.addSimpleElement("div",'vote-ballet', "", buttonDivName);
 
     let playerId = GameService.getPlayerIdFromUrl();
 
     for (let key in votingDict['players']['names']) {
         console.log('key', key, "playerid:", playerId);
 
-        GameService.addElement(key, buttonDivName, "button",
+        GameServices.addElement(key, buttonDivName, "button",
             ['button', 'not-selected'],
             votingDict['players']['names'][key]['name']
         );
@@ -72,9 +68,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     let formId = "submit-form";
     let submitFormButtonId = "form-submit-button";
-    GameService.addElement(formId, buttonDivName, "form",[],"",
+    GameServices.addElement(formId, buttonDivName, "form",[],"",
         ["method", "post"]);
-    GameService.addElement(submitFormButtonId, formId, "button",["button"],
+    GameServices.addElement(submitFormButtonId, formId, "button",["button"],
         "Cast Vote!",["type","submit"]);
     document.getElementById(submitFormButtonId).addEventListener("click", function(){
         event.preventDefault();
@@ -98,7 +94,7 @@ function castVote(voteId, playerId) {
 }
 
 function refreshForGameComplete() {
-    setTimeout(refreshForGameComplete, timeBetweenRefreshesVOTING);
+    setTimeout(refreshForGameComplete, GameService.timeBetweenRefreshes);
     redirectIfGameComplete(access_token);
 }
 

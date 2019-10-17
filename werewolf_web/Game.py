@@ -88,7 +88,7 @@ class WerewolfGame:
     def __init__(self):
         self.turn_handler = None
 
-        self.GAME_ON = False
+        self.is_game_on = False
         self.DISCUSSION_PHASE = False
         self.characters = []
         self.players = {}
@@ -101,24 +101,24 @@ class WerewolfGame:
         self.discussion_over_at = None
 
         self.characters.append(I.Insomniac(self))
-        self.characters.append(T.Troublemaker(self))
+        # self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
         self.characters.append(W.Werewolf(self))
 
         # self.characters.append(M.Minion(self))
-        self.characters.append(R.Robber(self))
+        # self.characters.append(R.Robber(self))
         self.characters.append(S.Seer(self))
 
-
-        # self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
         # self.characters.append(V.Villager(self))
         # self.characters.append(V.Villager(self))
 
     def start_game(self):
-        if self.GAME_ON:
+        if self.is_game_on:
             return "Game is already in session."
         else:
-            self.GAME_ON = True
+            self.is_game_on = True
             self.DISCUSSION_PHASE = False
             self.assign_characters()
             self.initialize_linked_list()
@@ -133,7 +133,7 @@ class WerewolfGame:
                   f' (Right): {str(self.middle_cards[2])}')
 
     def assign_characters(self):
-        shuffles = 50
+        shuffles = 0
         for i in range(0, shuffles):
             card1 = random.randint(0, len(self.characters) - 1)
             card2 = random.randint(0, len(self.characters) - 1)
@@ -261,7 +261,7 @@ class WerewolfGame:
                     new_player_id not in self.players.keys()
                     and new_player_id not in self.spectators.keys()
             ):
-                if self.GAME_ON:
+                if self.is_game_on:
                     self.spectators[new_player_id] = Human.Human(name, new_player_id)
                 else:
                     self.players[new_player_id] = Human.Human(name, new_player_id)
@@ -332,7 +332,7 @@ class WerewolfGame:
             print("no one else needs to go")
             self.DISCUSSION_PHASE = True
             now = datetime.now()
-            self.discussion_over_at = now + timedelta(seconds=5*60)
+            self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
 
     def verify_startable_lobby(self):
         startable = True
@@ -350,7 +350,11 @@ class WerewolfGame:
 
     def discussion_dict(self):
         print(f'Discussion will be over at {self.discussion_over_at}')
+
         d = self.discussion_over_at
+        if d is None:
+            d = datetime.now()
+            print('discussion time was not set.')
         exp_time = (
             f'{d.strftime("%b")} {d.strftime("%d")}, {d.strftime("%Y")}'
             f' {d.strftime("%H")}:{d.strftime("%M")}:{d.strftime("%S")}'

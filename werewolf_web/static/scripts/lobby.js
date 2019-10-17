@@ -1,7 +1,3 @@
-let timeBetweenRefreshes = 2000;
-
-let GameService = new GameServices();
-const access_token = GameService.getAccessTokenFromUrl();
 document.addEventListener("DOMContentLoaded", function() {
     let initialPlayers = window.initialPlayers;
     let initialSpectators = window.initialSpectators;
@@ -12,9 +8,9 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log('Player id not found.');
     }
     if (playerId !== null && initialPlayers[playerId]){
-        GameService.addElement("become-spectator", "toggle-spectator", "form",[],"",
+        GameServices.addElement("become-spectator", "toggle-spectator", "form",[],"",
             ["method", "post"]);
-        GameService.addElement("spectate", "become-spectator","button", ["button"],
+        GameServices.addElement("spectate", "become-spectator","button", ["button"],
             "Change to spectator", ["type", "submit"]);
         document.getElementById("spectate").addEventListener("click", function () {
             changeToSpectator(playerId);
@@ -23,13 +19,13 @@ document.addEventListener("DOMContentLoaded", function() {
         if (playerId !== null && initialSpectators[playerId]) {
             createChangeToPlayerDisplay(playerId)
         } else {
-            GameService.addElement("become-player", "toggle-spectator", "form",[],"",
+            GameServices.addElement("become-player", "toggle-spectator", "form",[],"",
                 ["method", "post", "action", "/join-lobby/"]);
-            GameService.addElement("requested-name","become-player", "input", [],
+            GameServices.addElement("requested-name","become-player", "input", [],
                 "",["type", "text", "name", "player_name_field"]);
-            GameService.addElement("lobby-id","become-player", "input", [],
+            GameServices.addElement("lobby-id","become-player", "input", [],
                 "",["type", "hidden", "name", "access_token", "value", GameService.getAccessTokenFromUrl()]);
-            GameService.addElement("play", "become-player","button", ["button"],
+            GameServices.addElement("play", "become-player","button", ["button"],
                 "Join lobby as a player", ["type", "submit"]);
         }
     }
@@ -37,16 +33,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function refresh() {
-    setTimeout(refresh, timeBetweenRefreshes);
+    setTimeout(refresh, GameService.timeBetweenRefreshes);
     redirectIfGameOn(access_token);
     refreshPlayersDiv(access_token);
 }
 
 function createChangeToPlayerDisplay(user_id) {
     document.getElementById("toggle-spectator").innerHTML = "";
-    GameService.addElement("become-player", "toggle-spectator", "form",[],"",
+    GameServices.addElement("become-player", "toggle-spectator", "form",[],"",
         ["method", "post"]);
-    GameService.addElement("play", "become-player","button", ["button"],
+    GameServices.addElement("play", "become-player","button", ["button"],
         "Change to player", ["type", "submit"]);
     document.getElementById("play").addEventListener("click", function () {
         let playerId = null;
@@ -74,9 +70,9 @@ function changeBackToPlayer (userId) {
     let url = GameService.generateLobbyPostUrl() + "post_change_back_to_player/";
     GameService.fetchPostResponseFromServer(req, url).then(r => {
         document.getElementById("toggle-spectator").innerHTML = "";
-        GameService.addElement("become-spectator", "toggle-spectator", "form",[],"",
+        GameServices.addElement("become-spectator", "toggle-spectator", "form",[],"",
             ["method", "post"]);
-        GameService.addElement("spectate", "become-spectator","button", ["button"],
+        GameServices.addElement("spectate", "become-spectator","button", ["button"],
             "Change to spectator", ["type", "submit"]);
         document.getElementById("spectate").addEventListener("click", function () {
             changeToSpectator(userId);
@@ -121,7 +117,7 @@ async function refreshPlayersDiv(access_token) {
     for (const key in responsePlayersDict) {
         if (! document.getElementById(key)) {
             let text = responsePlayersDict[key]['name'] + " (id: " + key + ")";
-            GameService.addElement(key, "players", "li", [],
+            GameServices.addElement(key, "players", "li", [],
                 text, []);
         }
     }

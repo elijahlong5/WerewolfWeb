@@ -8,13 +8,13 @@ document.addEventListener("DOMContentLoaded", function() {
     let werewolfDict = window.initial_player_dict;
     let roleDivId = "role-div"
 
-    GameService.addSimpleElement('h2', roleDivId, "Werewolves:");
+    GameServices.addSimpleElement('h2', roleDivId, "Werewolves:");
     if (Object.keys(werewolfDict['wolves']).length === 0){
-        GameService.addSimpleElement("li", roleDivId, "There are NO WEREWOLVES");
+        GameServices.addSimpleElement("li", roleDivId, "There are NO WEREWOLVES");
     } else {
         for (let key in werewolfDict['wolves']) {
             let nrText = werewolfDict['wolves'][key];
-            GameService.addSimpleElement("li", roleDivId, nrText);
+            GameServices.addSimpleElement("li", roleDivId, nrText);
         }
     }
 });
