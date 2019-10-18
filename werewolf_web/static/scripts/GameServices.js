@@ -92,7 +92,6 @@ class GameServices{
             event.preventDefault();
         }
         catch {
-
         }
         let data = serverRequestDict;
         const response = await fetch(url,{
@@ -107,7 +106,6 @@ class GameServices{
             referrer: 'no-referrer',
             body: JSON.stringify(data)
         });
-
         const responseDict = await response.json();
         let gameResponse = responseDict;
         return gameResponse;

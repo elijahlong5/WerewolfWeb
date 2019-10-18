@@ -96,22 +96,23 @@ class WerewolfGame:
 
         self.middle_cards = [0, 1, 2]
         self.game_log = []
+        self.game_over_dictionary = {}
 
         self.disc_length = 0.5  # in minutes
         self.discussion_over_at = None
 
-        # self.characters.append(I.Insomniac(self))
+        self.characters.append(I.Insomniac(self))
         self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
         # self.characters.append(W.Werewolf(self))
 
-        # self.characters.append(M.Minion(self))
+        self.characters.append(M.Minion(self))
         self.characters.append(R.Robber(self))
         self.characters.append(S.Seer(self))
 
         # self.characters.append(W.Werewolf(self))
-        self.characters.append(W.Werewolf(self))
-        self.characters.append(V.Villager(self))
+        # self.characters.append(W.Werewolf(self))
+        # self.characters.append(V.Villager(self))
         # self.characters.append(V.Villager(self))
 
     def start_game(self):
@@ -133,7 +134,7 @@ class WerewolfGame:
                   f' (Right): {str(self.middle_cards[2])}')
 
     def assign_characters(self):
-        shuffles = 0
+        shuffles = 50
         for i in range(0, shuffles):
             card1 = random.randint(0, len(self.characters) - 1)
             card2 = random.randint(0, len(self.characters) - 1)
@@ -202,21 +203,13 @@ class WerewolfGame:
     def jsonify_players(self):
         p_conversion = {}
         for p_id, player in self.players.items():
-            p_conversion[p_id] = {
-                'name': player.name,
-                'original_role': player.original_role,
-                'current_role': player.current_role,
-            }
-
-
+            p_conversion[p_id] = player.get_json_dict()
         return p_conversion
 
     def jsonify_spectators(self):
         spectators_dict = {}
         for p_id, player in self.spectators.items():
-            spectators_dict[p_id] = {
-                'name': player.name,
-            }
+            spectators_dict[p_id] = player.get_json_dict()
         return spectators_dict
 
     def jsonify_players_names(self):
@@ -288,7 +281,7 @@ class WerewolfGame:
 
     def get_player_specific_info(self, player_id):
         # This info the player uses to start their turn.
-        return self.players[player_id].get_dict()
+        return self.players[player_id].get_role_initial_dict()
 
     def get_game_response(self, player_id, player_response):
         player_original_role = self.players[player_id].original_role
@@ -387,4 +380,30 @@ class WerewolfGame:
             # This should only happen if they haven't selected anyone at the end of the discussion time.
             self.players[int(cast_vote_dict["player_id"])].voted_for = "No one"
 
+    def calculate_winner(self):
+        """
+        Sets game_over_dict
+        Resets game state.
+        """
+        who_died = None
 
+        for p_id, p in self.players.items():
+            if (who_died is None and p.votes_for > 0) or (who_died is not None and p.votes_for > who_died.votes_for):
+                who_died = p
+
+        who_died.json_dict()
+
+        self.game_over_dictionary = {
+            'game_state': self.jsonify_full_game_state(),
+            'died': who_died,
+        }
+
+        """
+        Question to answer
+        1. Who won, their original role, their current role.
+        2. Who each player ended up as
+        3. How many votes each person had, and who they voted for.
+        :return:
+        """
+        # TODO: I think this should just be game state and handled in the server api?
+        #   No it should be done here

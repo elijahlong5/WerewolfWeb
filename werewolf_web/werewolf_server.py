@@ -109,7 +109,7 @@ def game_on(access_token, player_id=None):
     game = lobbies[access_token]
     try:
         player_role = str(game.players[int(player_id)].original_role)
-        player_dict = game.players[int(player_id)].get_dict()
+        player_dict = game.players[int(player_id)].get_role_initial_dict()
     except Exception as e:
         print(e)
         player_role = 'Spectator'
@@ -226,7 +226,7 @@ def get_player_initial_dict(access_token, player_id):
     :returns the player dict, which should be incomplete if it isn't their turn yet.
     """
     game = lobbies[access_token]
-    initial_player_dict = game.players[int(player_id)].get_dict()
+    initial_player_dict = game.players[int(player_id)].get_role_initial_dict()
     return jsonify(initial_player_dict)
 
 
@@ -277,10 +277,11 @@ if __name__ == "__main__":
     # TODO: Remove, just here for testing
     lobbies['RING1'] = WerewolfGame()
     game = lobbies['RING1']
-    # game.add_player("Jackie")
+    game.add_player("Jackie")
     # game.add_player("Jilliam")
     # game.add_player("Snoopy")
     # game.add_player("Tonya")
     # game.add_player("Taek")
     # game.add_player("Sam")
+    # app.run(debug=True, host='0.0.0.0', port=8080)
     app.run(debug=True, port=8080)
