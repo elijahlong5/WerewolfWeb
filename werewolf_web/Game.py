@@ -90,6 +90,7 @@ class WerewolfGame:
 
         self.is_game_on = False
         self.DISCUSSION_PHASE = False
+        self.still_voting = True
         self.characters = []
         self.players = {}
         self.spectators = {}
@@ -102,13 +103,13 @@ class WerewolfGame:
         self.discussion_over_at = None
 
         self.characters.append(I.Insomniac(self))
-        self.characters.append(T.Troublemaker(self))
+        # self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
-        # self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
 
         self.characters.append(M.Minion(self))
         self.characters.append(R.Robber(self))
-        self.characters.append(S.Seer(self))
+        # self.characters.append(S.Seer(self))
 
         # self.characters.append(W.Werewolf(self))
         # self.characters.append(W.Werewolf(self))
@@ -187,16 +188,9 @@ class WerewolfGame:
         across the different players.
         """
         game_state = {
-            'players': {},
-            'middle_cards': {},
-            'game_log': self.game_log,
+            'players': self.jsonify_players(),
+            # 'game_log': self.game_log,
         }
-        for p_id, player in self.players.items():
-            game_state['players'][p_id] = {
-                "name": player.name,
-                "original_role": str(player.original_role),
-                "current_role": str(player.current_role)
-            }
 
         return game_state
 
@@ -248,7 +242,7 @@ class WerewolfGame:
             return -1
         else:
             MAX_ID = 100
-            new_player_id = random.randint(0, MAX_ID)
+            new_player_id = random.randint(1, MAX_ID)
             if (
                 # ID is original
                     new_player_id not in self.players.keys()
@@ -380,23 +374,56 @@ class WerewolfGame:
             # This should only happen if they haven't selected anyone at the end of the discussion time.
             self.players[int(cast_vote_dict["player_id"])].voted_for = "No one"
 
+        status = False
+        for p in self.players.values():
+            if p.voted_for is None:
+                status = True
+
+        self.still_voting = status
+        if not self.still_voting:
+            self.calculate_winner()
+
     def calculate_winner(self):
         """
         Sets game_over_dict
         Resets game state.
         """
-        who_died = None
 
-        for p_id, p in self.players.items():
-            if (who_died is None and p.votes_for > 0) or (who_died is not None and p.votes_for > who_died.votes_for):
-                who_died = p
+        # Find the highest and lowest number of votes.
+        most_votes = 0
+        least_votes = 0
+        for p in self.players.values():
+            print(f'votes against for {p.name} is {p.votes_against}')
+            if p.votes_against > most_votes:
+                most_votes = p.votes_against
 
-        who_died.json_dict()
+        # Find who died and what is the winning team.
+        who_died = []
+        winning_team = "Werewolves"
+        if most_votes == least_votes:
+            # This means everyone received the same number of votes,  no one dies.
+            who_died = []
+        else:
+            # Someone died.
+            for p_id, p in self.players.items():
+                if p.votes_against == most_votes:
+                    # This player dies.
+                    who_died.append(p_id)
+                    if str(p.current_role) == "Werewolf":
+                        winning_team = "Villagers"
 
+        # This maintains state while we display the game over screen
         self.game_over_dictionary = {
             'game_state': self.jsonify_full_game_state(),
-            'died': who_died,
+            'died_list_id': who_died,
+            'winning_team': winning_team,
         }
+        for p in self.players.values():
+            p.original_role = None
+            p.current_role = None
+        # Dont need to reset spectators
+
+
 
         """
         Question to answer

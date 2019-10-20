@@ -2,7 +2,7 @@
 {% block styling %}
 {% endblock styling %}
 {% block content %}
-<div >
+<div id="game-complete">
     Game is complete!
 </div>
 <div>
@@ -10,4 +10,8 @@
 </div>
 {% endblock content %}
 {% block scripts %}
+    <script>
+        window.gameCompleteDict = {{ game_complete_dict | tojson}};
+    </script>
+    <script src="/static/scripts/GameComplete.js"></script>
 {% endblock scripts %}

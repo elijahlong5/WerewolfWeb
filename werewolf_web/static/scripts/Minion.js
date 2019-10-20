@@ -1,12 +1,10 @@
 /*
     The Minion displays the identities of the other werewolves.
  */
-let GameService = new GameServices();
-
 document.addEventListener("DOMContentLoaded", function() {
 
     let werewolfDict = window.initial_player_dict;
-    let roleDivId = "role-div"
+    let roleDivId = "role-div";
 
     GameServices.addSimpleElement('h2', roleDivId, "Werewolves:");
     if (Object.keys(werewolfDict['wolves']).length === 0){
