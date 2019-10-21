@@ -189,7 +189,8 @@ class WerewolfGame:
         """
         game_state = {
             'players': self.jsonify_players(),
-            # 'game_log': self.game_log,
+            'game_log': self.game_log,
+            'middle_cards': self.jsonify_middle_cards(),
         }
 
         return game_state
@@ -298,7 +299,6 @@ class WerewolfGame:
                 self.turn_handler.needs_to_go.pop(
                     self.turn_handler.needs_to_go.index(self.turn_handler.turn_pointer.role)
                 )
-
                 if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):
                     print(f'Here is everyone that still needs to go {self.turn_handler.needs_to_go}')
                     self.DISCUSSION_PHASE = True
@@ -312,12 +312,13 @@ class WerewolfGame:
             }
             self.turn_handler.store_a_move(role, move)
 
-    def update_game_log(self, role, move_summary):
+    def update_game_log(self, role, move_summary=None):
 
         if role in self.turn_handler.needs_to_go:
             print('game log appended')
             self.turn_handler.needs_to_go.pop(self.turn_handler.needs_to_go.index(role))
-            self.game_log.append(move_summary)
+            if move_summary:
+                self.game_log.append(move_summary)
             print(self.game_log)
         else:
             print("Updating game log, but not making the move happen.")
@@ -412,18 +413,22 @@ class WerewolfGame:
                     if str(p.current_role) == "Werewolf":
                         winning_team = "Villagers"
 
-        # This maintains state while we display the game over screen
+        # To maintain state while we display the game over screen
         self.game_over_dictionary = {
             'game_state': self.jsonify_full_game_state(),
             'died_list_id': who_died,
             'winning_team': winning_team,
         }
+
         for p in self.players.values():
             p.original_role = None
             p.current_role = None
+
+        self.turn_handler = None
+        self.is_game_on = False
+        self.DISCUSSION_PHASE = False
+        self.game_log = []
         # Dont need to reset spectators
-
-
 
         """
         Question to answer

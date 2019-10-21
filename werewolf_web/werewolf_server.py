@@ -307,7 +307,8 @@ def get_game_state(access_token):
 @app.route('/api/lobbies/<access_token>/players/<player_id>/cast-vote/', methods=['post'])
 def cast_vote(access_token, player_id):
     game = lobbies[access_token]
-    if int(player_id) in game.players.keys():
+
+    if player_id != "undefined" and int(player_id) in game.players.keys():
         vote_post = request.json
         cast_vote_dict = {
             'player_id': player_id,

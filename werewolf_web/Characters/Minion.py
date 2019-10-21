@@ -19,5 +19,12 @@ class Minion:
         for p_id, p in self.game.players.items():
             if type(p.original_role) == type(temp_wolf):
                 d['wolves'][str(p_id)] = p.name
-        self.game.update_game_log("Minion", f"The minion viewed the werewolves.")
         return d
+
+    def process_player_response(self, player_id, player_response):
+        """When the minion acknowledges that they have seen their card."""
+        if "Minion" in self.game.turn_handler.needs_to_go:
+            self.game.update_game_log("Minion", f"The minion viewed the werewolves.")
+            return {"Ay": "Ok"}
+        else:
+            return {"Ay": "Already updated game log"}

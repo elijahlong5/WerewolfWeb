@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
     GameServices.addSimpleElement("div", 'role-div',
         "You are notified of your identity right before the discussion," +
         "Please wait until your card is shown.");
-    refresh();
+    setTimeout(refresh, 10000);
+
 });
 
 let insomniacsCardDisplayed = false;

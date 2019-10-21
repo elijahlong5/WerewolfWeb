@@ -4,9 +4,9 @@ class GameServices{
         this.playerIdLocationInPathname = 4;
 
         this.timeBetweenRefreshes = 2000;
-
         this.acknowledgedDict = {"status": "acknowledged"};
         this.notifyFormId = "notify-form";
+
     }
 
     // Adding elements to the page
@@ -114,4 +114,3 @@ class GameServices{
 
 const GameService = new GameServices();
 const access_token = GameService.getAccessTokenFromUrl();
-

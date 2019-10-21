@@ -10,6 +10,7 @@
 </div>
 {% endblock content %}
 {% block scripts %}
+    <script src="/static/scripts/GameServices.js"></script>
     <script>
         window.gameCompleteDict = {{ game_complete_dict | tojson}};
     </script>
