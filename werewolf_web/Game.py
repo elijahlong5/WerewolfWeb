@@ -103,13 +103,13 @@ class WerewolfGame:
         self.discussion_over_at = None
 
         self.characters.append(I.Insomniac(self))
-        # self.characters.append(T.Troublemaker(self))
+        self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
         self.characters.append(W.Werewolf(self))
 
         self.characters.append(M.Minion(self))
         self.characters.append(R.Robber(self))
-        # self.characters.append(S.Seer(self))
+        self.characters.append(S.Seer(self))
 
         # self.characters.append(W.Werewolf(self))
         # self.characters.append(W.Werewolf(self))

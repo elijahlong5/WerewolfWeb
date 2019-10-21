@@ -19,7 +19,6 @@ class Insomniac:
         """When the insomniac acknowledges that they have seen their card."""
         if "Insomniac" in self.game.turn_handler.needs_to_go:
             self.game.update_game_log("Insomniac", "The insomniac viewed their card")
-
             return {"Ay": "Ok"}
         else:
             return {"Ay": "Already updated game log"}

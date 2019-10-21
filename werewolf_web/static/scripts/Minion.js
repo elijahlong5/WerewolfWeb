@@ -15,5 +15,5 @@ document.addEventListener("DOMContentLoaded", function() {
             GameServices.addSimpleElement("li", roleDivId, nrText);
         }
     }
-    GameService.addOkButton(roleDivId)
+    GameService.addOkButton(roleDivId);
 });

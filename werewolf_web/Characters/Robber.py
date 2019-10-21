@@ -20,6 +20,7 @@ class Robber:
         if 'status' in response.keys() and response['status'] == 'acknowledged':
             if self.ack_str in self.game.turn_handler.needs_to_go:
                 self.game.update_game_log(self.ack_str)
+                return {"Ay": "Ok"}
 
         p1_id = player_id
         p2_id = int(response['robThisId'])

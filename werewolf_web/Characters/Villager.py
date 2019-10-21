@@ -16,3 +16,4 @@ class Villager:
     def process_player_response(self, player_id, response):
         if 'status' in response.keys() and response['status'] == 'acknowledged':
             self.game.update_game_log("Villager", "Villager viewed their card")
+            return {"Ay": "Ok"}
