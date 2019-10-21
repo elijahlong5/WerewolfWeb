@@ -5,6 +5,7 @@ class Seer:
         self.description = "Look at 2 middle roles or 1 players role."
         self.stage = None
         self.alters_roles = False
+        self.ack_str = "Seer ack"
 
     def __str__(self):
         return "Seer"
@@ -15,6 +16,9 @@ class Seer:
         return d
 
     def process_player_response(self, player_id, response):
+        if 'status' in response.keys() and response['status'] == 'acknowledged':
+            if self.ack_str in self.game.turn_handler.needs_to_go:
+                self.game.update_game_log(self.ack_str)
         card_identities = {}
         game_log_update = "The Seer viewed"
         try:
@@ -33,5 +37,6 @@ class Seer:
             card_identities["middle_card_1"] = middle_cards[response['middle_card_2'].lower()]
             card_identities["middle_card_2"] = middle_cards[response["middle_card_2"].lower()]
 
+        self.game.turn_handler.needs_to_go.append(self.ack_strs)
         self.game.update_game_log("Seer", card_str)
         return {"response": card_str}

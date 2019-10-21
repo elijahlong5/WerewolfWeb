@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
     GameServices.addSimpleElement("div", 'role-div',
         "You are notified of your identity right before the discussion," +
         "Please wait until your card is shown.");
-    setTimeout(refresh, 10000);
+
+    let minTimeBeforeShowing = Math.floor(Math.random() * 3000) + 3000;
+    setTimeout(refresh, minTimeBeforeShowing);
 
 });
 

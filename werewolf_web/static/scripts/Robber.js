@@ -27,5 +27,6 @@ function rob(victimId) {
     GameService.fetchPostResponseFromServer(victimId).then(r => {
         let display = document.getElementById('role-div');
         display.innerHTML = r['response'];
+        GameService.addOkButton('role-div');
     });
 }

@@ -179,6 +179,10 @@ class WerewolfGame:
             self.turn_handler.needs_to_go.append("Minion")
         for i in range(0, roles_in_play.count("Werewolf")):
             self.turn_handler.needs_to_go.append("Werewolf")
+        for i in range(0, roles_in_play.count("Villager")):
+            self.turn_handler.needs_to_go.append("Villager")
+        for i in range(0, roles_in_play.count("Mason")):
+            self.turn_handler.needs_to_go.append("Mason")
 
         print(f'just made needs to go list: {self.turn_handler.needs_to_go}')
 
@@ -284,6 +288,7 @@ class WerewolfGame:
         return response
 
     def update_move(self, role, move_method, arg1, arg2):
+        """Handles players that need to switch the placement of the cards, does not handle the game log"""
         if role in self.turn_handler.needs_to_go:
             move_method(arg1, arg2)
             if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):

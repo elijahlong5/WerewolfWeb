@@ -33,7 +33,7 @@ class Werewolf:
         if 'status' in response.keys() and response['status'] == 'acknowledged':
             if self.ack_str in self.game.turn_handler.needs_to_go:
                 print('response acknowledged, and removed from list')
-                self.game.update_game_log(self.ack_st)
+                self.game.update_game_log(self.ack_str)
             else:
                 self.game.update_game_log("Werewolf", f"Werewolves saw the other werewolves.")
             return {'Ay': "response received"}

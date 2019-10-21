@@ -68,6 +68,7 @@ function makeRequest(key_array) {
     GameService.fetchPostResponseFromServer(d).then(r => {
         let display = document.getElementById('role-div');
         display.innerHTML = r['response'];
+        GameService.addOkButton('role-div');
     });
 }
 
