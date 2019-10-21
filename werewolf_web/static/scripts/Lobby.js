@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
             GameServices.addElement("become-player", "toggle-spectator", "form",[],"",
                 ["method", "post", "action", "/join-lobby/"]);
             GameServices.addElement("requested-name","become-player", "input", [],
-                "",["type", "text", "name", "player_name_field"]);
+                "",["type", "text", "name", "player_name_field"], true);
             GameServices.addElement("lobby-id","become-player", "input", [],
                 "",["type", "hidden", "name", "access_token", "value", GameService.getAccessTokenFromUrl()]);
             GameServices.addElement("play", "become-player","button", ["button"],

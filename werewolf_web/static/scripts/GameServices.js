@@ -19,7 +19,7 @@ class GameServices{
         document.getElementById(parentNode).appendChild(elem);
     }
 
-    static addElement(elementId, parentNode, nodeType, classes=[], text=elementId, attributes=[]) {
+    static addElement(elementId, parentNode, nodeType, classes=[], text=elementId, attributes=[], required=false) {
         const element = document.createElement(nodeType);
 
         element.id = elementId;
@@ -30,6 +30,10 @@ class GameServices{
         for (let i = 0; i < attributes.length; i += 2){
             element.setAttribute(attributes[i], attributes[i+1]);
         }
+        if (required) {
+            element.required = true;
+        }
+
         document.getElementById(parentNode).appendChild(element);
     }
 
