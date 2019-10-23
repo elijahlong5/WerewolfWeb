@@ -94,13 +94,15 @@ class WerewolfGame:
         self.characters = []
         self.players = {}
         self.spectators = {}
+
+        self.did_not_vote_str = "No one"
         self.min_player_count = 3
 
         self.middle_cards = [0, 1, 2]
         self.game_log = []
         self.game_over_dictionary = {}
 
-        self.disc_length = 0.5  # in minutes
+        self.disc_length = 0.25  # in minutes
         self.discussion_over_at = None
 
 
@@ -386,10 +388,10 @@ class WerewolfGame:
     def verify_valid_game_starting_point(self):
         valid_starting_point = True
         if len(self.characters) != len(self.players) + len(self.middle_cards):
-            print(
-                f'Game is not at valid starting point: No. of players: {len(self.players)}, '
-                f'No. of characters: {len(self.characters)}. \nThere need to be 3 more characters than players.'
-            )
+            # print(
+            #     f'Game is not at valid starting point: No. of players: {len(self.players)}, '
+            #     f'No. of characters: {len(self.characters)}. \nThere need to be 3 more characters than players.'
+            # )
             valid_starting_point = False
         # Checking to see that there is at least 1 werewolf in play.
         character_strs =list(map(lambda c: str(c), self.characters))
@@ -431,7 +433,7 @@ class WerewolfGame:
                 print("you've already voted!")
         else:
             # This should only happen if they haven't selected anyone at the end of the discussion time.
-            self.players[int(cast_vote_dict["player_id"])].voted_for = "No one"
+            self.players[int(cast_vote_dict["player_id"])].voted_for = self.did_not_vote_str
 
         status = False
         for p in self.players.values():

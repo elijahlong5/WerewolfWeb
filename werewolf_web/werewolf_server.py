@@ -172,11 +172,19 @@ def game_on(access_token, player_id=None):
 @app.route('/discussion/<access_token>/')
 @app.route('/discussion/<access_token>/player_id/<player_id>/')
 def wake_up(access_token, player_id=None):
+    if access_token not in lobbies.keys():
+        return redirect(url_for('home'))
+    game = lobbies[access_token]
+    if not game.is_game_on:
+        return redirect(url_for('lobby',
+                                access_token=access_token,
+                                player_id=player_id))
+
     if player_id:
         return render_template('wake_up.html',
                                access_token=access_token,
                                player_id=player_id,
-                               discussion_dict=lobbies[access_token].discussion_dict())
+                               discussion_dict=game.discussion_dict())
 
 
 @app.route('/game-complete/<access_token>/')
@@ -210,11 +218,11 @@ def game_complete(access_token, player_id=None):
     # for p in lobbies[access_token].players.values():
     #     p.original_role = None
     #     p.current_role = None
-    print(game.game_over_dictionary)
     return render_template('game_complete.html',
                            access_token=access_token,
                            player_id=player_id,
                            game_complete_dict=game.game_over_dictionary)
+
 
 # GAME API REQUESTS
 @app.route('/api/lobbies/<access_token>/players/')

@@ -14,16 +14,20 @@ class Human:
 
     def get_json_dict(self):
         vf = None
-        if self.voted_for is not None:
-            # print(self.voted_for)
-            # print(self.voted_for.player_id)
+        if self.voted_for != "No one" and self.voted_for is not None:
             vf = self.voted_for.player_id
+
+        if self.current_role is None:
+            team = 'No Team'
+        else:
+            team = self.current_role.team
         return {
             'original_role': str(self.original_role),
             'current_role': str(self.current_role),
             'name': self.name,
             'votes_for': self.votes_against,
             'voted_for_id': vf,
+            'team': team,
         }
 
     def assign_initial_role(self, role):

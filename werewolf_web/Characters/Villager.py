@@ -5,6 +5,7 @@ class Villager:
         self.identity = "You are a villager."
         self.description = "lol"
         self.stage = None
+        self.team = "Villagers"
 
     def __str__(self):
         return "Villager"

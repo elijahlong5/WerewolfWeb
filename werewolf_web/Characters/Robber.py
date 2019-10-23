@@ -5,6 +5,8 @@ class Robber:
         self.description = "Choose someone to rob. Their identity is switched with yours. " \
                            " Now you are the role of this new card."
         self.stage = None
+        self.team = "Villagers"
+
         self.alters_roles = True
         self.ack_str = "Robber Ack"
 

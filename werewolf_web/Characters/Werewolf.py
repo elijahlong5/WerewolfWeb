@@ -5,6 +5,7 @@ class Werewolf:
         self.identity = 'You are a Werewolf.'
         self.description = 'Dont let others find out your identity. Dont be killed at the end of the game.'
         self.ack_str = "Lone Werewolf"
+        self.team = "Werewolves"
 
     def __str__(self):
         return "Werewolf"

@@ -38,14 +38,24 @@ document.addEventListener("DOMContentLoaded", function() {
         "See Card(s)",["type","submit"]);
     document.getElementById(submitFormButtonId).addEventListener("click", function(){
         event.preventDefault();
-        makeRequest(selectedKeys);
+
+        if (selectedKeys.length !== 0) {
+            let is_middle_card = (selectedKeys[0] === 'Left' ||
+                selectedKeys[0] === 'Middle' ||
+                selectedKeys[0] === 'Right');
+            if(selectedKeys.length === 1 && is_middle_card){
+
+            } else {
+                makeRequest(selectedKeys);
+            }
+        }
     });
 
     // Add Player Name Buttons
     let buttonClasses = ['button', 'not-selected'];
     for (let key in playerNames['names']) {
-        GameServices.addElement(key, buttonDivId, "button"
-            , buttonClasses,playerNames['names'][key]['name']);
+        GameServices.addElement(key, buttonDivId, "button",
+            buttonClasses, playerNames['names'][key]['name']);
         document.getElementById(key).addEventListener("click", function () {
             handleButtonClicked(key);
         });

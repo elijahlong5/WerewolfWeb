@@ -4,6 +4,7 @@ class Troublemaker:
         self.identity = "You are the Troublemaker."
         self.definition = "You switch 2 players cards."
         self.stage = None
+        self.team = "Villagers"
         self.alters_roles = True
 
     def __str__(self):

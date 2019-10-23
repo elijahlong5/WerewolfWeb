@@ -6,6 +6,7 @@ class Minion:
         self.identity = "You are the Minion."
         self.description = "Help the werewolves. If they die, you lose"
         self.stage = None
+        self.team = "Werewolves"
 
     def __str__(self):
         return "Minion"
