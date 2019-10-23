@@ -1,18 +1,18 @@
-class Villager:
+class Tanner:
 
     def __init__(self, game):
         self.game = game
-        self.identity = "You are a villager."
+        self.identity = "You are the Tanner."
         self.description = "lol"
-        self.team = "Villagers"
+        self.team = "Tanner"
 
     def __str__(self):
-        return "Villager"
+        return "Tanner"
 
     def jsonify_request(self, player_id):
-        return {"villager": "no info to show"}
+        return {"Tanner": "You win if you die"}
 
     def process_player_response(self, player_id, response):
         if 'status' in response.keys() and response['status'] == 'acknowledged':
-            self.game.update_game_log("Villager", "Villager viewed their card")
+            self.game.update_game_log("Tanner", "Tanner viewed their card")
             return {"Ay": "Ok"}

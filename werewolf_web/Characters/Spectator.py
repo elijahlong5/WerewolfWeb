@@ -3,7 +3,6 @@ class Spectator:
         self.game = game
         self.identity = "You are the Spectating the game."
         self.description = "View the madness"
-        self.stage = None
         self.team = "Villagers"
 
     def __str__(self):

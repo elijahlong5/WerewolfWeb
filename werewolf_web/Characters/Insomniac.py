@@ -3,7 +3,6 @@ class Insomniac:
         self.game = game
         self.identity = "You are the Insomniac."
         self.description = "You learn the identity of your card before the discussion begins. Play this role."
-        self.stage = None
         self.team = "Villagers"
 
     def __str__(self):

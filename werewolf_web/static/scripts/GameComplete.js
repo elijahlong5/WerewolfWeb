@@ -37,16 +37,19 @@ document.addEventListener("DOMContentLoaded", function() {
         GameServices.addElement("player-game-status", container.id, "H1",
             ["Werewolf"], text);
 
+        // Display winning team.
+        let winningTeamText = "The " + winningTeam + " wins the game!";
+        GameServices.addElement("winning-team-status", container.id, "H3",
+            ["Werewolf"], winningTeamText);
+
         // Display Who died
         if (diedIds.length) {
             for (let i = 0; i < diedIds.length; i++) {
                 let whoDiedText = "";
                 if (diedIds[i] === playerId ) {
-                    whoDiedText = "YOU died... rip"
-
+                    whoDiedText = "YOU died... rip";
                 } else {
-                    whoDiedText = players[diedIds[i]]['name']+ " Died."
-
+                    whoDiedText = players[diedIds[i]]['name']+ " Died.";
                 }
                 GameServices.addElement("dead-player-"+i, container.id, "H1",
                     ["Werewolf"], whoDiedText);

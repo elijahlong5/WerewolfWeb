@@ -10,6 +10,7 @@ import Characters.Minion as M
 import Characters.Robber as R
 import Characters.Seer as S
 import Characters.Troublemaker as T
+import Characters.Tanner as Ta
 import Characters.Werewolf as W
 import Characters.Villager as V
 
@@ -25,6 +26,7 @@ class Role(Enum):
     ROBBER = 'Robber'
     SEER = 'Seer'
     TROUBLEMAKER = 'Troublemaker'
+    TANNER = 'Tanner'
     WEREWOLF = "Werewolf"
     VILLAGER = 'Villager'
 
@@ -105,9 +107,7 @@ class WerewolfGame:
         self.disc_length = 0.25  # in minutes
         self.discussion_over_at = None
 
-
         # BASE CHARACTERS
-
         self.characters.append(I.Insomniac(self))
         self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
@@ -295,6 +295,8 @@ class WerewolfGame:
                 self.characters.append(R.Robber(self))
             elif character == "Minion":
                 self.characters.append(M.Minion(self))
+            elif character == "Tanner":
+                self.characters.append(Ta.Tanner(self))
             elif character == "Troublemaker":
                 self.characters.append(T.Troublemaker(self))
             elif character == "Seer":
@@ -472,6 +474,9 @@ class WerewolfGame:
                     who_died.append(p_id)
                     if str(p.current_role) == "Werewolf":
                         winning_team = "Villagers"
+                    elif str(p.current_role) == "Tanner":
+                        winning_team = "Tanner"
+                        break
 
         # To maintain state while we display the game over screen
         self.game_over_dictionary = {
@@ -488,14 +493,3 @@ class WerewolfGame:
         self.is_game_on = False
         self.DISCUSSION_PHASE = False
         self.game_log = []
-        # Dont need to reset spectators
-
-        """
-        Question to answer
-        1. Who won, their original role, their current role.
-        2. Who each player ended up as
-        3. How many votes each person had, and who they voted for.
-        :return:
-        """
-        # TODO: I think this should just be game state and handled in the server api?
-        #   No it should be done here

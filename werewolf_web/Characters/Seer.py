@@ -3,7 +3,6 @@ class Seer:
         self.game = game
         self.identity = "You are the Seer."
         self.description = "Look at 2 middle roles or 1 players role."
-        self.stage = None
         self.team = "Villagers"
 
         self.alters_roles = False

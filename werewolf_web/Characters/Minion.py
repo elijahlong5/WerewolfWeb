@@ -1,11 +1,11 @@
 import Characters.Werewolf as W
 
+
 class Minion:
     def __init__(self, game):
         self.game = game
         self.identity = "You are the Minion."
         self.description = "Help the werewolves. If they die, you lose"
-        self.stage = None
         self.team = "Werewolves"
 
     def __str__(self):
