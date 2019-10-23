@@ -43,18 +43,17 @@
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Add Character
                     <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="characters-dropdown">
                     {% for character in werewolf_characters %}
                         <li role="presentation"><a role="menuitem" tabindex="-1" id="{{character.value}}">{{character.value}}</a></li>
                     {% endfor %}
                 </ul>
             </div>
-
-
-
-            {% for character in active_characters %}
+            <div id="active-characters">
+                {% for character in active_characters %}
                 <div>{{character}}</div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 

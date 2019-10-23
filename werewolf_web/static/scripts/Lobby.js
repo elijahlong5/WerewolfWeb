@@ -29,6 +29,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Join lobby as a player", ["type", "submit"]);
         }
     }
+
+    let characterChildren = document.getElementById("characters-dropdown").children;
+    for (let i = 0; i < characterChildren.length; i++) {
+        characterChildren[i].children[0].addEventListener("click", function () {
+            requestAddPlayer(characterChildren[i].children[0].id, playerId);
+        });
+    }
     refresh();
 });
 
@@ -36,6 +43,7 @@ function refresh() {
     setTimeout(refresh, GameService.timeBetweenRefreshes);
     redirectIfGameOn(access_token);
     refreshPlayersDiv(access_token);
+    refreshCharacterDisplay(access_token);
 }
 
 function createChangeToPlayerDisplay(user_id) {
@@ -121,5 +129,55 @@ async function refreshPlayersDiv(access_token) {
                 text, []);
         }
     }
-
 }
+
+async function refreshCharacterDisplay() {
+    const response = await fetch(GameService.generateLobbyPostUrl() + 'characters/')
+    const charactersInLobby = await response.json();
+
+    let charactersDiv = document.getElementById("active-characters");
+    charactersDiv.innerHTML = "";
+    for (let c in charactersInLobby) {
+        // Add character
+        let divId = charactersInLobby[c] + "-" + c;
+        GameServices.addElement(divId,
+            charactersDiv.id, "div", [], charactersInLobby[c]);
+        // Add remove button and event listener
+        let characterName = document.getElementById(divId).innerText;
+        GameServices.addElement(  characterName+'-remove-button-' + c,
+            divId, "Button",[],"X");
+
+        let button = document.getElementById(characterName+'-remove-button-' + c);
+        button.addEventListener("click", function () {
+            let removeThisPlayer = button.id.split("-")[0];
+            requestRemoveCharacter(removeThisPlayer);
+        });
+    }
+}
+
+function requestAddPlayer(p, playerId) {
+    console.log('trying to add char');
+    if (playerId === null) {
+        console.log("Can't add a character because player ID is null")
+    }
+    let requestDict = {
+        "character": p,
+    };
+    console.log(requestDict);
+    let addPlayerUrl = GameService.generateLobbyPostUrl() + 'request-add-character/';
+    GameService.fetchPostResponseFromServer(requestDict, addPlayerUrl).then( r => {
+        console.log('response is ', r);
+    });
+}
+
+function requestRemoveCharacter(character) {
+    let removeCharacterDict = {
+        'character': character,
+    };
+    let removeCharacterUrl = GameService.generateLobbyPostUrl() + "request-remove-character/";
+    GameService.fetchPostResponseFromServer(removeCharacterDict, removeCharacterUrl);
+}
+
+
+
+

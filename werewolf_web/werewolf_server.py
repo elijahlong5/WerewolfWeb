@@ -226,6 +226,12 @@ def get_lobby_players(access_token):
     return lobbies[access_token].jsonify_players()
 
 
+@app.route('/api/lobbies/<access_token>/characters/')
+def get_lobby_characters(access_token):
+    game = lobbies[access_token]
+    return jsonify(list(map(lambda c: str(c), game.characters)))
+
+
 @app.route('/api/lobbies/<access_token>/post_become_spectator/', methods=['post'])
 def post_change_to_spectator(access_token):
     """Toggles the posted id between spectating and playing dictionaries in the game object."""
@@ -245,6 +251,25 @@ def post_change_back_to_player(access_token):
                                 access_token=access_token))
     game.players[int(user_id)] = game.spectators[int(user_id)]
     game.spectators.pop(int(user_id))
+    return jsonify({"status": "success"})
+
+
+@app.route('/api/lobbies/<access_token>/request-add-character/', methods=['post'])
+def request_add_player(access_token):
+    requested_character = request.json['character']
+    game = lobbies[access_token]
+    # Handled by the game function
+    game.add_character(requested_character)
+    return jsonify({"status": "success"})
+
+
+@app.route('/api/lobbies/<access_token>/request-remove-character/', methods=['post'])
+def request_remove_player(access_token):
+    requested_character = request.json['character']
+    print(f'requesting to remove {requested_character}')
+    game = lobbies[access_token]
+    # Handled by the game function
+    game.remove_character(requested_character)
     return jsonify({"status": "success"})
 
 

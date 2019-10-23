@@ -102,6 +102,8 @@ class WerewolfGame:
         self.disc_length = 0.5  # in minutes
         self.discussion_over_at = None
 
+        # BASE CHARACTERS
+
         self.characters.append(I.Insomniac(self))
         self.characters.append(T.Troublemaker(self))
         self.characters.append(W.Werewolf(self))
@@ -260,6 +262,50 @@ class WerewolfGame:
                 return new_player_id
             else:
                 return self.add_player(name)
+
+    def add_character(self, character):
+        """
+        Takes in string char name.
+        Adds that character to self.characters.
+        """
+        character_strs = list(map(lambda c: str(c), self.characters))
+        if character in character_strs:
+            print('this character is already in here.')
+            # Handles Characters that can be in the game multiple times
+            # Werewolves and Villagers.
+
+            if character == "Werewolf" and character_strs.count("Werewolf") <= 4:
+                #  Don't want more than 4 werewolves in the game
+                self.characters.append(W.Werewolf(self))
+            elif character == "Villager" and character_strs.count("Villager") <= 4:
+                self.characters.append(V.Villager(self))
+
+        else:
+            # Handles Characters that can only be in the game once.
+            # Will add all characters if they are not in
+            # Robber, Seer, Insomniac, Minion, Troublemaker, Witch
+            print('character not found, adding regardless.')
+            if character == "Insomniac":
+                self.characters.append(I.Insomniac(self))
+            elif character == "Robber":
+                self.characters.append(R.Robber(self))
+            elif character == "Minion":
+                self.characters.append(M.Minion(self))
+            elif character == "Troublemaker":
+                self.characters.append(T.Troublemaker(self))
+            elif character == "Seer":
+                self.characters.append(S.Seer(self))
+            elif character == "Werewolf":
+                self.characters.append(W.Werewolf(self))
+            elif character == "Villager":
+                self.characters.append(V.Villager(self))
+
+    def remove_character(self, character):
+        character_strs = list(map(lambda c: str(c), self.characters))
+        if (character == "Werewolf" and 1 < character_strs.count("Werewolf")) or character in character_strs:
+            self.characters.pop(character_strs.index(character))
+
+
 
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id
