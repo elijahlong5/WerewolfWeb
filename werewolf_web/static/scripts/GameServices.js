@@ -7,6 +7,8 @@ class GameServices{
         this.acknowledgedDict = {"status": "acknowledged"};
         this.notifyFormId = "notify-form";
 
+        this.validStartPointVar = "valid-starting-point"; // Matches class name in lobby style page.
+
     }
 
     // Adding elements to the page

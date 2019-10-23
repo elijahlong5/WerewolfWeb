@@ -15,8 +15,8 @@ class Human:
     def get_json_dict(self):
         vf = None
         if self.voted_for is not None:
-            print(self.voted_for)
-            print(self.voted_for.player_id)
+            # print(self.voted_for)
+            # print(self.voted_for.player_id)
             vf = self.voted_for.player_id
         return {
             'original_role': str(self.original_role),

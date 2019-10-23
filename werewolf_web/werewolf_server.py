@@ -76,7 +76,7 @@ def start_game():
                                 players=lobbies[access_token].jsonify_players()))
 
     if int(player_id) in game.players.keys():
-        if game.verify_startable_lobby():
+        if game.verify_valid_game_starting_point():
             if not game.is_game_on:
                 game.start_game()
                 print(f"Game {access_token} is started.")
@@ -229,7 +229,11 @@ def get_lobby_players(access_token):
 @app.route('/api/lobbies/<access_token>/characters/')
 def get_lobby_characters(access_token):
     game = lobbies[access_token]
-    return jsonify(list(map(lambda c: str(c), game.characters)))
+    characters_dict = {
+        'characters': list(map(lambda c: str(c), game.characters)),
+        'can_game_start': game.verify_valid_game_starting_point(),
+    }
+    return jsonify(characters_dict)
 
 
 @app.route('/api/lobbies/<access_token>/post_become_spectator/', methods=['post'])
@@ -266,7 +270,6 @@ def request_add_player(access_token):
 @app.route('/api/lobbies/<access_token>/request-remove-character/', methods=['post'])
 def request_remove_player(access_token):
     requested_character = request.json['character']
-    print(f'requesting to remove {requested_character}')
     game = lobbies[access_token]
     # Handled by the game function
     game.remove_character(requested_character)

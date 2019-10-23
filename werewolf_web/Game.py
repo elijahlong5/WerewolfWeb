@@ -94,6 +94,7 @@ class WerewolfGame:
         self.characters = []
         self.players = {}
         self.spectators = {}
+        self.min_player_count = 3
 
         self.middle_cards = [0, 1, 2]
         self.game_log = []
@@ -101,6 +102,7 @@ class WerewolfGame:
 
         self.disc_length = 0.5  # in minutes
         self.discussion_over_at = None
+
 
         # BASE CHARACTERS
 
@@ -305,8 +307,6 @@ class WerewolfGame:
         if (character == "Werewolf" and 1 < character_strs.count("Werewolf")) or character in character_strs:
             self.characters.pop(character_strs.index(character))
 
-
-
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id
         roleA = self.players.get(p1_id).current_role
@@ -315,7 +315,7 @@ class WerewolfGame:
         self.players.get(p1_id).current_role = roleB
         self.players.get(p2_id).current_role = roleA
 
-        # QUESTION: why doesn't this work
+        # Question: why doesn't this work
         # temp_role = self.players.get(p1_id).current_role
         # self.players.get(p1_id).current_role = self.players.get(p2_id).current_role
         # self.players.get(p2_id).current_role = temp_role
@@ -383,19 +383,26 @@ class WerewolfGame:
             now = datetime.now()
             self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
 
-    def verify_startable_lobby(self):
-        startable = True
+    def verify_valid_game_starting_point(self):
+        valid_starting_point = True
         if len(self.characters) != len(self.players) + len(self.middle_cards):
             print(
-                f'game not startable: player len {len(self.players)}'
-                f'middle len {len(self.middle_cards)}'
-                f'char len {len(self.characters)}'
+                f'Game is not at valid starting point: No. of players: {len(self.players)}, '
+                f'No. of characters: {len(self.characters)}. \nThere need to be 3 more characters than players.'
             )
-            startable = False
+            valid_starting_point = False
         # Checking to see that there is at least 1 werewolf in play.
-        if "Werewolf" not in list(map(lambda c: str(c), self.characters)):
-            startable = False
-        return startable
+        character_strs =list(map(lambda c: str(c), self.characters))
+        if ("Werewolf" not in character_strs
+                or (2 >= len(self.players.keys()) and "Troublemaker" in character_strs)
+                or len(self.players.keys()) <
+                self.min_player_count
+        ):
+            # must reach min_player_count
+            # There must be at least 1 werewolf
+            # If the troublemaker is in play, then there must be at least 3 players
+            valid_starting_point = False
+        return valid_starting_point
 
     def discussion_dict(self):
         print(f'Discussion will be over at {self.discussion_over_at}')

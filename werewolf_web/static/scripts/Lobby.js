@@ -133,7 +133,17 @@ async function refreshPlayersDiv(access_token) {
 
 async function refreshCharacterDisplay() {
     const response = await fetch(GameService.generateLobbyPostUrl() + 'characters/')
-    const charactersInLobby = await response.json();
+    const charactersDict = await response.json();
+    let charactersInLobby = charactersDict['characters'];
+    let validGameStartPoint = charactersDict['can_game_start'];
+    console.log('is game at a valid starting point:', validGameStartPoint);
+
+    let startGameButton = document.getElementById("start-game-button");
+    if (validGameStartPoint && !startGameButton.classList.contains(GameService.validStartPointVar)) {
+        startGameButton.classList.add(GameService.validStartPointVar);
+    } else if (!validGameStartPoint && startGameButton.classList.contains(GameService.validStartPointVar)) {
+        startGameButton.classList.remove(GameService.validStartPointVar);
+    }
 
     let charactersDiv = document.getElementById("active-characters");
     charactersDiv.innerHTML = "";
