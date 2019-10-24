@@ -12,6 +12,7 @@ import Characters.Seer as S
 import Characters.Troublemaker as T
 import Characters.Tanner as Ta
 import Characters.Werewolf as W
+import Characters.Witch as Wi
 import Characters.Villager as V
 
 import random
@@ -28,6 +29,7 @@ class Role(Enum):
     TROUBLEMAKER = 'Troublemaker'
     TANNER = 'Tanner'
     WEREWOLF = "Werewolf"
+    WITCH = "Witch"
     VILLAGER = 'Villager'
 
 
@@ -110,12 +112,12 @@ class WerewolfGame:
         # BASE CHARACTERS
         self.characters.append(I.Insomniac(self))
         self.characters.append(T.Troublemaker(self))
-        self.characters.append(W.Werewolf(self))
+        self.characters.append(Wi.Witch(self))
         self.characters.append(W.Werewolf(self))
 
         self.characters.append(M.Minion(self))
         self.characters.append(R.Robber(self))
-        self.characters.append(S.Seer(self))
+        # self.characters.append(S.Seer(self))
 
         # self.characters.append(W.Werewolf(self))
         # self.characters.append(W.Werewolf(self))
@@ -174,6 +176,8 @@ class WerewolfGame:
             self.turn_handler.append("Robber")
         if "Troublemaker" in roles_in_play:
             self.turn_handler.append("Troublemaker")
+        if "Witch" in roles_in_play:
+            self.turn_handler.append("Witch")
         if "Insomniac" in roles_in_play:
             self.turn_handler.append("Insomniac")
 
@@ -183,6 +187,8 @@ class WerewolfGame:
             self.turn_handler.needs_to_go.append("Seer")
         if "Minion" in roles_in_play:
             self.turn_handler.needs_to_go.append("Minion")
+        if "Tanner" in roles_in_play:
+            self.turn_handler.needs_to_go.append("Tanner")
         for i in range(0, roles_in_play.count("Werewolf")):
             self.turn_handler.needs_to_go.append("Werewolf")
         for i in range(0, roles_in_play.count("Villager")):
@@ -237,9 +243,9 @@ class WerewolfGame:
             'left': str(self.middle_cards[0]),
             'middle': str(self.middle_cards[1]),
             'right': str(self.middle_cards[2]),
-            'left_current': str(self.middle_cards[0]),
-            'middle_current': str(self.middle_cards[1]),
-            'right_current': str(self.middle_cards[2]),
+            'left_original': str(self.middle_cards[0]),
+            'middle_original': str(self.middle_cards[1]),
+            'right_original': str(self.middle_cards[2]),
         }
         return middle_card_conversion
 
@@ -295,6 +301,8 @@ class WerewolfGame:
                 self.characters.append(R.Robber(self))
             elif character == "Minion":
                 self.characters.append(M.Minion(self))
+            elif character == "Witch":
+                self.characters.append(Wi.Witch(self))
             elif character == "Tanner":
                 self.characters.append(Ta.Tanner(self))
             elif character == "Troublemaker":
@@ -310,6 +318,22 @@ class WerewolfGame:
         character_strs = list(map(lambda c: str(c), self.characters))
         if (character == "Werewolf" and 1 < character_strs.count("Werewolf")) or character in character_strs:
             self.characters.pop(character_strs.index(character))
+
+    def swap_role_with_mid(self, middle_card_choice, player_id):
+        middle_card_choice = middle_card_choice.lower()
+        cur_player = self.players[player_id]
+        player_role_temp = self.players[player_id].current_role
+        print(f"middle card choice is {middle_card_choice}")
+        if middle_card_choice == "left":
+            cur_index = 0
+        elif middle_card_choice == "middle":
+            cur_index = 1
+        elif middle_card_choice == "right":
+            cur_index = 2
+
+        cur_player.current_role = self.middle_cards[cur_index]
+        self.middle_cards[cur_index] = player_role_temp
+        return
 
     def swap_roles(self, p1_id, p2_id):
         # Switches 2 player's roles by their player_id

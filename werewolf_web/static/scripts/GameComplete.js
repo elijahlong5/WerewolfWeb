@@ -72,8 +72,8 @@ document.addEventListener("DOMContentLoaded", function() {
     GameServices.addElement(votesDivId, container.id, "div",[], "");
     GameServices.addElement("vote-totals-button", votesDivId, "button",[], "Show vote totals");
     GameServices.addElement("vote-ballets-button", votesDivId, "button",[], "Show ballet results");
-    GameServices.addElement("current-roles-button", votesDivId, "button",[], "People's original roles");
-    GameServices.addElement("original-roles-button", votesDivId, "button",[], "People's current roles");
+    GameServices.addElement("current-roles-button", votesDivId, "button",[], "People's current roles");
+    GameServices.addElement("original-roles-button", votesDivId, "button",[], "People's original roles");
     GameServices.addElement(votesUlId, votesDivId, "UL",[], "");
 
     displayWhoVotedForWhom(players, votesUlId, playerId);
