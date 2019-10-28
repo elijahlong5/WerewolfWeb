@@ -2,21 +2,23 @@
     Displays the players in the lobby excluding themselves.
  */
 document.addEventListener("DOMContentLoaded", function() {
-    let playerDict = window.initial_player_dict;
+    let troublemakerDict = window.initial_player_dict;
+    GameServices.addRoleDescription(troublemakerDict['role-description']);
+
 
     let buttonDivName = 'name-buttons';
-    GameServices.addSimpleElement("div",'role-div', "", buttonDivName);
+    GameServices.addSimpleElement("div",GameService.roleDivId, "", buttonDivName);
 
     let selectedCount = 0;
 
     let firstSelected = null;
     let secondSelected  = null;
 
-    for (let key in playerDict['names']) {
+    for (let key in troublemakerDict['names']) {
         // name elements are toggleable between selected and not.
         GameServices.addElement(key, buttonDivName, "button",
             ['button', 'not-selected'],
-            playerDict['names'][key]['name']
+            troublemakerDict['names'][key]['name']
             );
 
 
@@ -75,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function troublemake(swapCardsDict) {
     GameService.fetchPostResponseFromServer(swapCardsDict).then(r => {
-        let display = document.getElementById('role-div');
+        let display = document.getElementById(GameService.roleDivId);
         display.innerHTML = r['response'];
     });
 }

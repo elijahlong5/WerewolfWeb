@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     const diedIds = gameCompleteDict['died_list_id'];
     const winningTeam = gameCompleteDict['winning_team'];
-
+    const gameLog = gameCompleteDict['game_state']['game_log'];
 
     let myPlayer = players[playerId];
     let myTeam = myPlayer['team'];
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
     GameServices.addElement("current-roles-button", votesDivId, "button",[], "People's current roles");
     GameServices.addElement("original-roles-button", votesDivId, "button",[], "People's original roles");
     GameServices.addElement(votesUlId, votesDivId, "UL",[], "");
+    GameServices.addElement("game-log-button", votesDivId, "button",[], "View game log");
 
     displayWhoVotedForWhom(players, votesUlId, playerId);
 
@@ -89,6 +90,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     document.getElementById("original-roles-button").addEventListener("click", function () {
         displayOriginalRoles(players, votesUlId, playerId);
+    });
+    document.getElementById("game-log-button").addEventListener("click", function () {
+        displayGameLog(votesUlId, gameLog);
     });
 });
 
@@ -158,6 +162,16 @@ function displayOriginalRoles(players, votesUlId, playerId){
             text = players[p]['name']+" was" + stringifyRole(players[p]['original_role']);
         }
         GameServices.addElement("votes-"+p, votesUl.id,
+            "LI",[], text);
+    }
+}
+
+function displayGameLog(votesUlId, gameLog){
+    let votesUl = document.getElementById(votesUlId);
+    votesUl.innerHTML = "";
+    for (let item in gameLog) {
+        let text = gameLog[item];
+        GameServices.addElement("votes-"+item, votesUl.id,
             "LI",[], text);
     }
 }

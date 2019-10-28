@@ -2,7 +2,7 @@ class Insomniac:
     def __init__(self, game):
         self.game = game
         self.identity = "You are the Insomniac."
-        self.description = "You learn the identity of your card before the discussion begins. Play this role."
+        self.description = "You learn the identity of your card before the discussion begins."
         self.team = "Villagers"
 
     def __str__(self):
@@ -11,6 +11,7 @@ class Insomniac:
     def jsonify_request(self, player_id):
         if self.game.turn_handler.whose_turn() == "Insomniac":
             return {'current_role': str(self.game.players[player_id].current_role),
+                    'role-description': self.description,
                     'ready': True}
         else:
             return {"ready": False}

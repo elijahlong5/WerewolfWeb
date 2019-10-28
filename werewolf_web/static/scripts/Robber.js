@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    let player_names = window.initial_player_dict;
+    let robberDict = window.initial_player_dict;
 
-    let roleDivId = "role-div";
+    GameServices.addRoleDescription(robberDict['role-description']);
+    let roleDivId = GameService.roleDivId;
     let buttonDivId = 'name-buttons';
 
     GameServices.addSimpleElement("div", roleDivId, "", buttonDivId);
@@ -11,9 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
     GameServices.addElement(formId, buttonDivId, "form",[],"",
         ["method", "post"]);
 
-    for (let key in player_names['names']) {
+    for (let key in robberDict['names']) {
         GameServices.addElement(key, formId,"button", ["button"],
-            player_names['names'][key]['name'],
+            robberDict['names'][key]['name'],
             ["type", "submit"]);
 
         document.getElementById(key).addEventListener("click", function () {
@@ -25,8 +26,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function rob(victimId) {
     GameService.fetchPostResponseFromServer(victimId).then(r => {
-        let display = document.getElementById('role-div');
+        let display = document.getElementById(GameService.roleDivId);
         display.innerHTML = r['response'];
-        GameService.addOkButton('role-div');
+        GameService.addOkButton(GameService.roleDivId);
     });
 }

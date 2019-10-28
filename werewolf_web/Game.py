@@ -106,7 +106,7 @@ class WerewolfGame:
         self.game_log = []
         self.game_over_dictionary = {}
 
-        self.disc_length = 0.25  # in minutes
+        self.disc_length = 5  # in minutes
         self.discussion_over_at = None
 
         # BASE CHARACTERS
@@ -114,15 +114,9 @@ class WerewolfGame:
         self.characters.append(T.Troublemaker(self))
         self.characters.append(Wi.Witch(self))
         self.characters.append(W.Werewolf(self))
-
         self.characters.append(M.Minion(self))
         self.characters.append(R.Robber(self))
-        # self.characters.append(S.Seer(self))
-
-        # self.characters.append(W.Werewolf(self))
-        # self.characters.append(W.Werewolf(self))
-        # self.characters.append(V.Villager(self))
-        # self.characters.append(V.Villager(self))
+        self.characters.append(S.Seer(self))
 
     def start_game(self):
         if self.is_game_on:
@@ -132,15 +126,13 @@ class WerewolfGame:
             self.DISCUSSION_PHASE = False
             self.assign_characters()
             self.initialize_linked_list()
-
             # PRINT GAME STATE:
-            print('-----game state------')
-            for p_id, player in self.players.items():
-                print(f'id:{p_id}, name: {player.name}: Role   {player.original_role}')
-
-            print('----Middle Cards:----')
-            print(f'(Left): {str(self.middle_cards[0])} (Middle): {str(self.middle_cards[1])}'
-                  f' (Right): {str(self.middle_cards[2])}')
+            # print('[-----game state------]')
+            # for p_id, player in self.players.items():
+            #     print(f'id:{p_id}, name: {player.name}: Role   {player.original_role}')
+            # print('----Middle Cards:----')
+            # print(f'(Left): {str(self.middle_cards[0])} (Middle): {str(self.middle_cards[1])}'
+            #       f' (Right): {str(self.middle_cards[2])}')
 
     def assign_characters(self):
         shuffles = 50
@@ -156,7 +148,6 @@ class WerewolfGame:
 
         for player in self.players.values():
             player.assign_initial_role(self.characters[current_character])
-            # print(f'name: {player.name}  is { self.characters[current_character]}')
             current_character += 1
 
         self.middle_cards[0] = self.characters[current_character]
@@ -164,11 +155,12 @@ class WerewolfGame:
         self.middle_cards[2] = self.characters[current_character + 2]
 
     def initialize_linked_list(self):
-        # clear it just in case:
+        # clear current list:
         self.turn_handler = TurnList()
         # Find out what roles are accounted for (avoiding roles in the middle, or not used in the game)
         roles_in_play = []
         for player in self.players.values():
+            tup = [player.player_id, (str(player.original_role))]
             roles_in_play.append(str(player.original_role))
 
         # Just ordering them

@@ -2,8 +2,12 @@
 {% block styling %}
 {% endblock styling %}
 {% block content %}
+<div>
+    <div id="role-header">
+        <h2>You are the {{ original_role }}</h2>
+    </div>
+</div>
 <div id="role-div">
-    You are the {{original_role}}
 </div>
 {% endblock content %}
 {% block scripts %}

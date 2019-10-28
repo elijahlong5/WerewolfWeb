@@ -1,10 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    let divName = "role-div";
-    let description = "You are the Witch, your role is to first look at a middle card, " +
-        "then you may switch it with one of the other players' cards";
-    GameServices.addSimpleElement('h4', divName, description);
-    let playerNames = window.initial_player_dict;
+    let divName = GameService.roleDivId;
+    let witchDict = window.initial_player_dict;
 
+    GameServices.addRoleDescription(witchDict['role-description']);
 
     let buttonDivName = "button-div";
     GameServices.addElement(buttonDivName, divName,"div",[],"");
@@ -19,13 +17,13 @@ document.addEventListener("DOMContentLoaded", function() {
         "Right", ["type", "submit"]);
 
     document.getElementById("Left").addEventListener("click", function(){
-        chooseMiddleCard("Left", playerNames);
+        chooseMiddleCard("Left", witchDict);
     });
     document.getElementById("Middle").addEventListener("click",function(){
-        chooseMiddleCard("Middle", playerNames);
+        chooseMiddleCard("Middle", witchDict);
     });
     document.getElementById("Right").addEventListener("click",function(){
-        chooseMiddleCard("Right", playerNames);
+        chooseMiddleCard("Right", witchDict);
     });
 });
 
@@ -33,7 +31,7 @@ function chooseMiddleCard(cardRequested, player_names) {
     let cardRequestedDict = {"card": cardRequested};
     GameService.fetchPostResponseFromServer(cardRequestedDict).then(r => {
         let display = document.getElementById('button-div');
-        display.innerHTML = "The " + r['requested_card'] + " card is: " + r['card_identity'] + "\n" +
+        display.innerHTML = "The " + r['requested_card'] + " card is  " + r['card_identity'] + ". </br>" +
             "Who do you want to give this card to?";
         displayWitchPhase2(player_names);
     });

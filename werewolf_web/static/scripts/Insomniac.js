@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-   let identity = window.initial_player_dict;
-
-    GameServices.addSimpleElement("div", 'role-div',
-        "You are notified of your identity right before the discussion," +
-        "Please wait until your card is shown.");
+    let initialPlayerDict = window.initial_player_dict;
+    GameServices.addRoleDescription(initialPlayerDict['role-description']);
     let minTimeBeforeShowing = Math.floor(Math.random() * 3000) + 3000;
     setTimeout(refresh, minTimeBeforeShowing);
 });
@@ -30,9 +27,9 @@ function refresh() {
 }
 
 function showCard(dict) {
-    document.getElementById('role-div').innerHTML = "";
-    GameServices.addElement("info",'role-div','div',[],
+    document.getElementById(GameService.roleDivId).innerHTML = "";
+    GameServices.addElement("info",GameService.roleDivId,'div',[],
         'your card is ' + dict['current_role']);
     insomniacsCardDisplayed = true;
-    GameService.addOkButton("role-div");
+    GameService.addOkButton(GameService.roleDivId);
 }

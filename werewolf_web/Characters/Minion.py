@@ -5,7 +5,7 @@ class Minion:
     def __init__(self, game):
         self.game = game
         self.identity = "You are the Minion."
-        self.description = "Help the werewolves. If they die, you lose"
+        self.description = "Help the werewolves win."
         self.team = "Werewolves"
 
     def __str__(self):
@@ -15,6 +15,7 @@ class Minion:
         # Provides dictionary of wolves, with string player IDs
         d = {
              'wolves': {},
+             'role-description': self.description,
              }
         temp_wolf = W.Werewolf(self.game)
         for p_id, p in self.game.players.items():

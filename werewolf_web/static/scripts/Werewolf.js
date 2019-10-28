@@ -5,14 +5,15 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     // Display who the other werewolves are, or the 3 middle cards.
-    let playerDict = window.initial_player_dict;
+    let werewolfDict = window.initial_player_dict;
+    GameServices.addRoleDescription(werewolfDict['role-description']);
 
-    let buttonDivName = 'role-div';
+    let buttonDivName = GameService.roleDivId;
 
-    if (playerDict['lone_wolf'] === false) {
+    if (werewolfDict['lone_wolf'] === false) {
         GameServices.addSimpleElement("h2", buttonDivName, "Here are the other werewolves.")
-        for (let key in playerDict['fellow_wolves']) {
-            let nrText = playerDict['fellow_wolves'][key];
+        for (let key in werewolfDict['fellow_wolves']) {
+            let nrText = werewolfDict['fellow_wolves'][key];
             GameServices.addSimpleElement("li", buttonDivName, nrText);
         }
         GameService.addOkButton(buttonDivName);
@@ -44,9 +45,9 @@ document.addEventListener("DOMContentLoaded", function() {
 function makeRequest(cardRequested) {
     let cardRequestedDict = {"card": cardRequested};
     GameService.fetchPostResponseFromServer(cardRequestedDict).then(r => {
-        let display = document.getElementById('role-div');
+        let display = document.getElementById(GameService.roleDivId);
         display.innerHTML = "The " + r['requested_card'] + " card is: " + r['card_identity'];
-        GameService.addOkButton('role-div');
+        GameService.addOkButton(GameService.roleDivId);
     });
 }
 

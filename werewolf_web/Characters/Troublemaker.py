@@ -2,7 +2,7 @@ class Troublemaker:
     def __init__(self, game):
         self.game = game
         self.identity = "You are the Troublemaker."
-        self.definition = "You switch 2 players cards."
+        self.description = "You switch 2 players cards. You do not get to see these cards."
         self.team = "Villagers"
         self.alters_roles = True
 
@@ -19,7 +19,7 @@ class Troublemaker:
         p2_id = int(player_response['playerId_2'])
         p1_name = self.game.players[p1_id].name
         p2_name = self.game.players[p2_id].name
-        response_text = f"The troublemaker is switching {p1_name} and {p2_name}'s cards."
+        response_text = f"The troublemaker switched {p1_name} and {p2_name}'s cards."
 
         self.game.update_move("Troublemaker", self.game.swap_roles, p1_id, p2_id)
         self.game.update_game_log("Troublemaker", response_text)

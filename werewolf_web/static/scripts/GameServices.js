@@ -4,6 +4,8 @@ class GameServices{
         this.playerIdLocationInPathname = 4;
 
         this.timeBetweenRefreshes = 2000;
+        this.roleDescriptionId = "role-header";
+        this.roleDivId = "role-div";
         this.acknowledgedDict = {"status": "acknowledged"};
         this.notifyFormId = "notify-form";
 
@@ -39,6 +41,10 @@ class GameServices{
         document.getElementById(parentNode).appendChild(element);
     }
 
+    static addRoleDescription(description) {
+        GameServices.addSimpleElement("h4", GameService.roleDescriptionId,
+            description);
+    }
     addOkButton(parentNodeId) {
         let formId = this.notifyFormId;
         let submitFormButtonId = "form-submit-button";

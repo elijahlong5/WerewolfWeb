@@ -15,6 +15,7 @@ class Robber:
     def jsonify_request(self, player_id):
         d = self.game.jsonify_players_names().copy()
         d['names'].pop(str(player_id))
+        d['role-description'] = self.description
         return d
 
     def process_player_response(self, player_id, response):

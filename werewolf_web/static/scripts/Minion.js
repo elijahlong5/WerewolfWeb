@@ -4,7 +4,9 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     let werewolfDict = window.initial_player_dict;
-    let roleDivId = "role-div";
+    let roleDivId = GameService.roleDivId;
+
+    GameServices.addRoleDescription(werewolfDict['role-description']);
 
     GameServices.addSimpleElement('h2', roleDivId, "Werewolves:");
     if (Object.keys(werewolfDict['wolves']).length === 0){

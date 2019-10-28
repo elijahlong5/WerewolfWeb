@@ -1,9 +1,11 @@
 let selectedKeys = [];
 document.addEventListener("DOMContentLoaded", function() {
 
-    let playerNames = window.initial_player_dict;
+    let seerDict = window.initial_player_dict;
 
-    let roleDivId = "role-div";
+    GameServices.addRoleDescription(seerDict['role-description']);
+
+    let roleDivId = GameService.roleDivId;
     let buttonDivId = 'name-buttons';
     GameServices.addSimpleElement("div", roleDivId, "", buttonDivId);
 
@@ -53,9 +55,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Add Player Name Buttons
     let buttonClasses = ['button', 'not-selected'];
-    for (let key in playerNames['names']) {
+    for (let key in seerDict['names']) {
         GameServices.addElement(key, buttonDivId, "button",
-            buttonClasses, playerNames['names'][key]['name']);
+            buttonClasses, seerDict['names'][key]['name']);
         document.getElementById(key).addEventListener("click", function () {
             handleButtonClicked(key);
         });
@@ -76,9 +78,9 @@ function makeRequest(key_array) {
     }
 
     GameService.fetchPostResponseFromServer(d).then(r => {
-        let display = document.getElementById('role-div');
+        let display = document.getElementById(GameService.roleDivId);
         display.innerHTML = r['response'];
-        GameService.addOkButton('role-div');
+        GameService.addOkButton(GameService.roleDivId);
     });
 }
 

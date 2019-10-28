@@ -2,7 +2,7 @@ class Witch:
     def __init__(self, game):
         self.game = game
         self.identity = "You are the Witch."
-        self.definition = "You view one card in the middle and switch it with someones role."
+        self.description = "You view one card in the middle and switch it with someone else's card."
         self.team = "Villagers"
         self.alters_roles = True
         self.ack_str = "Witch Ack"
@@ -15,11 +15,12 @@ class Witch:
     def jsonify_request(self, player_id):
         d = self.game.jsonify_players_names().copy()
         d['names'].pop(str(player_id))
+        d['role-description'] = self.description
         return d
 
     def process_player_response(self, player_id, player_response):
         """
-        Multi part funciton.
+        Multi part function.
         if card is in the player response then kick it back to the client.
         if player id is in the response then kick it to the game object and do the move.
         :param player_id:

@@ -2,7 +2,7 @@ class Seer:
     def __init__(self, game):
         self.game = game
         self.identity = "You are the Seer."
-        self.description = "Look at 2 middle roles or 1 players role."
+        self.description = "Look at either 2 middle cards or 1 of another player's cards."
         self.team = "Villagers"
 
         self.alters_roles = False
@@ -14,6 +14,7 @@ class Seer:
     def jsonify_request(self, player_id):
         d = self.game.jsonify_players_names().copy()
         d['names'].pop(str(player_id))
+        d['role-description'] = self.description
         return d
 
     def process_player_response(self, player_id, response):

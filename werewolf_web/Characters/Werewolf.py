@@ -3,7 +3,7 @@ class Werewolf:
     def __init__(self, game):
         self.game = game
         self.identity = 'You are a Werewolf.'
-        self.description = 'Dont let others find out your identity. Dont be killed at the end of the game.'
+        self.description = "Try not to get exposed."
         self.ack_str = "Lone Werewolf"
         self.team = "Werewolves"
 
@@ -48,7 +48,7 @@ class Werewolf:
             # Add the card acknowledge to 'needs_to_go' list
             self.game.turn_handler.needs_to_go.append(self.ack_str)
             # Append to game log what card they viewed
-            self.game.update_game_log("Werewolf", f"The werewolf viewed the {response['card']} card which"
+            self.game.update_game_log("Werewolf", f"The lone werewolf viewed the {response['card']} card which"
                                       f" was the {card_dict['card_identity']}")
 
             return card_dict

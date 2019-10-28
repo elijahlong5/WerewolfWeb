@@ -19,18 +19,10 @@ def home():
 # GAME ACTIONS
 @app.route('/create-lobby/', methods=['post'])
 def create_lobby_request():
-    access = get_new_access_token()  # Returns a NEW access token
-    lobbies[access] = WerewolfGame()
-
-    game = lobbies[access]
-    game.add_player("Jackie")
-    game.add_player("Jilliam")
-    game.add_player("Snoopy")
-    game.add_player("Tonya")
-    game.add_player("Taek")
-    game.add_player("Sam")
-    print(f'New lobby was added.  Access token: {access}')
-    return redirect(url_for('lobby', access_token=access))
+    access_token = get_new_access_token()  # Returns a NEW access token
+    lobbies[access_token] = WerewolfGame()
+    print(f'New lobby created:  (Access token: {access_token})')
+    return redirect(url_for('lobby', access_token=access_token))
 
 
 @app.route('/join-lobby/', methods=['post'])
@@ -65,6 +57,10 @@ def join_lobby():
 
 @app.route('/start_game/', methods=['post'])
 def start_game():
+    """
+    Requests to start the game. Will redirect to game_on stage if the lobby member has permission to start the game.
+    :return: redirect to game on sequence.
+    """
     access_token = request.form['access_token']
     player_id = request.form['player_id']
     game = lobbies[access_token]
