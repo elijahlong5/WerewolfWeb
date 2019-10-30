@@ -19,19 +19,26 @@ class Robber:
         return d
 
     def process_player_response(self, player_id, response):
+        ack_sequence = f"{player_id}_{self.ack_str}"
+        id_sequence = f"{player_id}_Robber"
+
+        print(response)
         if 'status' in response.keys() and response['status'] == 'acknowledged':
-            if self.ack_str in self.game.turn_handler.needs_to_go:
-                self.game.update_game_log(self.ack_str)
+            if ack_sequence in self.game.turn_handler.needs_to_go:
+                self.game.update_game_log(ack_sequence)
                 return {"Ay": "Ok"}
+        elif id_sequence in self.game.turn_handler.needs_to_go:
+            p1_id = player_id
+            p2_id = int(response['robThisId'])
+            p2_role = self.game.players[p2_id].original_role
+            response_text = f"You are now the {p2_role}"
 
-        p1_id = player_id
-        p2_id = int(response['robThisId'])
-        p2_role = self.game.players[p2_id].original_role
-        response_text = f"You are now the {p2_role}"
-        self.game.update_move("Robber", self.game.swap_roles, p1_id, p2_id)
-        rob_victim = self.game.players[p2_id].name
+            self.game.update_move(id_sequence, self.game.swap_roles, p1_id, p2_id)
+            rob_victim = self.game.players[p2_id].name
 
-        self.game.turn_handler.needs_to_go.append(self.ack_str)
-        self.game.update_game_log("Robber", f"The robber robbed {rob_victim} ({p2_role})")
+            self.game.turn_handler.needs_to_go.append(ack_sequence)
+            self.game.update_game_log(id_sequence, f"The robber robbed {rob_victim} ({p2_role})")
 
-        return {'response': response_text}
+            return {'response': response_text}
+        else:
+            return {"response": "Action unknown"}

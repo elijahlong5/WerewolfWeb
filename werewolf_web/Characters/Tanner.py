@@ -15,6 +15,10 @@ class Tanner:
         }
 
     def process_player_response(self, player_id, response):
+        id_sequence = f"{player_id}_Tanner"
         if 'status' in response.keys() and response['status'] == 'acknowledged':
-            self.game.update_game_log("Tanner", "Tanner viewed their card")
-            return {"Ay": "Ok"}
+            if id_sequence in self.game.turn_handler.needs_to_go:
+                self.game.update_game_log(id_sequence, "Tanner viewed their card")
+                return {"Ay": "Ok"}
+            else:
+                return {"response": "Action unknown"}

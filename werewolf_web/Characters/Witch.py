@@ -27,6 +27,9 @@ class Witch:
         :param player_response:
         :return:
         """
+        ack_sequence = f"{player_id}_{self.ack_str}"
+        id_sequence = f"{player_id}_Witch"
+
         if "card" in player_response.keys():
             self.middle_card = player_response['card']  # Will be 'left right or middle'
             card_info = {
@@ -34,17 +37,18 @@ class Witch:
                 'card_identity': self.game.jsonify_middle_cards()[self.middle_card.lower()]
             }
             return card_info
-        elif "playerId" in player_response.keys():
+        elif "playerId" in player_response.keys() and id_sequence in self.game.turn_handler.needs_to_go:
             p_id = int(player_response['playerId'])
-            print(f'mid card is {self.middle_card}')
-
+            print(f'Middle card requested was {self.middle_card}')
             p_name = self.game.players[p_id].name
-            game_log = f"The witch switched the {self.middle_card} with {p_name}'s card."
+            game_log_text = f"The witch switched the {self.middle_card} with {p_name}'s card."
             response_text = f"You've switched the {self.middle_card} with {p_name}'s card."
-            self.game.turn_handler.needs_to_go.append(self.ack_str)
-            self.game.update_move("Witch", self.game.swap_role_with_mid, self.middle_card, p_id)
-            self.game.update_game_log("Witch", game_log)
+            self.game.turn_handler.needs_to_go.append(ack_sequence)
+            self.game.update_move(id_sequence, self.game.swap_role_with_mid, self.middle_card, p_id)
+            self.game.update_game_log(id_sequence, game_log_text)
             return {'response': response_text}
         elif "status" in player_response.keys():
-            self.game.update_game_log(self.ack_str)
+            self.game.update_game_log(ack_sequence)
             return {'Ay': "response received"}
+        else:
+            return {"response": "Action unknown"}

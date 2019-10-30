@@ -31,7 +31,7 @@ function chooseMiddleCard(cardRequested, player_names) {
     let cardRequestedDict = {"card": cardRequested};
     GameService.fetchPostResponseFromServer(cardRequestedDict).then(r => {
         let display = document.getElementById('button-div');
-        display.innerHTML = "The " + r['requested_card'] + " card is  " + r['card_identity'] + ". </br>" +
+        display.innerHTML = "The " + r['requested_card'] + " card is " + r['card_identity'] + ".</br>" +
             "Who do you want to give this card to?";
         displayWitchPhase2(player_names);
     });
