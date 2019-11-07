@@ -11,6 +11,10 @@ body {
     padding: 15px;
 }
 
+.shown-input-field {
+    border-style: solid;
+}
+
 .titles {
     text-align: center;
     font-family: sans-serif;

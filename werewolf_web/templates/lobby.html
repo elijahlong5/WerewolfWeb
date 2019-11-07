@@ -16,7 +16,7 @@
         <h1 class="werewolf"> You are spectating in a lobby</h1>
         {% endif %}
 
-        <h2>Access code: {{ access_token }}</h2>
+        <h2>Lobby code: {{ access_token }}</h2>
     </div>
     <div class="choices" id="choices">
         <form action="/start_game/" method="post">
@@ -24,6 +24,18 @@
                 Start Game
             </button>
             <input type="hidden" value="{{access_token}}" name="access_token">
+            {% if player_id|int %}
+            <input type="hidden" value="{{player_id|int}}" name="player_id">
+            {% else %}
+            <input type="hidden" value="spectator" name="player_id">
+            {% endif %}
+        </form>
+        <form action="/change_time/" method="post">
+            <input class="shown-input-field" type="number" step="0.1" name="new_time" required>
+            <button class="button" type="submit" id="discussion-time-button">
+                Set discussion time: ({{ discussion_time }} min)
+            </button>
+            <input type="hidden" value="{{access_token}}" name="access_token" required>
             {% if player_id|int %}
             <input type="hidden" value="{{player_id|int}}" name="player_id">
             {% else %}
@@ -55,7 +67,6 @@
             </div>
         </div>
     </div>
-
 </div>
 {% endblock content %}
 {% block scripts %}

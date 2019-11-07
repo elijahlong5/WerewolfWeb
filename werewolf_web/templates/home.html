@@ -15,18 +15,15 @@
             </button>
         </form>
         <form action="/join-lobby/" method="post">
-            <h4>
-                Name
-            </h4>
-            <input type="text" name="player_name_field" required>
+            <h4>Name</h4>
+            <input class="shown-input-field" type="text" name="player_name_field" required>
             <h4>
                 Access code
             </h4>
-            <input type="text" value="RING1" name="access_token" required>
+            <input class="shown-input-field" type="text" name="access_token" required>
             <button class="button" type="submit">
                 Join Lobby
             </button>
         </form>
-
     </div>
 {% endblock content %}

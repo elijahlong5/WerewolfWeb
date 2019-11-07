@@ -1,7 +1,7 @@
 import random
 import string
 import json
-from flask import Flask, render_template, redirect, url_for, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
 from Game import WerewolfGame, Role
 
 ACCESS_TOKEN_LENGTH = 5
@@ -9,6 +9,7 @@ ACCESS_TOKEN_LENGTH = 5
 lobbies = {}
 
 app = Flask(__name__)
+app.secret_key = b'abceasyas123'
 
 
 @app.route('/')
@@ -33,7 +34,7 @@ def join_lobby():
     Includes their player
     """
     access = request.form['access_token']
-    print(f'Requested access code is {access}')
+    print(f'Requested to join lobby: {access}')
     if access in lobbies.keys():
         game = lobbies[access]
         print('Requested Access Token is valid.  Redirecting to lobby.')
@@ -51,7 +52,7 @@ def join_lobby():
                                         player_id=p_id))
 
     else:
-        print('Requested Access Token or Name not found.')
+        print(f'Requested Access Token for {access} or Name not found.')
         return redirect(url_for('home'))
 
 
@@ -85,6 +86,25 @@ def start_game():
                             werewolf_characters=Role,
                             players=lobbies[access_token].jsonify_players()))
 
+
+@app.route('/change_time/', methods=['post'])
+def change_time():
+
+    access_token = request.form['access_token']
+    player_id = request.form['player_id']
+    if access_token not in lobbies.keys():
+        # Lobby is not open
+        return redirect(url_for("home"))
+    else:
+        game = lobbies[access_token]
+
+    time_change_to = request.form['new_time']
+
+    game.disc_length = time_change_to
+
+    return redirect(url_for('lobby',
+                            access_token=access_token,
+                            player_id=player_id))
 
 # GAME PHASES
 @app.route('/lobby/<access_token>/')
@@ -120,7 +140,8 @@ def lobby(access_token, player_id=None):
                                werewolf_characters=Role,
                                active_characters=game.characters,
                                players=lobbies[access_token].jsonify_players(),
-                               spectators=lobbies[access_token].jsonify_spectators())
+                               spectators=lobbies[access_token].jsonify_spectators(),
+                               discussion_time=game.disc_length)
 
 
 @app.route('/game_on/<access_token>/')

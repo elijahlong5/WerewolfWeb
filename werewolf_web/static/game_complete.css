@@ -3,7 +3,7 @@
     .container {
         border-style: solid;
         border-width: thick;
-        border-color: seagreen;
+        border-color: gray;
     }
 
     #player-game-status {
@@ -46,6 +46,5 @@
         width: 100%;
         text-align: center;
         border-style: solid;
-
     }
 }
