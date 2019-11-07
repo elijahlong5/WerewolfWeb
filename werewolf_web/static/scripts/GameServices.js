@@ -1,4 +1,7 @@
 class GameServices{
+
+    middleCardDivId = "middle-card-buttons";
+    middleCardButtonClasses = ["button", "middle-card"];
     constructor(){
         this.accessTokenLocationInPathname = 2;
         this.playerIdLocationInPathname = 4;
@@ -10,7 +13,6 @@ class GameServices{
         this.notifyFormId = "notify-form";
 
         this.validStartPointVar = "valid-starting-point"; // Matches class name in lobby style page.
-
     }
 
     // Adding elements to the page
@@ -45,6 +47,29 @@ class GameServices{
         GameServices.addSimpleElement("h4", GameService.roleDescriptionId,
             description);
     }
+
+    addMiddleCardButtons(  middleCardClickedFunction, attributes=[]) {
+        let middleCardDivId = this.middleCardDivId;
+        let middleCardButtonClasses = this.middleCardButtonClasses;
+        GameServices.addElement("Left", middleCardDivId,"button", middleCardButtonClasses,
+            "Left", attributes);
+        GameServices.addElement("Middle",middleCardDivId,"button", middleCardButtonClasses,
+            "Middle", attributes);
+        GameServices.addElement("Right", middleCardDivId,"button", middleCardButtonClasses,
+            "Right", attributes);
+
+        document.getElementById("Left").addEventListener("click", function(){
+            middleCardClickedFunction("Left");
+        });
+        document.getElementById("Middle").addEventListener("click",function(){
+            middleCardClickedFunction("Middle");
+        });
+        document.getElementById("Right").addEventListener("click",function(){
+            middleCardClickedFunction("Right");
+        });
+    }
+
+
     addOkButton(parentNodeId) {
         let formId = this.notifyFormId;
         let submitFormButtonId = "form-submit-button";

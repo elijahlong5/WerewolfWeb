@@ -2,7 +2,7 @@
     text-align: center;
 }
 
-.players {
+.active-players {
     border-bottom: coral;
     padding: 15px 32px;
 }
@@ -12,6 +12,20 @@
     display: flex;
     flex-wrap: wrap;
     font-family: sans-serif;
+}
+
+.item {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#active-characters > div > button {
+    margin-left: 15px;
+}
+
+#active-characters > div {
+    width: 100%;
+    margin: auto;
 }
 
 .valid-starting-point {

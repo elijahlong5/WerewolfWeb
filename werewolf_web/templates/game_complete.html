@@ -4,9 +4,7 @@
 {% block content %}
 <div id="game-complete-container">
 </div>
-<div>
-    <a href="/lobby/{{access_token}}/player_id/{{player_id}}/"> Go back to lobby</a>
-</div>
+<a href="/lobby/{{access_token}}/player_id/{{player_id}}/" id="return-to-lobby"> Go back to lobby</a>
 {% endblock content %}
 {% block scripts %}
     <script src="/static/scripts/GameServices.js"></script>
@@ -14,4 +12,5 @@
         window.gameCompleteDict = {{ game_complete_dict | tojson}};
     </script>
     <script src="/static/scripts/GameComplete.js"></script>
+    <link href="/static/game_complete.css" rel="stylesheet">
 {% endblock scripts %}

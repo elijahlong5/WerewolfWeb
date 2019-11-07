@@ -432,11 +432,10 @@ class WerewolfGame:
                 self.players[int(cast_vote_dict["vote_for_id"])].votes_against += 1
                 self.players[int(cast_vote_dict["player_id"])].voted_for = self.players[int(cast_vote_dict["vote_for_id"])]
             else:
-                print("you've already voted!")
+                print("This player already voted!")
         else:
             # This should only happen if they haven't selected anyone at the end of the discussion time.
             self.players[int(cast_vote_dict["player_id"])].voted_for = self.did_not_vote_str
-
         status = False
         for p in self.players.values():
             if p.voted_for is None:

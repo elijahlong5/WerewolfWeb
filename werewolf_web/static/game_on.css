@@ -1,0 +1,29 @@
+
+
+@media screen and (min-width: 800px) {
+    .game-on-container {
+        justify-content: center;
+        margin: auto;
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .game-on-container{
+        justify-content: center;
+        width: 100%;
+    }
+
+    #role-header {
+        margin: auto;
+        width: 80%;
+    }
+
+    #middle-card-buttons {
+        display: flex;
+    }
+
+    button {
+        width: 100%;
+    }
+}

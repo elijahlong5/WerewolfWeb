@@ -20,25 +20,14 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
 
         let buttonFormId = "button-form";
+
         GameServices.addSimpleElement('h2', buttonDivName, "You're the lone wolf");
         GameServices.addElement(buttonFormId, buttonDivName, "form",[],"",
             ["method", "post"]);
-        GameServices.addElement("Left", buttonFormId,"button", ["button"],
-            "Left", ["type", "submit"]);
-        GameServices.addElement("Middle", buttonFormId,"button",["button"],
-            "Middle", ["type", "submit"]);
-        GameServices.addElement("Right", buttonFormId,"button",["button"],
-            "Right", ["type", "submit"]);
 
-        document.getElementById("Left").addEventListener("click", function(){
-            makeRequest("Left");
-        });
-        document.getElementById("Middle").addEventListener("click",function(){
-            makeRequest("Middle");
-        });
-        document.getElementById("Right").addEventListener("click",function(){
-            makeRequest("Right");
-        });
+        // Add Middle Cards
+        GameServices.addSimpleElement("div", buttonFormId, "", GameService.middleCardDivId);
+        GameService.addMiddleCardButtons(makeRequest,["type", "submit"]);
     }
 });
 

@@ -6,30 +6,16 @@ document.addEventListener("DOMContentLoaded", function() {
     GameServices.addRoleDescription(seerDict['role-description']);
 
     let roleDivId = GameService.roleDivId;
+
+
+
     let buttonDivId = 'name-buttons';
     GameServices.addSimpleElement("div", roleDivId, "", buttonDivId);
 
-    let middleCardDivId = 'middle-card-buttons';
-    GameServices.addSimpleElement("div", roleDivId, "", middleCardDivId);
-
     // Add Middle Cards
-    let middleCardButtonClasses = ["button", "middle-card"];
-    GameServices.addElement("Left", middleCardDivId,"button", middleCardButtonClasses,
-        "Left");
-    GameServices.addElement("Middle", middleCardDivId,"button", middleCardButtonClasses,
-        "Middle");
-    GameServices.addElement("Right", middleCardDivId,"button", middleCardButtonClasses,
-        "Right");
+    GameServices.addSimpleElement("div", roleDivId, "", GameService.middleCardDivId);
+    GameService.addMiddleCardButtons(handleButtonClicked);
 
-    document.getElementById("Left").addEventListener("click", function(){
-        handleButtonClicked("Left");
-    });
-    document.getElementById("Middle").addEventListener("click",function(){
-        handleButtonClicked("Middle");
-    });
-    document.getElementById("Right").addEventListener("click",function(){
-        handleButtonClicked("Right");
-    });
 
     // Add submit button
     let formId = "submit-form";

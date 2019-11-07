@@ -33,12 +33,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (myTeam === winningTeam) {
             winStatus = "Won";
         }
-        let text = myPlayer['name'] + ", You " + winStatus + " the game!";
+        let text = myPlayer['name'] + ", You " + winStatus + "!";
         GameServices.addElement("player-game-status", container.id, "H1",
             ["Werewolf"], text);
 
         // Display winning team.
-        let winningTeamText = "The " + winningTeam + " wins the game!";
+        let winningTeamText = "The winning team is: " + winningTeam + "";
         GameServices.addElement("winning-team-status", container.id, "H3",
             ["Werewolf"], winningTeamText);
 
@@ -51,11 +51,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     whoDiedText = players[diedIds[i]]['name']+ " Died.";
                 }
-                GameServices.addElement("dead-player-"+i, container.id, "H1",
+                GameServices.addElement("dead-player-"+i, container.id, "h3",
                     ["Werewolf"], whoDiedText);
             }
         } else {
-            GameServices.addElement("who-died", container.id, "H2",
+            GameServices.addElement("who-died", container.id, "h3",
                 ["Werewolf"], "Nobody died?!");
         }
         // Display the card they ended up as.
@@ -70,15 +70,14 @@ document.addEventListener("DOMContentLoaded", function() {
     let votesDivId = "additional-info";
     let votesUlId = "votes-ul";
     GameServices.addElement(votesDivId, container.id, "div",[], "");
-    GameServices.addElement("vote-totals-button", votesDivId, "button",[], "Show vote totals");
-    GameServices.addElement("vote-ballets-button", votesDivId, "button",[], "Show ballet results");
-    GameServices.addElement("current-roles-button", votesDivId, "button",[], "People's current roles");
-    GameServices.addElement("original-roles-button", votesDivId, "button",[], "People's original roles");
-    GameServices.addElement(votesUlId, votesDivId, "UL",[], "");
-    GameServices.addElement("game-log-button", votesDivId, "button",[], "View game log");
-
+    let buttonClasses = ["selector-button"];
+    GameServices.addElement("vote-totals-button", votesDivId, "button", buttonClasses, "Show vote totals");
+    GameServices.addElement("vote-ballets-button", votesDivId, "button", buttonClasses, "Show ballet results");
+    GameServices.addElement("current-roles-button", votesDivId, "button", buttonClasses, "People's current roles");
+    GameServices.addElement("original-roles-button", votesDivId, "button", buttonClasses, "People's original roles");
+    GameServices.addElement(votesUlId, votesDivId, "UL",["info-ul"], "");
+    GameServices.addElement("game-log-button", votesDivId, "button",["selector-button", "game-log-button"], "View game log");
     displayWhoVotedForWhom(players, votesUlId, playerId);
-
     document.getElementById("vote-ballets-button").addEventListener("click", function () {
         displayWhoVotedForWhom(players, votesUlId, playerId);
     });

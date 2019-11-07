@@ -12,7 +12,6 @@ body {
 }
 
 .titles {
-
     text-align: center;
     font-family: sans-serif;
 }
@@ -40,5 +39,9 @@ body {
 .selected {
     background-color: limegreen;
 }
+
+
+
+
 
 

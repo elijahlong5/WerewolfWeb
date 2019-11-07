@@ -8,7 +8,6 @@ function redirectRefresh() {
 }
 
 async function redirectIfDiscussionPhase() {
-
     const response = await fetch('/api/lobbies/' + access_token + '/discussion/');
     const is_discussion = await response.json();
     if (is_discussion['discussion']){

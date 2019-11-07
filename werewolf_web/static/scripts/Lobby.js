@@ -110,7 +110,8 @@ async function refreshPlayersDiv(access_token) {
     const response = await fetch('/api/lobbies/' + access_token + '/players/')
     const responsePlayersDict = await response.json();
 
-    let playersDiv = document.getElementById("players");
+    let playerDivId = "active-players";
+    let playersDiv = document.getElementById(playerDivId);
     // Removes 'spectators' from the div
     let playerChildren = playersDiv.children;
     for (let i = 0; i < playerChildren.length; i++ ) {
@@ -125,7 +126,7 @@ async function refreshPlayersDiv(access_token) {
     for (const key in responsePlayersDict) {
         if (! document.getElementById(key)) {
             let text = responsePlayersDict[key]['name'] + " (id: " + key + ")";
-            GameServices.addElement(key, "players", "li", [],
+            GameServices.addElement(key, playerDivId, "li", [],
                 text, []);
         }
     }
@@ -166,7 +167,6 @@ async function refreshCharacterDisplay() {
 }
 
 function requestAddPlayer(p, playerId) {
-    console.log('trying to add char');
     if (playerId === null) {
         console.log("Can't add a character because player ID is null")
     }

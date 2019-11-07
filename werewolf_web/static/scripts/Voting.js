@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     for (let key in votingDict['players']['names']) {
         console.log('key', key, "playerid:", playerId);
-
         GameServices.addElement(key, buttonDivName, "button",
             ['button', 'not-selected'],
             votingDict['players']['names'][key]['name']
@@ -63,8 +62,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             document.getElementById(submitFormButtonId).disabled = (selectedId === null)
         });
-
-
     }
     let formId = "submit-form";
     let submitFormButtonId = "form-submit-button";

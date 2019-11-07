@@ -2,12 +2,11 @@
 {% block styling %}
 {% endblock styling %}
 {% block content %}
-<div>
+<div class="game-on-container">
     <div id="role-header">
         <h2>You are the {{ original_role }}</h2>
     </div>
-</div>
-<div id="role-div">
+    <div class="role-div-info" id="role-div"></div>
 </div>
 {% endblock content %}
 {% block scripts %}
@@ -17,4 +16,5 @@
     </script>
     <script src="/static/scripts/{{original_role}}.js"></script>
     <script src="/static/scripts/Game_On.js" ></script>
+    <link href="/static/game_on.css" rel="stylesheet">
 {% endblock scripts %}

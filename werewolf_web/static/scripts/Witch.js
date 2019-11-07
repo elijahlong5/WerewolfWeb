@@ -9,31 +9,27 @@ document.addEventListener("DOMContentLoaded", function() {
     let buttonFormId = "button-form";
     GameServices.addElement(buttonFormId, buttonDivName, "form",[],"",
         ["method", "post"],);
-    GameServices.addElement("Left", buttonFormId,"button", ["button"],
-        "Left", ["type", "submit"]);
-    GameServices.addElement("Middle", buttonFormId,"button",["button"],
-        "Middle", ["type", "submit"]);
-    GameServices.addElement("Right", buttonFormId,"button",["button"],
-        "Right", ["type", "submit"]);
 
-    document.getElementById("Left").addEventListener("click", function(){
-        chooseMiddleCard("Left", witchDict);
-    });
-    document.getElementById("Middle").addEventListener("click",function(){
-        chooseMiddleCard("Middle", witchDict);
-    });
-    document.getElementById("Right").addEventListener("click",function(){
-        chooseMiddleCard("Right", witchDict);
-    });
+    GameServices.addElement(buttonFormId, buttonDivName, "form",[],"",
+        ["method", "post"]);
+
+    // Add Middle Cards
+    GameServices.addSimpleElement("div", buttonFormId, "", GameService.middleCardDivId);
+    GameService.addMiddleCardButtons(chooseMiddleCard,["type", "submit"]);
+
+    window.witchDict = witchDict;
+    // Add Middle Cards
+    GameServices.addSimpleElement("div", buttonFormId, "", GameService.middleCardDivId);
+    GameService.addMiddleCardButtons(makeRequest,["type", "submit"]);
 });
 
-function chooseMiddleCard(cardRequested, player_names) {
+function chooseMiddleCard(cardRequested) {
     let cardRequestedDict = {"card": cardRequested};
     GameService.fetchPostResponseFromServer(cardRequestedDict).then(r => {
         let display = document.getElementById('button-div');
         display.innerHTML = "The " + r['requested_card'] + " card is " + r['card_identity'] + ".</br>" +
             "Who do you want to give this card to?";
-        displayWitchPhase2(player_names);
+        displayWitchPhase2();
     });
 }
 
@@ -45,7 +41,8 @@ function witchSwitch(playerIdDict) {
     });
 }
 
-function displayWitchPhase2(playerNames) {
+function displayWitchPhase2() {
+    let playerNames = window.witchDict;
 
     let buttonDivId = "button-div";
     let formId = 'submit-form';
