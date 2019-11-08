@@ -19,17 +19,30 @@
         <h2>Lobby code: {{ access_token }}</h2>
     </div>
     <div class="choices" id="choices">
-        <form action="/start_game/" method="post">
-            <button class="button" type="submit" id="start-game-button">
-                Start Game
-            </button>
-            <input type="hidden" value="{{access_token}}" name="access_token">
-            {% if player_id|int %}
-            <input type="hidden" value="{{player_id|int}}" name="player_id">
-            {% else %}
-            <input type="hidden" value="spectator" name="player_id">
-            {% endif %}
-        </form>
+        <div>
+            <form action="/start_game/" method="post">
+                <button class="button" type="submit" id="start-game-button">
+                    Start Game
+                </button>
+                <input type="hidden" value="{{access_token}}" name="access_token">
+                {% if player_id|int %}
+                <input type="hidden" value="{{player_id|int}}" name="player_id">
+                {% else %}
+                <input type="hidden" value="spectator" name="player_id">
+                {% endif %}
+            </form>
+            <form action="/exit_lobby/" method="post">
+                <button class="button" type="submit" id="exit-lobby">
+                    Exit Lobby
+                </button>
+                <input type="hidden" value="{{access_token}}" name="access_token">
+                {% if player_id|int %}
+                <input type="hidden" value="{{player_id|int}}" name="player_id">
+                {% else %}
+                <input type="hidden" value="spectator" name="player_id">
+                {% endif %}
+            </form>
+        </div>
         <form action="/change_time/" method="post">
             <input class="shown-input-field" placeholder="currently {{discussion_time}} min(s)" type="number" step="0.1" name="new_time" required>
             <button class="button" type="submit" id="discussion-time-button">

@@ -64,6 +64,8 @@ def start_game():
     """
     access_token = request.form['access_token']
     player_id = request.form['player_id']
+    if access_token not in lobbies.keys():
+        return redirect(url_for("home"))
     game = lobbies[access_token]
     if player_id is None or player_id == 'undefined' or player_id == 'spectator':
         return redirect(url_for('lobby',
@@ -85,6 +87,25 @@ def start_game():
                             player_id=player_id,
                             werewolf_characters=Role,
                             players=lobbies[access_token].jsonify_players()))
+
+
+@app.route('/exit_lobby/', methods=['post'])
+def exit_lobby():
+    access_token = request.form['access_token']
+    user_id = request.form['player_id']
+
+    if access_token in lobbies.keys():
+        game = lobbies[access_token]
+        try:
+            user_id = int(user_id)
+            if user_id in game.players.keys():
+                game.players.pop(user_id)
+            elif user_id in game.spectators.keys():
+                game.spectators.pop(user_id)
+        except ValueError:
+            pass
+
+    return render_template('home.html')
 
 
 @app.route('/change_time/', methods=['post'])

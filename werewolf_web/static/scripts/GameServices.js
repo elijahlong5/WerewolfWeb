@@ -1,7 +1,5 @@
 class GameServices{
 
-    middleCardDivId = "middle-card-buttons";
-    middleCardButtonClasses = ["button", "middle-card"];
     constructor(){
         this.accessTokenLocationInPathname = 2;
         this.playerIdLocationInPathname = 4;
@@ -13,6 +11,9 @@ class GameServices{
         this.notifyFormId = "notify-form";
 
         this.validStartPointVar = "valid-starting-point"; // Matches class name in lobby style page.
+
+        this.middleCardButtonClasses = ["button", "middle-card"];
+        this.middleCardDivId = "middle-card-buttons";
     }
 
     // Adding elements to the page
