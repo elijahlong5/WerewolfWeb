@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Join lobby as a player", ["type", "submit"]);
         }
     }
-
     let characterChildren = document.getElementById("characters-dropdown").children;
     for (let i = 0; i < characterChildren.length; i++) {
         characterChildren[i].children[0].addEventListener("click", function () {

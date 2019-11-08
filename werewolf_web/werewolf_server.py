@@ -89,7 +89,6 @@ def start_game():
 
 @app.route('/change_time/', methods=['post'])
 def change_time():
-
     access_token = request.form['access_token']
     player_id = request.form['player_id']
     if access_token not in lobbies.keys():
@@ -393,13 +392,13 @@ def get_new_access_token():
 
 if __name__ == "__main__":
     # TODO: Remove, just here for testing
-    lobbies['RING1'] = WerewolfGame()
-    game = lobbies['RING1']
+    # lobbies['RING1'] = WerewolfGame()
+    # game = lobbies['RING1']
     # game.add_player("Jackie")
     # game.add_player("Jilliam")
     # game.add_player("Snoopy")
     # game.add_player("Tonya")
     # game.add_player("Taek")
     # game.add_player("Sam")
-    # app.run(debug=True, host='0.0.0.0', port=8080)
-    app.run(debug=True, port=8080)
+    app.run(debug=True, host='0.0.0.0', port=8080)
+    # app.run(debug=True, port=8080)

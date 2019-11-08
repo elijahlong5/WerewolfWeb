@@ -31,9 +31,9 @@
             {% endif %}
         </form>
         <form action="/change_time/" method="post">
-            <input class="shown-input-field" type="number" step="0.1" name="new_time" required>
+            <input class="shown-input-field" placeholder="currently {{discussion_time}} min(s)" type="number" step="0.1" name="new_time" required>
             <button class="button" type="submit" id="discussion-time-button">
-                Set discussion time: ({{ discussion_time }} min)
+                Set discussion time
             </button>
             <input type="hidden" value="{{access_token}}" name="access_token" required>
             {% if player_id|int %}
@@ -67,6 +67,7 @@
             </div>
         </div>
     </div>
+
 </div>
 {% endblock content %}
 {% block scripts %}
@@ -74,7 +75,7 @@
         window.initialPlayers = {{ players | tojson }};
         window.initialSpectators = {{ spectators | tojson }};
     </script>
-    <script src="/static/scripts/GameServices.js"></script>
-    <script src="/static/scripts/Lobby.js"></script>
+    <script type="text/javascript" src="/static/scripts/GameServices.js"></script>
+    <script type="text/javascript" src="/static/scripts/Lobby.js"></script>
     <link href="/static/home_lobby.css" rel="stylesheet">
 {% endblock scripts %}
