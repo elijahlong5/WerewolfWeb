@@ -39,7 +39,6 @@ class Witch:
             return card_info
         elif "playerId" in player_response.keys() and id_sequence in self.game.turn_handler.needs_to_go:
             p_id = int(player_response['playerId'])
-            print(f'Middle card requested was {self.middle_card}')
             p_name = self.game.players[p_id].name
             game_log_text = f"The witch switched the {self.middle_card} with {p_name}'s card."
             response_text = f"You've switched the {self.middle_card} with {p_name}'s card."

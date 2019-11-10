@@ -5,6 +5,7 @@ from enum import Enum
 
 import GameHandlers.Human as Human
 
+import Characters.Drunk as D
 import Characters.Insomniac as I
 import Characters.Minion as M
 import Characters.Robber as R
@@ -22,6 +23,7 @@ from datetime import timedelta
 
 
 class Role(Enum):
+    DRUNK = "Drunk"
     INSOMNIAC = 'Insomniac'
     MINION = 'Minion'
     ROBBER = 'Robber'
@@ -34,10 +36,11 @@ class Role(Enum):
 
 
 class Node:
-    def __init__(self, role=None):
+    def __init__(self, role=None, cant_go_until_others_go=False):
         self.role = role
         self.next = None
         self.stored_move = None
+        self.cant_go_until_others_go = cant_go_until_others_go
 
 
 class TurnList:
@@ -47,35 +50,45 @@ class TurnList:
         self.head = Node()
         self.turn_pointer = self.head
         self.needs_to_go = []
+        self.has_done_role = []
 
     def next_turn(self):
         if self.turn_pointer.next is None:
-            """Game should be over NOW"""
             return False
         else:
             self.turn_pointer = self.turn_pointer.next
-            self.needs_to_go.append(self.turn_pointer.role)
+            if self.turn_pointer.cant_go_until_others_go:
+                self.needs_to_go.append(self.turn_pointer.role)
             return True
 
     def whose_turn(self):
         return self.turn_pointer.role
 
-    def append(self, role):
-        new_node = Node(role)
+    def append(self, role, cant_go_until_others_go=False):
+        new_node = Node(role, cant_go_until_others_go)
         cur = self.head
         while cur.next is not None:
             cur = cur.next
         cur.next = new_node
+        if not cant_go_until_others_go:
+            # This player can make their move initially (ie robber, and NOT the insomniac.)
+            self.needs_to_go.append(role)
 
     def get_node_at_role(self, role):
         cur = self.head
-        while cur.role is not role:
+        while cur.role != role:
+            print(cur.role)
+            print(f'checking comparison: ')
+
             cur = cur.next
+            print(f"cur.role {cur.role}, role: {role}")
+            print(cur.role != role)
         return cur
 
     def store_a_move(self, role, move):
-        """this is used when someone makes a move, but it can't be processed yet.
+        """This is used when someone makes a move, but it can't be processed yet.
         The move is stored and applied to the game once the turn pointer is at that role."""
+        print(f'in store_a_move: role: {role}')
         node = self.get_node_at_role(role)
         node.stored_move = move
 
@@ -154,28 +167,33 @@ class WerewolfGame:
         self.middle_cards[2] = self.characters[current_character + 2]
 
     def initialize_linked_list(self):
-        # clear current list:
-        self.turn_handler = TurnList()
+        self.turn_handler = TurnList()  # clear current list:
         # Find out what roles are accounted for (avoiding roles in the middle, or not used in the game)
+
+        # USING PLAYER ID_ROLE to prevent players from going more than once.
         roles_in_play = []
         parallel_p_id_list = []
         for p_id, player in self.players.items():
             roles_in_play.append(str(player.original_role))
             parallel_p_id_list.append(f'{p_id}_{str(player.original_role)}')
-        # Just ordering them
+
+        # Ordering the roles as they go in the game.
+        # If they are able to go immediately when game starts,
+        # then their role is appended to needs_to_go.
         if "Robber" in roles_in_play:
             self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Robber")])
         if "Troublemaker" in roles_in_play:
             self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Troublemaker")])
         if "Witch" in roles_in_play:
             self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Witch")])
+        if "Drunk" in roles_in_play:
+            self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Drunk")])
         if "Insomniac" in roles_in_play:
-            self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Insomniac")])
+            self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Insomniac")], True)
 
         self.turn_handler.next_turn()
 
         if "Seer" in roles_in_play:
-
             self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Seer")])
         if "Minion" in roles_in_play:
             self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Minion")])
@@ -285,7 +303,9 @@ class WerewolfGame:
             # Will add all characters if they are not in
             # Robber, Seer, Insomniac, Minion, Troublemaker, Witch
             print('character not found, adding regardless.')
-            if character == "Insomniac":
+            if character == "Drunk":
+                self.characters.append(D.Drunk(self))
+            elif character == "Insomniac":
                 self.characters.append(I.Insomniac(self))
             elif character == "Robber":
                 self.characters.append(R.Robber(self))
@@ -342,37 +362,59 @@ class WerewolfGame:
         response = player_original_role.process_player_response(player_id, player_response)
         return response
 
+    def enter_endgame(self):
+        self.DISCUSSION_PHASE = True
+        now = datetime.now()
+        self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
+
     def update_move(self, role, move_method, arg1, arg2):
-        """Handles players that need to switch the placement of the cards, does not handle the game log"""
+        """Handles players that need to switch the placement of the cards,
+        does not handle the game log
+
+        This is only called when the player's move is able to be processed,
+        but not necessarily when the move can be executed.
+
+        move is only executed if it is the player's turn to move.
+        Otherwise move is stored, if they have not already gone.
+        """
+
         if role in self.turn_handler.needs_to_go:
-            move_method(arg1, arg2)
-            if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):
-                self.DISCUSSION_PHASE = True
-                now = datetime.now()
-                self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
-                return
-            while self.turn_handler.turn_pointer.stored_move is not None:
-                # print(f'The {self.turn_handler.whose_turn()} has a stored move, so that action is being taken.')
-                stored_move = self.turn_handler.turn_pointer.stored_move
-                stored_move['function'](stored_move['args'][0], stored_move['args'][1])
-                # Remove them from needing to go.
-                self.turn_handler.needs_to_go.pop(
-                    self.turn_handler.needs_to_go.index(self.turn_handler.turn_pointer.role)
-                )
+            # The move is able to be processed (not necessarily executed).
+            if role == self.turn_handler.whose_turn():
+                # Execute the move.
+                move_method(arg1, arg2)
+                # Now go to the next turn.
                 if not self.turn_handler.next_turn() and not len(self.turn_handler.needs_to_go):
-                    self.DISCUSSION_PHASE = True
-                    now = datetime.now()
-                    self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
-                return
+                    self.enter_endgame()
+                    return
+                while self.turn_handler.turn_pointer.stored_move is not None:
+                    # There is a stored move for this role.
+                    # Execute the stored move
+                    stored_move = self.turn_handler.turn_pointer.stored_move
+                    stored_move['function'](stored_move['args'][0], stored_move['args'][1])
+                    # Go to the next Turn
+                    has_next = self.turn_handler.has_next()
+                    self.turn_handler.next_turn()
+                    if not has_next and not len(self.turn_handler.needs_to_go):
+                        # End game because everyone has gone.
+                        self.enter_endgame()
+                        return
+                    elif not has_next:
+                        # There are no more changing roles that need to go,
+                        # but we are still waiting on people to go.
+                        return
+            else:
+                # It is not their turn yet, but they were able to make their move.
+                # Storing it for later.
+                move = {
+                    "function": move_method,
+                    "args": [arg1, arg2],
+                }
+                self.turn_handler.store_a_move(role, move)
         else:
-            move = {
-                "function": move_method,
-                "args": [arg1, arg2],
-            }
-            self.turn_handler.store_a_move(role, move)
+            print('role not in needs_to_go')
 
     def update_game_log(self, role, move_summary=None):
-
         if role in self.turn_handler.needs_to_go:
             print('game log appended')
             self.turn_handler.needs_to_go.pop(self.turn_handler.needs_to_go.index(role))

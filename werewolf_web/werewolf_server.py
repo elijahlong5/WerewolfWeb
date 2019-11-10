@@ -50,7 +50,6 @@ def join_lobby():
                 return redirect(url_for('lobby',
                                         access_token=access,
                                         player_id=p_id))
-
     else:
         print(f'Requested Access Token for {access} or Name not found.')
         return redirect(url_for('home'))
@@ -227,39 +226,14 @@ def wake_up(access_token, player_id=None):
 @app.route('/game-complete/<access_token>/')
 @app.route('/game-complete/<access_token>/player_id/<player_id>/')
 def game_complete(access_token, player_id=None):
-    game = lobbies[access_token]
-    # players_imprint = game.players
-    # spectators_imprint = game.spectators
-    # game.is_game_on = False
-    #
-    # # TODO: Display end of game stuff after game is complete
-    # #   Who won, who voted for whom, etc
-    # print('-----game log-------')
-    # for l in game.game_log:
-    #     print(l)
-    #     print()
-    # print('----- game status at upon completion ------')
-    # for p in game.players.values():
-    #     try:
-    #         print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for {p.voted_for.name}')
-    #     except Exception as e:
-    #         print(f'{p.name} received {p.votes_against} vote(s) against them, and they voted for NO ONE')
-    #
-    # # RESET GAME FUNCTIONS BEFORE REDIRECTING TO LOBBY.
-    # lobbies[access_token] = WerewolfGame()
-    # lobbies[access_token].is_game_on = False
-    # lobbies[access_token].players = players_imprint
-    #
-    # lobbies[access_token].spectators = spectators_imprint
-    #
-    # for p in lobbies[access_token].players.values():
-    #     p.original_role = None
-    #     p.current_role = None
-    return render_template('game_complete.html',
-                           access_token=access_token,
-                           player_id=player_id,
-                           game_complete_dict=game.game_over_dictionary)
-
+    if access_token in lobbies.keys():
+        game = lobbies[access_token]
+        return render_template('game_complete.html',
+                               access_token=access_token,
+                               player_id=player_id,
+                               game_complete_dict=game.game_over_dictionary)
+    else:
+        return redirect(url_for("home"))
 
 # GAME API REQUESTS
 @app.route('/api/lobbies/<access_token>/players/')
@@ -268,27 +242,40 @@ def get_lobby_players(access_token):
     :param access_token: lobby id
     :return: dictionary of active (non-spectating) players
     """
-    return lobbies[access_token].jsonify_players()
+    if access_token in lobbies.keys():
+        return lobbies[access_token].jsonify_players()
+    else:
+        return redirect(url_for("home"))
 
 
 @app.route('/api/lobbies/<access_token>/characters/')
 def get_lobby_characters(access_token):
-    game = lobbies[access_token]
-    characters_dict = {
-        'characters': list(map(lambda c: str(c), game.characters)),
-        'can_game_start': game.verify_valid_game_starting_point(),
-    }
-    return jsonify(characters_dict)
+    if access_token not in lobbies.keys():
+        return redirect(url_for("home"))
+    else:
+        game = lobbies[access_token]
+        characters_dict = {
+            'characters': list(map(lambda c: str(c), game.characters)),
+            'can_game_start': game.verify_valid_game_starting_point(),
+        }
+        return jsonify(characters_dict)
 
 
 @app.route('/api/lobbies/<access_token>/post_become_spectator/', methods=['post'])
 def post_change_to_spectator(access_token):
     """Toggles the posted id between spectating and playing dictionaries in the game object."""
-    user_id = request.json['user_id']
-    game = lobbies[access_token]
-    game.spectators[int(user_id)] = game.players[int(user_id)]
-    game.players.pop(int(user_id))
-    return jsonify({"status": "success"})
+    try:
+        user_id = request.json['user_id']
+        game = lobbies[access_token]
+        game.spectators[int(user_id)] = game.players[int(user_id)]
+        game.players.pop(int(user_id))
+        return jsonify({"status": "success"})
+    except KeyError:
+        if access_token in lobbies.keys():
+            return redirect(url_for("lobby",
+                                    access_token=access_token))
+        else:
+            return redirect(url_for("home"))
 
 
 @app.route('/api/lobbies/<access_token>/post_change_back_to_player/', methods=['post'])
@@ -323,7 +310,10 @@ def request_remove_player(access_token):
 
 @app.route('/api/lobbies/<access_token>/game_on/')
 def get_is_game_on(access_token):
-    return {'game_on': lobbies[access_token].is_game_on}
+    if access_token in lobbies.keys():
+        return {'game_on': lobbies[access_token].is_game_on}
+    else:
+        return redirect(url_for("home"))
 
 
 @app.route('/api/lobbies/<access_token>/discussion/')
