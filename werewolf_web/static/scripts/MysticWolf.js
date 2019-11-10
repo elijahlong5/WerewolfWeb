@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", function() {
             view({'viewThisId': key});
         });
     }
+    if ( 0 === Object.keys(mysticWolfDict['names']).length) {
+        GameService.addOkButton(namesDivId);
+    }
 
 });
 

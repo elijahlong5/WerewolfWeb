@@ -29,6 +29,8 @@ class MysticWolf:
                 d['names'][str(p_id)] = {'name': p.name}
         if not len(d['names'].keys()):
             id_sequence = f"{player_id}_{str(self)}"
+            ack_sequence = f"{player_id}_{self.ack_str}"
+            self.game.turn_handler.needs_to_go.append(ack_sequence)
             self.game.update_game_log(id_sequence, "There was no one eligible"
                                                    " for the Mystic Wolf to see")
         return d
@@ -48,6 +50,7 @@ class MysticWolf:
             response_text = f"{p_name} is a {p_role}."
             self.game.turn_handler.needs_to_go.append(ack_sequence)
             self.game.update_game_log(id_sequence, f"The Mystic Wolf viewed {p_name}'s card ({p_role}).")
+
             return {'response': response_text}
         else:
             return {"response": "Action unknown"}
