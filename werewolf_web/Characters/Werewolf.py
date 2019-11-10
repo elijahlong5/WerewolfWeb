@@ -21,9 +21,11 @@ class Werewolf:
              "role-description": self.description,
              }
         for p_id, p in self.game.players.items():
-            if p_id == player_id:
-                continue
-            elif type(p.original_role) == type(self):
+            if (
+                    p.original_role.team == self.team and
+                    str(p.original_role) != "Minion" and
+                    player_id != p_id
+            ):
                 d["fellow_wolves"][p_id] = p.name
                 d["lone_wolf"] = False
                 d["role-description"] = self.description

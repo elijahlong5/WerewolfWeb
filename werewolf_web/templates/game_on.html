@@ -14,7 +14,7 @@
     <script>
         window.initial_player_dict = {{ initial_player_dict | tojson }};
     </script>
-    <script src="/static/scripts/{{original_role}}.js"></script>
+    <script src="/static/scripts/{{original_role | replace(' ', '', 2)}}.js"></script>
     <script src="/static/scripts/Game_On.js" ></script>
     <link href="/static/game_on.css" rel="stylesheet">
 {% endblock scripts %}

@@ -189,7 +189,6 @@ def game_on(access_token, player_id=None):
         # Redirecting to this page but without a player ID.
         return redirect(url_for('game_on',
                                 access_token=access_token))
-
     try:
         player_role = str(game.players[int(player_id)].original_role)
         player_dict = game.players[int(player_id)].get_role_initial_dict()

@@ -9,6 +9,7 @@ import Characters.Drunk as D
 import Characters.Insomniac as I
 import Characters.Mason as Ma
 import Characters.Minion as M
+import Characters.MysticWolf as My
 import Characters.Robber as R
 import Characters.Seer as S
 import Characters.Troublemaker as T
@@ -28,6 +29,7 @@ class Role(Enum):
     INSOMNIAC = 'Insomniac'
     MASON = "Mason"
     MINION = 'Minion'
+    MYSTICWOLF = "Mystic Wolf"
     ROBBER = 'Robber'
     SEER = 'Seer'
     TROUBLEMAKER = 'Troublemaker'
@@ -78,18 +80,12 @@ class TurnList:
     def get_node_at_role(self, role):
         cur = self.head
         while cur.role != role:
-            print(cur.role)
-            print(f'checking comparison: ')
-
             cur = cur.next
-            print(f"cur.role {cur.role}, role: {role}")
-            print(cur.role != role)
         return cur
 
     def store_a_move(self, role, move):
         """This is used when someone makes a move, but it can't be processed yet.
         The move is stored and applied to the game once the turn pointer is at that role."""
-        print(f'in store_a_move: role: {role}')
         node = self.get_node_at_role(role)
         node.stored_move = move
 
@@ -123,13 +119,12 @@ class WerewolfGame:
         self.discussion_over_at = None
 
         # BASE CHARACTERS
-        self.characters.append(I.Insomniac(self))
-        self.characters.append(T.Troublemaker(self))
-        self.characters.append(Wi.Witch(self))
         self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
+        self.characters.append(W.Werewolf(self))
+        self.characters.append(My.MysticWolf(self))
         self.characters.append(M.Minion(self))
-        self.characters.append(R.Robber(self))
-        self.characters.append(S.Seer(self))
 
     def start_game(self):
         if self.is_game_on:
@@ -199,6 +194,8 @@ class WerewolfGame:
             self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Seer")])
         if "Minion" in roles_in_play:
             self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Minion")])
+        if "Mystic Wolf" in roles_in_play:
+            self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Mystic Wolf")])
         if "Tanner" in roles_in_play:
             self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Tanner")])
         for i in range(0, roles_in_play.count("Werewolf")):
@@ -207,7 +204,6 @@ class WerewolfGame:
             # pop from both arrays
             parallel_p_id_list.pop(cur_index)
             roles_in_play.pop(cur_index)
-
         for i in range(0, roles_in_play.count("Villager")):
             cur_index = roles_in_play.index("Villager")
             self.turn_handler.needs_to_go.append(parallel_p_id_list[cur_index])
@@ -326,6 +322,8 @@ class WerewolfGame:
                 self.characters.append(Ma.Mason(self))
             elif character == "Minion":
                 self.characters.append(M.Minion(self))
+            elif character == "Mystic Wolf":
+                self.characters.append(My.MysticWolf(self))
             elif character == "Witch":
                 self.characters.append(Wi.Witch(self))
             elif character == "Tanner":
@@ -348,7 +346,6 @@ class WerewolfGame:
         middle_card_choice = middle_card_choice.lower()
         cur_player = self.players[player_id]
         player_role_temp = self.players[player_id].current_role
-        print(f"middle card choice is {middle_card_choice}")
         if middle_card_choice == "left":
             cur_index = 0
         elif middle_card_choice == "middle":
@@ -444,9 +441,7 @@ class WerewolfGame:
 
         if not len(self.turn_handler.needs_to_go):
             print("No one else needs to go")
-            self.DISCUSSION_PHASE = True
-            now = datetime.now()
-            self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
+            self.enter_endgame()
 
     def verify_valid_game_starting_point(self):
         valid_starting_point = True
@@ -526,7 +521,7 @@ class WerewolfGame:
                 if p.votes_against == most_votes:
                     # This player dies.
                     who_died.append(p_id)
-                    if str(p.current_role) == "Werewolf":
+                    if str(p.current_role) == "Werewolf" or str(p.current_role) == "Mystic Wolf":
                         winning_team = "Villagers"
                     elif str(p.current_role) == "Tanner":
                         winning_team = "Tanner"

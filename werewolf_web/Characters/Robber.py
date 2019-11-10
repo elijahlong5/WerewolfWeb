@@ -20,9 +20,8 @@ class Robber:
 
     def process_player_response(self, player_id, response):
         ack_sequence = f"{player_id}_{self.ack_str}"
-        id_sequence = f"{player_id}_Robber"
+        id_sequence = f"{player_id}_{str(self)}"
 
-        print(response)
         if 'status' in response.keys() and response['status'] == 'acknowledged':
             if ack_sequence in self.game.turn_handler.needs_to_go:
                 self.game.update_game_log(ack_sequence)
