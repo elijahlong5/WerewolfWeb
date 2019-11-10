@@ -7,6 +7,7 @@ import GameHandlers.Human as Human
 
 import Characters.Drunk as D
 import Characters.Insomniac as I
+import Characters.Mason as Ma
 import Characters.Minion as M
 import Characters.Robber as R
 import Characters.Seer as S
@@ -25,6 +26,7 @@ from datetime import timedelta
 class Role(Enum):
     DRUNK = "Drunk"
     INSOMNIAC = 'Insomniac'
+    MASON = "Mason"
     MINION = 'Minion'
     ROBBER = 'Robber'
     SEER = 'Seer'
@@ -45,7 +47,6 @@ class Node:
 
 class TurnList:
     """ a Linked list of what roles can go when."""
-
     def __init__(self):
         self.head = Node()
         self.turn_pointer = self.head
@@ -191,6 +192,7 @@ class WerewolfGame:
         if "Insomniac" in roles_in_play:
             self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Insomniac")], True)
 
+        # Go to first turn.
         self.turn_handler.next_turn()
 
         if "Seer" in roles_in_play:
@@ -200,12 +202,22 @@ class WerewolfGame:
         if "Tanner" in roles_in_play:
             self.turn_handler.append(parallel_p_id_list[roles_in_play.index("Tanner")])
         for i in range(0, roles_in_play.count("Werewolf")):
-            self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Werewolf")])
-        for i in range(0, roles_in_play.count("Villager")):
-            self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Villager")])
-        for i in range(0, roles_in_play.count("Mason")):
-            self.turn_handler.needs_to_go.append(parallel_p_id_list[roles_in_play.index("Mason")])
+            cur_index = roles_in_play.index("Werewolf")
+            self.turn_handler.needs_to_go.append(parallel_p_id_list[cur_index])
+            # pop from both arrays
+            parallel_p_id_list.pop(cur_index)
+            roles_in_play.pop(cur_index)
 
+        for i in range(0, roles_in_play.count("Villager")):
+            cur_index = roles_in_play.index("Villager")
+            self.turn_handler.needs_to_go.append(parallel_p_id_list[cur_index])
+            parallel_p_id_list.pop(cur_index)
+            roles_in_play.pop(cur_index)
+        for i in range(0, roles_in_play.count("Mason")):
+            cur_index = roles_in_play.index("Mason")
+            self.turn_handler.needs_to_go.append(parallel_p_id_list[cur_index])
+            parallel_p_id_list.pop(cur_index)
+            roles_in_play.pop(cur_index)
         print(f'Just made needs to go list: {self.turn_handler.needs_to_go}')
 
     def jsonify_full_game_state(self):
@@ -290,9 +302,10 @@ class WerewolfGame:
         if character in character_strs:
             print('this character is already in here.')
             # Handles Characters that can be in the game multiple times
-            # Werewolves and Villagers.
-
-            if character == "Werewolf" and character_strs.count("Werewolf") <= 4:
+            # Masons, Werewolves and Villagers.
+            if character == "Mason" and character_strs.count("Mason") <= 4:
+                self.characters.append(Ma.Mason(self))
+            elif character == "Werewolf" and character_strs.count("Werewolf") <= 4:
                 #  Don't want more than 4 werewolves in the game
                 self.characters.append(W.Werewolf(self))
             elif character == "Villager" and character_strs.count("Villager") <= 4:
@@ -309,6 +322,8 @@ class WerewolfGame:
                 self.characters.append(I.Insomniac(self))
             elif character == "Robber":
                 self.characters.append(R.Robber(self))
+            elif character == "Mason":
+                self.characters.append(Ma.Mason(self))
             elif character == "Minion":
                 self.characters.append(M.Minion(self))
             elif character == "Witch":

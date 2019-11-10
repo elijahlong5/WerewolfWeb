@@ -33,7 +33,6 @@ class Werewolf:
         ack_sequence = f"{player_id}_{self.ack_str}"
         id_sequence = f"{player_id}_Werewolf"
         # Case 1: werewolf acknowledges they are a werewolf.
-        print(response)
         if 'status' in response.keys() and response['status'] == 'acknowledged':
             if ack_sequence in self.game.turn_handler.needs_to_go:
                 print('response acknowledged, and removed from list')
