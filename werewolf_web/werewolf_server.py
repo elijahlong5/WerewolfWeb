@@ -118,8 +118,8 @@ def change_time():
         game = lobbies[access_token]
 
     time_change_to = request.form['new_time']
-
-    game.disc_length = time_change_to
+    print(f'Changing discussion time to {time_change_to} min(s).')
+    game.disc_length = float(time_change_to)
 
     return redirect(url_for('lobby',
                             access_token=access_token,

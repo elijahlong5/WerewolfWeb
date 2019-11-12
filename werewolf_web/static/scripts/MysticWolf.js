@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function() {
     let roleDivId = GameService.roleDivId;
 
     GameServices.addRoleDescription(mysticWolfDict['role-description']);
-
     GameServices.addSimpleElement('h2', roleDivId, "Werewolves:");
     if (Object.keys(mysticWolfDict['wolves']).length === 0){
         GameServices.addSimpleElement("li", roleDivId, "There are NO WEREWOLVES");
@@ -14,12 +13,10 @@ document.addEventListener("DOMContentLoaded", function() {
             GameServices.addSimpleElement("li", roleDivId, nrText);
         }
     }
-
     GameServices.addSimpleElement("div", roleDivId, "", namesDivId);
     let formId = 'submit-form';
     GameServices.addElement(formId, namesDivId, "form",[],"",
         ["method", "post"]);
-
     for (let key in mysticWolfDict['names']) {
         GameServices.addElement(key, formId,"button", ["button"],
             mysticWolfDict['names'][key]['name'],
@@ -32,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if ( 0 === Object.keys(mysticWolfDict['names']).length) {
         GameService.addOkButton(namesDivId);
     }
-
 });
 
 function view(cardRequestedDict){
@@ -41,5 +37,4 @@ function view(cardRequestedDict){
         display.innerHTML = r['response'];
         GameService.addOkButton(namesDivId);
     });
-
 }

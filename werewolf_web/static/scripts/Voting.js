@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s ";
 
         // If the count down is over, write some text
-        if (distance < 0) {
+        if (distance <= 0) {
             clearInterval(x);
             castVote(selectedId, playerId);
             document.getElementById("countdown").innerHTML = "TIME EXPIRED";
@@ -31,6 +31,9 @@ document.addEventListener("DOMContentLoaded", function() {
     GameServices.addSimpleElement("div",'vote-ballet', "", buttonDivName);
 
     let playerId = GameService.getPlayerIdFromUrl();
+
+    let formId = "submit-form";
+    let submitFormButtonId = "form-submit-button";
 
     for (let key in votingDict['players']['names']) {
         console.log('key', key, "playerid:", playerId);
@@ -63,8 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById(submitFormButtonId).disabled = (selectedId === null)
         });
     }
-    let formId = "submit-form";
-    let submitFormButtonId = "form-submit-button";
     GameServices.addElement(formId, buttonDivName, "form",[],"",
         ["method", "post"]);
     GameServices.addElement(submitFormButtonId, formId, "button",["button"],
@@ -72,8 +73,9 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById(submitFormButtonId).addEventListener("click", function(){
         event.preventDefault();
         castVote(selectedId, playerId);
-
     });
+    document.getElementById(submitFormButtonId).disabled = (selectedId === null)
+
 
 });
 

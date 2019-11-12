@@ -311,7 +311,6 @@ class WerewolfGame:
             # Handles Characters that can only be in the game once.
             # Will add all characters if they are not in
             # Robber, Seer, Insomniac, Minion, Troublemaker, Witch
-            print('character not found, adding regardless.')
             if character == "Drunk":
                 self.characters.append(D.Drunk(self))
             elif character == "Insomniac":
@@ -378,6 +377,7 @@ class WerewolfGame:
         self.DISCUSSION_PHASE = True
         now = datetime.now()
         self.discussion_over_at = now + timedelta(seconds=self.disc_length*60)
+        print(f'Discussion will be over at {self.discussion_over_at}')
 
     def update_move(self, role, move_method, arg1, arg2):
         """Handles players that need to switch the placement of the cards,
@@ -428,19 +428,14 @@ class WerewolfGame:
 
     def update_game_log(self, role, move_summary=None):
         if role in self.turn_handler.needs_to_go:
-            print('game log appended')
             self.turn_handler.needs_to_go.pop(self.turn_handler.needs_to_go.index(role))
             if move_summary:
                 self.game_log.append(move_summary)
             print(self.game_log)
         else:
-            print("Updating game log, but not making the move happen.")
             self.game_log.append(move_summary)
 
-        print(f'Here are the people who need to go: {self.turn_handler.needs_to_go}')
-
         if not len(self.turn_handler.needs_to_go):
-            print("No one else needs to go")
             self.enter_endgame()
 
     def verify_valid_game_starting_point(self):
@@ -461,8 +456,6 @@ class WerewolfGame:
         return valid_starting_point
 
     def discussion_dict(self):
-        print(f'Discussion will be over at {self.discussion_over_at}')
-
         d = self.discussion_over_at
         if d is None:
             d = datetime.now()
