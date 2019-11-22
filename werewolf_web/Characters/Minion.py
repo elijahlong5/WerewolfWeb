@@ -1,3 +1,4 @@
+import Characters.MysticWolf as M
 import Characters.Werewolf as W
 
 
@@ -17,9 +18,9 @@ class Minion:
              'wolves': {},
              'role-description': self.description,
              }
-        temp_wolf = W.Werewolf(self.game)
         for p_id, p in self.game.players.items():
-            if type(p.original_role) == type(temp_wolf):
+            if (p.original_role.team == self.team and
+                    str(p.original_role) != "Minion"):
                 d['wolves'][str(p_id)] = p.name
         return d
 

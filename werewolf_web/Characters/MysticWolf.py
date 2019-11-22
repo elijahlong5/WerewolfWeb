@@ -20,7 +20,6 @@ class MysticWolf:
             'role-description': self.description,
         }
         for p_id, p in self.game.players.items():
-
             if (p.original_role.team == self.team and
                     str(p.original_role) != "Minion" and
                     player_id != p_id):
